@@ -23,4 +23,8 @@ public class ResponseUtil {
         return new ResponseEntity<>(response, status);
     }
 
+    public static ResponseEntity<?> buildResponse(Object data, HttpStatus status) {
+        return new ResponseEntity<>(data, status);
+    }
+
 }

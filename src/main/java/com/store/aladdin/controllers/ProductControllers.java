@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,23 +25,24 @@ public class ProductControllers {
     @Autowired
     private ProductService productService;
 
-        @PostMapping("create-product")
-        public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        productService.createProduct(product);
-        return ResponseUtil.buildResponse("product created successfully", HttpStatus.OK);
-    }
 
-        @PutMapping("update-product/{productId}")
-    public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(productId, product);
-        return ResponseUtil.buildResponse("Product updated successfully", HttpStatus.OK, updatedProduct);
-    }
 
     @DeleteMapping("delete-product/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
         productService.deleteProduct(new ObjectId(productId)); 
         return ResponseUtil.buildResponse("Product deleted successfully", HttpStatus.OK);
     }
+
+    @GetMapping("get-product/{productId}")
+public ResponseEntity<?> getProductById(@PathVariable String productId) {
+    try {
+        Product product = productService.getProductById(new ObjectId(productId));
+        return ResponseUtil.buildResponse(product, HttpStatus.OK);
+    } catch (Exception e) {
+        return ResponseUtil.buildResponse("Product not found", HttpStatus.NOT_FOUND);
+    }
+}
+
 
 
 

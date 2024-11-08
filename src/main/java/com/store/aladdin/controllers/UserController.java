@@ -20,19 +20,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Create a new user
-    @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        userService.createUser(user);
-        return ResponseUtil.buildResponse("User created successfully", HttpStatus.CREATED);
-    }
 
-    // Get all users
-    @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
+
+
 
     // Get a user by ID
     @GetMapping("/{userId}")

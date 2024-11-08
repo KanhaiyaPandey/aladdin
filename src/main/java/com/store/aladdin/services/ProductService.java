@@ -42,4 +42,11 @@ public class ProductService {
   }
   productRepository.deleteById(productId);
   }
+
+
+  public Product getProductById(ObjectId productId) throws Exception {
+    return productRepository.findById(productId)
+            .orElseThrow(() -> new Exception("Product not found"));
+}
+
 }
