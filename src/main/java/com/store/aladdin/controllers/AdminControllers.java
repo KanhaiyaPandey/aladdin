@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,17 +39,28 @@ public class AdminControllers {
     }
 
     
-        @PostMapping("/product/create-product")
-        public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        productService.createProduct(product);
-        return ResponseUtil.buildResponse("product created successfully", HttpStatus.OK);
+    @PostMapping("/create-product")
+    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+        try {
+            productService.createProduct(product);
+            return ResponseEntity.ok(ResponseUtil.buildResponse("Product created successfully", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product creation failed: " + e.getMessage());
+        }
     }
 
     // update product
 
-     @PutMapping("update-product/{productId}")
+     @PutMapping("/product/update-product/{productId}")
     public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody Product product) {
         Product updatedProduct = productService.updateProduct(productId, product);
         return ResponseUtil.buildResponse("Product updated successfully", HttpStatus.OK, updatedProduct);
+    }
+
+    
+    @DeleteMapping("/product/delete-product/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
+        productService.deleteProduct(new ObjectId(productId)); 
+        return ResponseUtil.buildResponse("Product deleted successfully", HttpStatus.OK);
     }
 }
