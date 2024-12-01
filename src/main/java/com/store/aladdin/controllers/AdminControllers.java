@@ -1,5 +1,6 @@
 package com.store.aladdin.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.store.aladdin.models.Product;
 import com.store.aladdin.models.User;
+import com.store.aladdin.services.ImageUploadService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.ResponseUtil;
@@ -31,18 +35,31 @@ public class AdminControllers {
     @Autowired
     private ProductService productService;
 
-        // Get all users
-    @GetMapping("/users/all-users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
+    @Autowired
+    private ImageUploadService imageUploadService;
+
+
+
 
     
     @PostMapping("/create-product")
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(
+            @RequestPart("product") Product product,
+            @RequestPart("images") List<MultipartFile> images) {
         try {
+            // Upload images to Cloudinary
+            List<String> imageUrls = new ArrayList<>();
+            for (MultipartFile image : images) {
+                String imageUrl = imageUploadService.uploadImage(image);
+                imageUrls.add(imageUrl);
+            }
+
+            // Set image URLs in the product
+            product.setImages(imageUrls);
+
+            // Save the product
             productService.createProduct(product);
+
             return ResponseEntity.ok(ResponseUtil.buildResponse("Product created successfully", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product creation failed: " + e.getMessage());
@@ -64,3 +81,11 @@ public class AdminControllers {
         return ResponseUtil.buildResponse("Product deleted successfully", HttpStatus.OK);
     }
 }
+
+
+        // Get all users
+        @GetMapping("/users/all-users")
+        public ResponseEntity<List<User>> getAllUsers() {
+            List<User> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        }
