@@ -18,6 +18,7 @@ import com.store.aladdin.models.User;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.ResponseUtil;
+import com.store.aladdin.utils.ValidationUtils;
 
 @RestController
 @RequestMapping("/api/public")
@@ -36,6 +37,13 @@ public class PublicControllers {
 
     @PostMapping("/user/register")
     public ResponseEntity<?> createUser(@RequestBody User user) {
+        // Perform manual validation using ValidationUtils
+        String validationMessage = ValidationUtils.validateUser(user);
+        if (validationMessage != null) {
+            return ResponseUtil.buildResponse(validationMessage, HttpStatus.BAD_REQUEST);
+        }
+    
+        // Save the user if validation passes
         userService.createUser(user);
         return ResponseUtil.buildResponse("User created successfully", HttpStatus.CREATED);
     }
