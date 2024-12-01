@@ -27,6 +27,17 @@ public class UserService {
 
     // Create a new user
     public void createUser(User user) {
+        // Check for existing user by name or email
+        Optional<User> existingUserByName = userRepository.findByName(user.getName());
+        Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+
+        if (existingUserByName.isPresent()) {
+            throw new IllegalArgumentException("A user with this name already exists.");
+        }
+        if (existingUserByEmail.isPresent()) {
+            throw new IllegalArgumentException("A user with this email already exists.");
+        }
+
         userRepository.save(user);
     }
 

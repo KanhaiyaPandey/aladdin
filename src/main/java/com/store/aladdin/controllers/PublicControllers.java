@@ -43,10 +43,24 @@ public class PublicControllers {
             return ResponseUtil.buildResponse(validationMessage, HttpStatus.BAD_REQUEST);
         }
     
-        // Save the user if validation passes
-        userService.createUser(user);
-        return ResponseUtil.buildResponse("User created successfully", HttpStatus.CREATED);
+        // Assign default role if not provided
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(List.of("USER"));
+        }
+    
+        try {
+            // Save the user if validation passes
+            userService.createUser(user);
+            return ResponseUtil.buildResponse("User created successfully", HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // Handle case where user already exists (e.g., duplicate name/email)
+            return ResponseUtil.buildResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // Handle any other unexpected errors
+            return ResponseUtil.buildResponse("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+    
 
     
     @GetMapping("product/{productId}")
