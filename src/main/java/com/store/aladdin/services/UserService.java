@@ -56,6 +56,16 @@ public class UserService {
         }
     }
 
+    // find by email
+    public User getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new ResourceNotFoundException("User not found with email: " + email);
+        }
+    }
+
     // Update a user
     public void updateUser(ObjectId userId, User updatedUser) {
         User existingUser = getUserById(userId);
