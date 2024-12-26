@@ -5,10 +5,16 @@ import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.CartItem;
 import com.store.aladdin.utils.CartResponseItem;
 import com.store.aladdin.utils.ResponseUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +32,33 @@ public class UserController {
 
     // Get a user by ID
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable ObjectId userId) {
-        User user = userService.getUserById(userId);
-        return ResponseEntity.ok(user);
+public ResponseEntity<?> getUserById(@PathVariable ObjectId userId) {
+    // Retrieve authenticated user's details from SecurityContext
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null || !authentication.isAuthenticated()) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated.");
     }
+
+    // Get logged-in user's email (username) from the principal
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    String loggedInUserEmail = userDetails.getUsername();
+
+    // Fetch the logged-in user's record
+    User loggedInUser = userService.getUserByEmail(loggedInUserEmail);
+    if (loggedInUser == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+    }
+
+    // Check if the logged-in user's ID matches the requested userId
+    if (!loggedInUser.getId().equals(userId)) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to access this resource.");
+    }
+
+    // Fetch and return the requested user's details
+    User user = userService.getUserById(userId);
+    return ResponseEntity.ok(user);
+}
 
     // Update user
     @PutMapping("/update/{userId}")

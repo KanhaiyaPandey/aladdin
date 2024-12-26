@@ -10,11 +10,13 @@ import com.store.aladdin.utils.ResourceNotFoundException;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class UserService {
@@ -24,6 +26,9 @@ public class UserService {
 
     @Autowired
     private ProductRepository productRepository;
+
+      @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Create a new user
     public void createUser(User user) {
@@ -64,6 +69,16 @@ public class UserService {
         } else {
             throw new ResourceNotFoundException("User not found with email: " + email);
         }
+    }
+
+    public List<String> getUserRoles(String email) {
+        User user = getUserByEmail(email);  
+        return user.getRoles();  
+    }
+
+    public boolean authenticateUser(String email, String password) {
+        User user = getUserByEmail(email);
+        return passwordEncoder.matches(password, user.getPassword());  // Match the provided password with the stored one
     }
 
     // Update a user

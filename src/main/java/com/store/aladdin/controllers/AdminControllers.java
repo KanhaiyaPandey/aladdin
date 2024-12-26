@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +46,7 @@ public class AdminControllers {
 
 
 @PostMapping(value = "/create-product", consumes = "multipart/form-data")
+  @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createProduct(
     @RequestParam("product") String productJson,
     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
