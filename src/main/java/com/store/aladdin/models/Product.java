@@ -1,6 +1,7 @@
 package com.store.aladdin.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -31,7 +32,9 @@ public class Product {
     private StockStatus stockStatus;
 
     @Field("images")
-    private List<String> images;
+    private List<String> images = new ArrayList<>(); 
+
+    private List<Variant> variants = new ArrayList<>(); 
 
     public enum StockStatus {
         OUT_OF_STOCK,
@@ -40,5 +43,17 @@ public class Product {
     }
 
     private LocalDateTime date;
+
+    private LocalDateTime createdAt;
+
+    @Data
+    @NoArgsConstructor
+    public static class Variant {
+        private String id;
+        private String parentProductId;
+        private String color;
+        private String size;
+        private Double additionalPrice;
+        private List<String> medias;
+    }
 }
- 

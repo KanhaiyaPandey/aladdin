@@ -2,7 +2,9 @@ package com.store.aladdin.controllers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,19 +48,17 @@ public class AdminControllers {
 
 
 @PostMapping(value = "/create-product", consumes = "multipart/form-data")
-  @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createProduct(
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<?> createProduct(
     @RequestParam("product") String productJson,
-    @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+    @RequestPart(value = "images", required = false) List<MultipartFile> images,
+    @RequestPart(value = "variantMedias", required = false) List<MultipartFile> variantMedias) {
     try {
-        // Deserialize the JSON string into a Product object
+      
         ObjectMapper objectMapper = new ObjectMapper();
         Product product = objectMapper.readValue(productJson, Product.class);
 
-        // System.out.println("Received product: " + product);
-        // System.out.println("Received images: " + (images != null ? images.size() : "No images"));
-
-        // Handle image upload and set URLs in the product
+      
         List<String> imageUrls = new ArrayList<>();
         if (images != null && !images.isEmpty()) {
             for (MultipartFile image : images) {
@@ -67,15 +67,38 @@ public class AdminControllers {
             }
         }
         product.setImages(imageUrls);
-        product.setDate(LocalDateTime.now());
+        
+        if (product.getVariants() != null && !product.getVariants().isEmpty()) {
+            Map<String, List<String>> variantMediaUrlsMap = new HashMap<>();
+
+            if (variantMedias != null && !variantMedias.isEmpty()) {
+                for (MultipartFile media : variantMedias) {
+                    String mediaUrl = imageUploadService.uploadImage(media);
+                    String variantId = extractVariantIdFromMedia(media); 
+                    variantMediaUrlsMap.computeIfAbsent(variantId, k -> new ArrayList<>()).add(mediaUrl);
+                }
+            }
+
+            for (Product.Variant variant : product.getVariants()) {
+                List<String> variantMediaUrls = variantMediaUrlsMap.get(variant.getId());
+                if (variantMediaUrls != null) {
+                    variant.setMedias(variantMediaUrls);
+                }
+            }
+        }
+
+        product.setCreatedAt(LocalDateTime.now());
         productService.createProduct(product);
 
-        return ResponseUtil.buildResponse("Product updated successfully", HttpStatus.OK);
-        } catch (Exception e) {
+        return ResponseUtil.buildResponse("Product created successfully", HttpStatus.OK);
+    } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
     }
 }
 
+private String extractVariantIdFromMedia(MultipartFile media) {
+    return "default-variant-id"; 
+}
 
 
 
