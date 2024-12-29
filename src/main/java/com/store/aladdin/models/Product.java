@@ -21,13 +21,13 @@ public class Product {
     private String productId;
 
     @NonNull
-    private String name;
+    private String title;
 
     private String description;
 
-    private Double price;
-
-    private Integer quantity;
+    private Double costPrice;
+    private Double sellPrice;
+    private Double compareAtPrice;
 
     private StockStatus stockStatus;
 
@@ -37,6 +37,10 @@ public class Product {
     private List<String> images = new ArrayList<>(); 
 
     private List<Variant> variants = new ArrayList<>(); 
+
+    private List<Warehouse> warehouseData = new ArrayList<>(); 
+
+    private List<Dimension> dimensions = new ArrayList<>(); 
 
     public enum StockStatus {
         OUT_OF_STOCK,
@@ -56,9 +60,34 @@ public class Product {
         private String variantId;
         
         private String parentProductId;
-        private String color;
-        private String size;
-        private Double additionalPrice;
+        private List<String> options = new ArrayList<>();
         private List<String> medias;
+        private Double costPrice;
+        private Double sellPrice;
+        private Double compareAtPrice;
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    public static class Dimension {
+
+      private double length;
+      private double height;
+      private double width;
+      private double weight;
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    public static class Warehouse {
+      
+        private String warehouseId;
+        private String location;
+        private Integer stock;
     }
 }
+
+
+

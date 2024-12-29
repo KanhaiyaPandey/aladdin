@@ -83,11 +83,8 @@ public ResponseEntity<?> createProduct(
 }
 
     private void validateProduct(Product product) {
-        if (product.getName() == null || product.getName().isEmpty()) {
+        if (product.getTitle() == null || product.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Product name is required");
-        }
-        if (product.getPrice() == null || product.getPrice() <= 0) {
-            throw new IllegalArgumentException("Product price must be greater than 0");
         }
     }
     

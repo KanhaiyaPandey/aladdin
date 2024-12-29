@@ -167,9 +167,10 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
         // Create a CartResponseItem with both Product and CartItem details
         CartResponseItem responseItem = new CartResponseItem(
                 item.getProductId(),
-                product.getName(),
+                product.getTitle(),
                 product.getDescription(),
-                product.getPrice(),
+                product.getSellPrice(),
+                product.getCompareAtPrice(),
                 item.getQuantity()
         );
 

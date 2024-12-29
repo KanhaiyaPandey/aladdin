@@ -30,8 +30,7 @@ public class ProductService {
     public Product updateProduct(ObjectId productId, Product updatedProduct) {
       return productRepository.findById(productId).map(product -> {
         System.out.println("to upadate product"+product);
-          product.setName(updatedProduct.getName());
-          product.setPrice(updatedProduct.getPrice());
+          product.setTitle(updatedProduct.getTitle());
           product.setDescription(updatedProduct.getDescription());
           product.setDate(LocalDateTime.now());
           return productRepository.save(product);
