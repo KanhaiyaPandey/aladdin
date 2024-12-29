@@ -1,10 +1,12 @@
 package com.store.aladdin.controllers;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,48 +56,78 @@ public ResponseEntity<?> createProduct(
     @RequestPart(value = "images", required = false) List<MultipartFile> images,
     @RequestPart(value = "variantMedias", required = false) List<MultipartFile> variantMedias) {
     try {
-      
         ObjectMapper objectMapper = new ObjectMapper();
         Product product = objectMapper.readValue(productJson, Product.class);
 
+        validateProduct(product);
+        product.setImages(uploadImages(images));
+        processVariantMedia(product, variantMedias);
+
+        // Ensure each variant's productId matches the product's id
       
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile image : images) {
-                String imageUrl = imageUploadService.uploadImage(image);
-                imageUrls.add(imageUrl);
-            }
-        }
-        product.setImages(imageUrls);
-        
-        if (product.getVariants() != null && !product.getVariants().isEmpty()) {
-            Map<String, List<String>> variantMediaUrlsMap = new HashMap<>();
-
-            if (variantMedias != null && !variantMedias.isEmpty()) {
-                for (MultipartFile media : variantMedias) {
-                    String mediaUrl = imageUploadService.uploadImage(media);
-                    String variantId = extractVariantIdFromMedia(media); 
-                    variantMediaUrlsMap.computeIfAbsent(variantId, k -> new ArrayList<>()).add(mediaUrl);
-                }
-            }
-
             for (Product.Variant variant : product.getVariants()) {
-                List<String> variantMediaUrls = variantMediaUrlsMap.get(variant.getId());
-                if (variantMediaUrls != null) {
-                    variant.setMedias(variantMediaUrls);
+                if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {
+                    variant.setVariantId(UUID.randomUUID().toString());
                 }
             }
-        }
+
 
         product.setCreatedAt(LocalDateTime.now());
         productService.createProduct(product);
-
         return ResponseUtil.buildResponse("Product created successfully", HttpStatus.OK);
+    } catch (IOException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
     }
 }
 
+    private void validateProduct(Product product) {
+        if (product.getName() == null || product.getName().isEmpty()) {
+            throw new IllegalArgumentException("Product name is required");
+        }
+        if (product.getPrice() == null || product.getPrice() <= 0) {
+            throw new IllegalArgumentException("Product price must be greater than 0");
+        }
+    }
+    
+    private List<String> uploadImages(List<MultipartFile> images) {
+        List<String> imageUrls = new ArrayList<>();
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile image : images) {
+            try {
+                imageUrls.add(imageUploadService.uploadImage(image));
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload image: " + image.getOriginalFilename(), e);
+            }
+            }
+        }
+        return imageUrls;
+    }
+    
+    private void processVariantMedia(Product product, List<MultipartFile> variantMedias) {
+        if (product.getVariants() != null && !product.getVariants().isEmpty()) {
+            Map<String, List<String>> variantMediaUrlsMap = new HashMap<>();
+            if (variantMedias != null && !variantMedias.isEmpty()) {
+                for (MultipartFile media : variantMedias) {
+                    try{
+                       String mediaUrl = imageUploadService.uploadImage(media);
+                       String variantId = extractVariantIdFromMedia(media);
+                       variantMediaUrlsMap.computeIfAbsent(variantId, k -> new ArrayList<>()).add(mediaUrl);
+                    }catch (IOException e) {
+
+                       throw new RuntimeException("Failed to upload image: " + media.getOriginalFilename(), e);
+
+
+                    }
+                }
+            }
+            for (Product.Variant variant : product.getVariants()) {
+                variant.setMedias(variantMediaUrlsMap.getOrDefault(variant.getVariantId(), new ArrayList<>()));
+            }
+        }
+    }
+    
 private String extractVariantIdFromMedia(MultipartFile media) {
     return "default-variant-id"; 
 }

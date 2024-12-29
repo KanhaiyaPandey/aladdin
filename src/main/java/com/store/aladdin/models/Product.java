@@ -18,7 +18,7 @@ import lombok.NonNull;
 public class Product {
 
     @Id
-    private String id;
+    private String productId;
 
     @NonNull
     private String name;
@@ -30,6 +30,8 @@ public class Product {
     private Integer quantity;
 
     private StockStatus stockStatus;
+
+    private List<String> options = new ArrayList<>();
 
     @Field("images")
     private List<String> images = new ArrayList<>(); 
@@ -49,7 +51,10 @@ public class Product {
     @Data
     @NoArgsConstructor
     public static class Variant {
-        private String id;
+
+        @Id
+        private String variantId;
+        
         private String parentProductId;
         private String color;
         private String size;

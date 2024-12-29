@@ -20,6 +20,7 @@ public class ProductService {
     public void createProduct(Product product){
         product.setDate(LocalDateTime.now());
         productRepository.save(product);
+   
     }
 
     public List<Product> getAllProducts() {
@@ -28,10 +29,11 @@ public class ProductService {
 
     public Product updateProduct(ObjectId productId, Product updatedProduct) {
       return productRepository.findById(productId).map(product -> {
+        System.out.println("to upadate product"+product);
           product.setName(updatedProduct.getName());
           product.setPrice(updatedProduct.getPrice());
           product.setDescription(updatedProduct.getDescription());
-          product.setDate(LocalDateTime.now()); // Update date to current time
+          product.setDate(LocalDateTime.now());
           return productRepository.save(product);
       }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
   }
