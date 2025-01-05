@@ -31,7 +31,9 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/user/login").permitAll() // Allow login without authentication
+                .requestMatchers("/user/login").permitAll() 
+                .requestMatchers("/user/register").permitAll() 
+                // Allow login without authentication
                 .requestMatchers("/api/public/**").permitAll() // Allow public routes
                 .requestMatchers("/api/user/**").authenticated() // Secure user routes
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Role check expects ROLE_ADMIN internally

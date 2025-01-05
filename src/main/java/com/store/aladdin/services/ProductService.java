@@ -27,6 +27,11 @@ public class ProductService {
       return productRepository.findAll();
     }
 
+    public List<Product> getFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
+      return productRepository.findFilteredProducts(name, minPrice, maxPrice, stockStatus);
+  }
+
+
     public Product updateProduct(ObjectId productId, Product updatedProduct) {
       return productRepository.findById(productId).map(product -> {
         System.out.println("to upadate product"+product);

@@ -29,9 +29,11 @@ public class Product {
     private Double sellPrice;
     private Double compareAtPrice;
 
+    private boolean backorder;
+
     private StockStatus stockStatus;
 
-    private List<String> options = new ArrayList<>();
+    private List<String> attributes = new ArrayList<>();
 
     @Field("images")
     private List<String> images = new ArrayList<>(); 
@@ -51,6 +53,13 @@ public class Product {
     private LocalDateTime date;
 
     private LocalDateTime createdAt;
+
+
+
+
+    // other constructors
+
+
 
     @Data
     @NoArgsConstructor

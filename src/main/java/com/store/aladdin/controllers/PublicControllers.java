@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.aladdin.models.Product;
@@ -25,10 +26,15 @@ public class PublicControllers {
     @Autowired
     private ProductService productService;
 
-     @GetMapping("/product/all-products")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
-    }
+@GetMapping("/product/all-products")
+public List<Product> getAllProducts(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) Double minPrice,
+        @RequestParam(required = false) Double maxPrice,
+        @RequestParam(required = false) String stockStatus) {
+    return productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus);
+}
+
 
     
     @GetMapping("product/{productId}")
