@@ -1,0 +1,26 @@
+package com.store.aladdin.services;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.store.aladdin.models.Category;
+import com.store.aladdin.repository.CategoryRepository;
+
+@Service
+public class CategoryService {
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    // Find category by ID
+    public Optional<Category> getCategoryById(String id) {
+        return categoryRepository.findById(id);
+    }
+
+    // Find category by title
+    public Category getCategoryByTitle(String title) {
+        return categoryRepository.findByTitle(title);
+    }
+}
