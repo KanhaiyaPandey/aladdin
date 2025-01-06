@@ -17,10 +17,9 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public void createProduct(Product product){
+    public Product createProduct(Product product){
         product.setDate(LocalDateTime.now());
-        productRepository.save(product);
-   
+        return productRepository.save(product);
     }
 
     public List<Product> getAllProducts() {
@@ -41,6 +40,20 @@ public class ProductService {
           return productRepository.save(product);
       }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
   }
+
+  public Product updateProductVariants(ObjectId productId, Product updatedProduct) {
+    return productRepository.findById(productId).map(product -> {
+
+        List<Product.Variant> variants = updatedProduct.getVariants(); // Fully qualified name
+        if (variants != null) {
+            variants.forEach(variant -> variant.setParentProductId(productId.toHexString())); // Convert ObjectId to String
+            product.setVariants(variants);
+        }
+
+        return productRepository.save(product);
+    }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+}
+
 
   public void deleteProduct(ObjectId productId) {
     if (!productRepository.existsById(productId)) {

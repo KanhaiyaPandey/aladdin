@@ -24,5 +24,7 @@ public class Category {
     private String description;
 
     private List<String> banner = new ArrayList<>(); 
+
+    private List<Product> products = new ArrayList<>();
     
 }

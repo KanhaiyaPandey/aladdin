@@ -35,6 +35,8 @@ public class Product {
 
     private List<String> attributes = new ArrayList<>();
 
+    private List<String> productCategories = new ArrayList<>();
+
     @Field("images")
     private List<String> images = new ArrayList<>(); 
 
@@ -65,9 +67,7 @@ public class Product {
     @NoArgsConstructor
     public static class Variant {
 
-        @Id
-        private String variantId;
-        
+        private String variantId;   
         private String parentProductId;
         private List<String> options = new ArrayList<>();
         private List<String> medias;
