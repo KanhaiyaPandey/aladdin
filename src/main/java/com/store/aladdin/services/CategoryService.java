@@ -1,5 +1,6 @@
 package com.store.aladdin.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,16 @@ public class CategoryService {
     // Find category by title
     public Category getCategoryByTitle(String title) {
         return categoryRepository.findByTitle(title);
+    }
+
+        // Get all categories
+        public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+
+    // Save a new category
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
     }
 }
