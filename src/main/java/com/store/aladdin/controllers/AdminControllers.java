@@ -84,8 +84,6 @@ public ResponseEntity<?> createProduct(
        ObjectId objectId = new ObjectId(pro.getProductId());
 
        Product proUp = productService.updateProductVariants(objectId, product);
-
-        System.out.println("created product : "+ pro);
         return ResponseUtil.buildResponse("Product created successfully", HttpStatus.OK);
     } catch (IOException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
