@@ -25,6 +25,13 @@ public class ResponseUtil {
         return new ResponseEntity<>(response, status);
     }
 
+    public static ResponseEntity<Object> buildResponse(String message, Object data, HttpStatus status) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", message);
+        response.put("data", data);
+        return new ResponseEntity<>(response, status);
+    }
+
     // Method to build a response with data and HTTP status
     public static ResponseEntity<?> buildResponse(Object data, HttpStatus status) {
         return new ResponseEntity<>(data, status);

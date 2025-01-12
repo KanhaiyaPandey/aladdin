@@ -30,35 +30,6 @@ public class UserController {
 
 
 
-    // Get a user by ID
-    @GetMapping("/{userId}")
-public ResponseEntity<?> getUserById(@PathVariable ObjectId userId) {
-    // Retrieve authenticated user's details from SecurityContext
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    if (authentication == null || !authentication.isAuthenticated()) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated.");
-    }
-
-    // Get logged-in user's email (username) from the principal
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    String loggedInUserEmail = userDetails.getUsername();
-
-    // Fetch the logged-in user's record
-    User loggedInUser = userService.getUserByEmail(loggedInUserEmail);
-    if (loggedInUser == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
-    }
-
-    // Check if the logged-in user's ID matches the requested userId
-    if (!loggedInUser.getId().equals(userId)) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to access this resource.");
-    }
-
-    // Fetch and return the requested user's details
-    User user = userService.getUserById(userId);
-    return ResponseEntity.ok(user);
-}
 
     // Update user
     @PutMapping("/update/{userId}")
@@ -77,8 +48,7 @@ public ResponseEntity<?> getUserById(@PathVariable ObjectId userId) {
     // Add product to cart
     @PostMapping("/{userId}/cart/add")
     public ResponseEntity<?> addToCart(@PathVariable ObjectId userId, @RequestBody CartItem item) {
-        // Ensure the item does not have an ID when being added
-        item.setId(null); // Set ID to null to avoid mapping issues
+        item.setId(null);
         userService.addToCart(userId, item);
         return ResponseEntity.ok("Product added to cart successfully");
     }

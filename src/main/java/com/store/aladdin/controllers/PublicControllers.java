@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
-
+import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.ResponseUtil;
 
@@ -26,6 +27,9 @@ public class PublicControllers {
     
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/product/all-products")
@@ -54,5 +58,21 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
         return ResponseUtil.buildResponse("Product not found", HttpStatus.NOT_FOUND);
     }
 }
+
+
+    // get all categories
+    @GetMapping("/category/all-categories")
+    public ResponseEntity<?> getAllCategories() {
+        try {
+            List<Category> categories = categoryService.getAllCategories();
+            if (categories.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No categories found");
+            }
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error fetching categories: " + e.getMessage());
+        }
+    }
     
 }

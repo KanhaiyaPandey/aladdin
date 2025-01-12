@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers;
+package com.store.aladdin.controllers.AdminController;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -13,12 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,23 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
-import com.store.aladdin.models.User;
-import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;
 import com.store.aladdin.services.ProductService;
-import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.ResponseUtil;
-
-
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminControllers {
+public class CreateProduct {
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private ProductService productService;
@@ -50,14 +37,12 @@ public class AdminControllers {
     @Autowired
     private ImageUploadService imageUploadService;
 
-    @Autowired
-    private CategoryService categoryService;
 
 
 
-@PostMapping(value = "/create-product", consumes = "multipart/form-data")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<?> createProduct(
+    @PostMapping(value = "/create-product", consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createProduct(
     @RequestParam("product") String productJson,
     @RequestPart(value = "images", required = false) List<MultipartFile> images,
     @RequestPart(value = "variantMedias", required = false) List<MultipartFile> variantMedias) {
@@ -84,21 +69,21 @@ public ResponseEntity<?> createProduct(
        ObjectId objectId = new ObjectId(pro.getProductId());
 
        Product proUp = productService.updateProductVariants(objectId, product);
-        return ResponseUtil.buildResponse("Product created successfully", HttpStatus.OK);
-    } catch (IOException e) {
+       return ResponseUtil.buildResponse("Product created successfully", proUp, HttpStatus.OK);
+             } catch (IOException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
-    } catch (Exception e) {
+             } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-    }
+     }
 }
 
-    private void validateProduct(Product product) {
+        private void validateProduct(Product product) {
         if (product.getTitle() == null || product.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Product name is required");
         }
     }
     
-    private List<String> uploadImages(List<MultipartFile> images) {
+     private List<String> uploadImages(List<MultipartFile> images) {
         List<String> imageUrls = new ArrayList<>();
         if (images != null && !images.isEmpty()) {
             for (MultipartFile image : images) {
@@ -141,74 +126,5 @@ private String extractVariantIdFromMedia(MultipartFile media) {
 
 
 
-
-    // update product
-
-     @PutMapping("/product/update-product/{productId}")
-    public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(productId, product);
-        return ResponseUtil.buildResponse("Product updated successfully", HttpStatus.OK, updatedProduct);
-    }
-
     
-    @DeleteMapping("/product/delete-product/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
-        productService.deleteProduct(new ObjectId(productId)); 
-        return ResponseUtil.buildResponse("Product deleted successfully", HttpStatus.OK);
-    }
-
-
-
-
-
-    // create category
-
-    @PostMapping(value = "/create-category", consumes = "multipart/form-data")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createCategory(
-        @RequestParam("category") String categoryJson,
-        @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
-    
-        try {
-            // Parse JSON string into a Category object
-            ObjectMapper objectMapper = new ObjectMapper();
-            Category category = objectMapper.readValue(categoryJson, Category.class);
-    
-            // Upload banner images
-            List<String> bannerUrls = uploadImages(bannerImages);
-    
-            // Set uploaded URLs to the category
-            category.setBanner(bannerUrls);
-    
-            // Save the category using the service
-            Category savedCategory = categoryService.createCategory(category);
-    
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
-    
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category JSON format: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating category: " + e.getMessage());
-        }
-    }
-
-
-
-
-
-
-
-
-        // Get all users
-        @GetMapping("/users/all-users")
-        public ResponseEntity<List<User>> getAllUsers() {
-            List<User> users = userService.getAllUsers();
-            return ResponseEntity.ok(users);
-        }
-    }
-
-
-
-
-
-
+}
