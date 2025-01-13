@@ -25,6 +25,6 @@ public class Category {
 
     private List<String> banner = new ArrayList<>(); 
 
-    private List<Product> products = new ArrayList<>();
+    private List<Product> CategoryProducts = new ArrayList<>();
     
 }

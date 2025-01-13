@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Product;
+import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.ResponseUtil;
@@ -29,7 +30,7 @@ import com.store.aladdin.utils.helper.ProductHelper;
 public class CreateProduct {
 
 
- @Autowired
+    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -37,6 +38,10 @@ public class CreateProduct {
 
     @Autowired
     private ProductHelper productHelper;
+
+    @Autowired
+    private CategoryService categoryService;
+
 
     @PostMapping(value = "/create-product", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
@@ -63,6 +68,11 @@ public class CreateProduct {
 
             ObjectId objectId = new ObjectId(pro.getProductId());
             Product proUp = productService.updateProductVariants(objectId, product);
+
+            List<String> categoryIds = product.getProductCategories();
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+                categoryService.addProductToCategories(pro, categoryIds);
+            }
 
             return ResponseUtil.buildResponse("Product created successfully", proUp, HttpStatus.OK);
         } catch (IOException e) {

@@ -29,7 +29,7 @@ public class Product {
     private Double sellPrice;
     private Double compareAtPrice;
 
-    private boolean backorder;
+    private boolean allowBackorder;
 
     private StockStatus stockStatus;
 
@@ -74,6 +74,7 @@ public class Product {
         private Double costPrice;
         private Double sellPrice;
         private Double compareAtPrice;
+  
     }
 
 
@@ -93,6 +94,7 @@ public class Product {
     public static class Warehouse {
       
         private String warehouseId;
+        private String name;
         private String location;
         private Integer stock;
     }

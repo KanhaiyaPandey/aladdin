@@ -55,6 +55,11 @@ public class ProductService {
 }
 
 
+
+
+
+
+
   public void deleteProduct(ObjectId productId) {
     if (!productRepository.existsById(productId)) {
     throw new ResourceNotFoundException("Product not found with id: " + productId);

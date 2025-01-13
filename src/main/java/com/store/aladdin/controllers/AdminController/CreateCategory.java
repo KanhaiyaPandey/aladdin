@@ -35,33 +35,26 @@ public class CreateCategory {
 
 
 
-        @PostMapping(value = "/create-category", consumes = "multipart/form-data")
-        @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity<?> createCategory(
-        @RequestParam("category") String categoryJson,
-        @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
+    @PostMapping(value = "/create-category", consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createCategory(
+    @RequestParam("category") String categoryJson,
+    @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
     
         try {
-            // Parse JSON string into a Category object
+            
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
-    
-            // Upload banner images
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
-    
-            // Set uploaded URLs to the category
             category.setBanner(bannerUrls);
-    
-            // Save the category using the service
             Category savedCategory = categoryService.createCategory(category);
-    
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
-    
+
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category JSON format: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating category: " + e.getMessage());
-        }
+        }   
     }
     
 }
