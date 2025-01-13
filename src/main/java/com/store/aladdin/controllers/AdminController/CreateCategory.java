@@ -1,7 +1,6 @@
 package com.store.aladdin.controllers.AdminController;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;
+import com.store.aladdin.utils.helper.ProductHelper;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -29,6 +29,9 @@ public class CreateCategory {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ProductHelper productHalper;
 
 
 
@@ -44,7 +47,7 @@ public class CreateCategory {
             Category category = objectMapper.readValue(categoryJson, Category.class);
     
             // Upload banner images
-            List<String> bannerUrls = uploadImages(bannerImages);
+            List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
     
             // Set uploaded URLs to the category
             category.setBanner(bannerUrls);
@@ -60,22 +63,5 @@ public class CreateCategory {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating category: " + e.getMessage());
         }
     }
-
-
-    private List<String> uploadImages(List<MultipartFile> images) {
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile image : images) {
-            try {
-                imageUrls.add(imageUploadService.uploadImage(image));
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to upload image: " + image.getOriginalFilename(), e);
-            }
-            }
-        }
-        return imageUrls;
-    }
-
-
     
 }
