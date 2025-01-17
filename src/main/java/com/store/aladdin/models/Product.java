@@ -74,6 +74,7 @@ public class Product {
         private Double costPrice;
         private Double sellPrice;
         private Double compareAtPrice;
+        private List<Warehouse> variantWarehouseData = new ArrayList<>();
   
     }
 
