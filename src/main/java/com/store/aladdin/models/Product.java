@@ -29,12 +29,10 @@ public class Product {
     private Double sellPrice;
     private Double compareAtPrice;
 
+    private String sku;
     private boolean allowBackorder;
-
     private StockStatus stockStatus;
-
     private List<String> attributes = new ArrayList<>();
-
     private List<String> productCategories = new ArrayList<>();
 
     @Field("images")
