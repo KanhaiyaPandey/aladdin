@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,7 @@ public class AuthController {
     // login
 
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> login(@RequestBody User loginUser, HttpServletResponse response) {
         // Fetch user by email
         User user = userService.getUserByEmail(loginUser.getEmail());
@@ -50,12 +52,13 @@ public class AuthController {
             String token = JwtUtil.generateToken(user.getEmail(), roles);
     
             // Add JWT token as a cookie
-            Cookie cookie = new Cookie("JWT_TOKEN", token); // Ensure name matches JwtAuthFilter
+            Cookie cookie = new Cookie("JWT_TOKEN", token);
             cookie.setHttpOnly(true);
-            cookie.setSecure(false); // Set true for production with HTTPS
+            cookie.setSecure(false); // Set true in production
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
             response.addCookie(cookie);
+            
     
             return ResponseUtil.buildResponse("Login successful", HttpStatus.OK);
         } else {

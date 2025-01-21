@@ -43,19 +43,17 @@ public class CreateProduct {
     private CategoryService categoryService;
 
 
-    @PostMapping(value = "/create-product", consumes = "multipart/form-data")
+    @PostMapping(value = "/create-product")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createProduct(
-            @RequestParam("product") String productJson,
-            @RequestPart(value = "images", required = false) List<MultipartFile> images,
-            @RequestPart(value = "variantMedias", required = false) List<MultipartFile> variantMedias) {
+            @RequestParam("product") String productJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Product product = objectMapper.readValue(productJson, Product.class);
 
             productHelper.validateProduct(product);
-            product.setImages(productHelper.uploadImages(images, imageUploadService));
-            productHelper.processVariantMedia(product, variantMedias, imageUploadService);
+            // product.setImages(productHelper.uploadImages(images, imageUploadService));
+            // productHelper.processVariantMedia(product, variantMedias, imageUploadService);
 
             for (Product.Variant variant : product.getVariants()) {
                 if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {
