@@ -38,6 +38,8 @@ public class Product {
     @Field("images")
     private List<String> images = new ArrayList<>(); 
 
+    private List<ProductMedia> productMedias = new ArrayList<>(); 
+
     private List<Variant> variants = new ArrayList<>(); 
 
     private List<Warehouse> warehouseData = new ArrayList<>(); 
@@ -87,6 +89,8 @@ public class Product {
       private double weight;
     }
 
+ 
+
 
     @Data
     @NoArgsConstructor
@@ -96,6 +100,18 @@ public class Product {
         private String name;
         private String location;
         private Integer stock;
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    public static class ProductMedia {
+        private String mediaId;
+
+        private String url; 
+        private String title; 
+        private String fileType; 
+        private long fileSize; 
     }
 }
 
