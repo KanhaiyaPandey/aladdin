@@ -32,6 +32,7 @@ public class Product {
     private String sku;
     private boolean allowBackorder;
     private StockStatus stockStatus;
+    private String barcode;
     private List<String> attributes = new ArrayList<>();
     private List<String> productCategories = new ArrayList<>();
 
@@ -70,10 +71,11 @@ public class Product {
         private String variantId;   
         private String parentProductId;
         private List<String> options = new ArrayList<>();
-        private List<String> medias;
+        private List<ProductMedia> variantMedias = new ArrayList<>();
         private Double costPrice;
         private Double sellPrice;
         private Double compareAtPrice;
+        private Double margin;
         private List<Warehouse> variantWarehouseData = new ArrayList<>();
   
     }
@@ -112,6 +114,7 @@ public class Product {
         private String title; 
         private String fileType; 
         private long fileSize; 
+        private String createdAt;
     }
 }
 

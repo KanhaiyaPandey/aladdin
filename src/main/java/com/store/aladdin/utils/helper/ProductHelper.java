@@ -35,25 +35,25 @@ public class ProductHelper {
         return imageUrls;
     }
 
-    public void processVariantMedia(Product product, List<MultipartFile> variantMedias, ImageUploadService imageUploadService) {
-        if (product.getVariants() != null && !product.getVariants().isEmpty()) {
-            Map<String, List<String>> variantMediaUrlsMap = new HashMap<>();
-            if (variantMedias != null && !variantMedias.isEmpty()) {
-                for (MultipartFile media : variantMedias) {
-                    try {
-                        String mediaUrl = imageUploadService.uploadImage(media);
-                        String variantId = extractVariantIdFromMedia(media);
-                        variantMediaUrlsMap.computeIfAbsent(variantId, k -> new ArrayList<>()).add(mediaUrl);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Failed to upload media: " + media.getOriginalFilename(), e);
-                    }
-                }
-            }
-            for (Product.Variant variant : product.getVariants()) {
-                variant.setMedias(variantMediaUrlsMap.getOrDefault(variant.getVariantId(), new ArrayList<>()));
-            }
-        }
-    }
+    // public void processVariantMedia(Product product, List<MultipartFile> variantMedias, ImageUploadService imageUploadService) {
+    //     if (product.getVariants() != null && !product.getVariants().isEmpty()) {
+    //         Map<String, List<String>> variantMediaUrlsMap = new HashMap<>();
+    //         if (variantMedias != null && !variantMedias.isEmpty()) {
+    //             for (MultipartFile media : variantMedias) {
+    //                 try {
+    //                     String mediaUrl = imageUploadService.uploadImage(media);
+    //                     String variantId = extractVariantIdFromMedia(media);
+    //                     variantMediaUrlsMap.computeIfAbsent(variantId, k -> new ArrayList<>()).add(mediaUrl);
+    //                 } catch (IOException e) {
+    //                     throw new RuntimeException("Failed to upload media: " + media.getOriginalFilename(), e);
+    //                 }
+    //             }
+    //         }
+    //         for (Product.Variant variant : product.getVariants()) {
+    //             variant.setMedias(variantMediaUrlsMap.getOrDefault(variant.getVariantId(), new ArrayList<>()));
+    //         }
+    //     }
+    // }
 
     private String extractVariantIdFromMedia(MultipartFile media) {
         return "default-variant-id"; // Replace this with actual logic to extract variant ID from media
