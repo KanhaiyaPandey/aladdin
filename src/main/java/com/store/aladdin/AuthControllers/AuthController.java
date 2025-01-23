@@ -33,9 +33,8 @@ public class AuthController {
 
 
     // login
-
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> login(@RequestBody User loginUser, HttpServletResponse response) {
         // Fetch user by email
         User user = userService.getUserByEmail(loginUser.getEmail());
