@@ -182,8 +182,8 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
 
 
     // Get user's orders
-    public List<ObjectId> getUserOrders(ObjectId userId) {
-        User user = getUserById(userId);
-        return user.getOrders();
-    }
+    // public List<ObjectId> getUserOrders(ObjectId userId) {
+    //     User user = getUserById(userId);
+    //     return user.getOrders();
+    // }
 }

@@ -60,10 +60,10 @@ public ResponseEntity<?> getUserCart(@PathVariable ObjectId userId) {
 
 
 
-    // Get user's orders
-    @GetMapping("/{userId}/orders")
-    public ResponseEntity<?> getUserOrders(@PathVariable ObjectId userId) {
-        List<ObjectId> orders = userService.getUserOrders(userId);
-        return ResponseEntity.ok(orders);
-    }
+    // // Get user's orders
+    // @GetMapping("/{userId}/orders")
+    // public ResponseEntity<?> getUserOrders(@PathVariable ObjectId userId) {
+    //     List<ObjectId> orders = userService.getUserOrders(userId);
+    //     return ResponseEntity.ok(orders);
+    // }
 }
