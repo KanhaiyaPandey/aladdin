@@ -24,6 +24,12 @@ public class Product {
     private String title;
 
     private String description;
+    private Status status;
+
+    public enum Status {
+        Active,
+        Draft,
+    }
 
     private Double costPrice;
     private Double sellPrice;

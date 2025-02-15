@@ -1,7 +1,9 @@
 package com.store.aladdin.services;
 
+import com.store.aladdin.models.Order;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.models.User;
+import com.store.aladdin.repository.OrderRepository;
 import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.repository.UserRepository;
 import com.store.aladdin.utils.CartItem;
@@ -29,6 +31,10 @@ public class UserService {
 
       @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
 
     // Create a new user
     public void createUser(User user) {
@@ -94,6 +100,21 @@ public class UserService {
         if (updatedUser.getPhoneNumber() != null) {
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
         }
+
+        if (updatedUser.getPassword() != null) {
+            existingUser.setPassword(updatedUser.getPassword()); // Ensure hashing if necessary
+        }
+
+        if (updatedUser.getCart() != null && !updatedUser.getCart().isEmpty()) {
+            existingUser.getCart().clear();
+            existingUser.getCart().addAll(updatedUser.getCart());
+        }
+
+        if (updatedUser.getOrders() != null && !updatedUser.getOrders().isEmpty()) {
+            existingUser.getOrders().clear();
+            existingUser.getOrders().addAll(updatedUser.getOrders());
+        }
+            
     
         userRepository.save(existingUser);
     }
@@ -179,6 +200,16 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
 
     return cartResponse;
 }
+
+// create order
+   
+
+   public Order createOrder (Order order){
+   Order savedOrder =  orderRepository.save(order);
+   return savedOrder;
+
+   }
+
 
 
     // Get user's orders

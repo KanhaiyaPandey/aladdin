@@ -17,11 +17,20 @@ public class Order {
 
     @Id
     private String orderId;
+    private String userId;
     private User customerDetails;
     private Address shippingAddress;
     private List<OrderItem> items;
     private OrderStatus status;
     private LocalDateTime createdAt;
+    private String paymentStatus;
+    private String paymentMode;
+    private String shippingCharges;
+    private String extraCharges;
+    private String discountAmount;
+    private String grandTotal;
+  
+    
 
     // Enum for order lifecycle
     public enum OrderStatus {
@@ -46,11 +55,11 @@ public class Order {
 
     @Data
     @NoArgsConstructor
-    public class OrderItem {
+    public static class OrderItem {
     private String productId;
     private String variantId;
     private int quantity;
-    private double priceSnapshot; // Price at time of purchase
+    private double priceSnapshot; 
 }
     
 }

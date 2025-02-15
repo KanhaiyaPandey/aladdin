@@ -44,6 +44,8 @@ public class User {
 
     // private List<ObjectId> orders = new ArrayList<>();
 
+    private List<Order> orders = new ArrayList<>();
+
     private List<String> roles = new ArrayList<>();
 
 }
