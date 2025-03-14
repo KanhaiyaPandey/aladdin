@@ -67,10 +67,10 @@ public class AuthController {
     
 
 
-// register
-
+    // register
+        @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
         @PostMapping("/register")
-        public ResponseEntity<?> createUser(@RequestBody User user) {
+        public ResponseEntity<?> createUser(@RequestBody User user, HttpServletResponse response) {
             String validationMessage = ValidationUtils.validateUser(user);
             if (validationMessage != null) {
                 return ResponseUtil.buildResponse(validationMessage, HttpStatus.BAD_REQUEST);
@@ -81,16 +81,30 @@ public class AuthController {
             }
 
             try {
+                // Hash the password before storing
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);
+
+                // Save user to the database
                 userService.createUser(user);
-                return ResponseUtil.buildResponse("User created successfully", HttpStatus.CREATED);
+
+                // Generate JWT token
+                String token = JwtUtil.generateToken(user.getEmail(), user.getRoles());
+
+                // Set the token in an HTTP-only cookie
+                Cookie cookie = new Cookie("JWT_TOKEN", token);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(false); // Set true in production
+                cookie.setPath("/");
+                cookie.setMaxAge(60 * 60 * 24); // 1 day
+                response.addCookie(cookie);
+
+                return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);
             } catch (IllegalArgumentException e) {
                 return ResponseUtil.buildResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
                 return ResponseUtil.buildResponse("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
         }
 
 }

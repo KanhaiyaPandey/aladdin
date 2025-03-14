@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -12,7 +14,14 @@ import java.util.List;
 @Component  // Register JwtUtil as a Spring-managed bean
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "your-secret-key";  // Should be stored securely
+    private static String SECRET_KEY;
+
+    @Value("${spring.data.secretkey}")
+    public void setSecretKey(String secretKey) {
+        JwtUtil.SECRET_KEY = secretKey;
+    }
+
+    // private static final String SECRET_KEY = "your-secret-key";  // Should be stored securely
     private static final long EXPIRATION_TIME = 86400000;  // 1 day in ms
 
     // Generate JWT token with username and roles

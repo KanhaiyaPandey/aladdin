@@ -34,7 +34,7 @@ public class Order {
 
     // Enum for order lifecycle
     public enum OrderStatus {
-        PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+        PENDING, PROCESSING,CONFIRMED, SHIPPED, DELIVERED, CANCELLED
     }
 
 

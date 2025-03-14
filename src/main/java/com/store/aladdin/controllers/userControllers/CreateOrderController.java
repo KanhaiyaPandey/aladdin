@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.store.aladdin.models.Order;
+import com.store.aladdin.models.Order.OrderStatus;
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.ResponseUtil;
@@ -23,12 +24,17 @@ public class CreateOrderController {
 
     @PostMapping("/create/{userId}")
     public ResponseEntity<?> createOrder(@PathVariable ObjectId userId, @RequestBody Order order) {
+
+        if (order.getStatus() == null) {
+            order.setStatus(OrderStatus.PROCESSING);
+        }
+
         order.setUserId(userId.toHexString());
         Order savedOrder =  userService.createOrder(order);
 
-          User userOptional = userService.getUserById(userId);
-            userOptional.getOrders().add(savedOrder);
-            userService.updateUser(userId, userOptional);
+        User userOptional = userService.getUserById(userId);
+        userOptional.getOrders().add(savedOrder);
+        userService.updateUser(userId, userOptional);
 
 
         return ResponseUtil.buildResponse("Order created successfully", HttpStatus.OK);
