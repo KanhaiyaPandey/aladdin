@@ -40,7 +40,7 @@ public class Product {
     private StockStatus stockStatus;
     private String barcode;
     private List<String> attributes = new ArrayList<>();
-    private List<String> productCategories = new ArrayList<>();
+    private List<ProductCategories> productCategories = new ArrayList<>();
 
     @Field("images")
     private List<String> images = new ArrayList<>(); 
@@ -122,6 +122,14 @@ public class Product {
         private long fileSize; 
         private String createdAt;
     }
+
+     @Data
+     @NoArgsConstructor
+     public static class ProductCategories {
+        private String categoryId;
+        private String title;        
+     }
+
 }
 
 

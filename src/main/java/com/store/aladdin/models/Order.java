@@ -29,6 +29,7 @@ public class Order {
     private String extraCharges;
     private String discountAmount;
     private String grandTotal;
+    private List<Timeline> timeline;
   
     
 
@@ -60,6 +61,15 @@ public class Order {
     private String variantId;
     private int quantity;
     private double priceSnapshot; 
+}
+
+@Data
+@NoArgsConstructor
+public static class Timeline {
+
+    private String status;
+    private LocalDateTime time;
+    
 }
     
 }

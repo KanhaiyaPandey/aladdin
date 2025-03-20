@@ -66,7 +66,10 @@ public class CreateProduct {
             ObjectId objectId = new ObjectId(pro.getProductId());
             Product proUp = productService.updateProductVariants(objectId, product);
 
-            List<String> categoryIds = product.getProductCategories();
+            List<String> categoryIds = product.getProductCategories().stream()
+            .map(Product.ProductCategories::getCategoryId)
+            .toList();
+
             if (categoryIds != null && !categoryIds.isEmpty()) {
                 categoryService.addProductToCategories(pro, categoryIds);
             }
