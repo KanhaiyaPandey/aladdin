@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 public class AladdinApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(AladdinApplication.class);
-
 	public static void main(String[] args) {
 		try {
 		SpringApplication.run(AladdinApplication.class, args);

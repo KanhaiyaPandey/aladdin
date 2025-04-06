@@ -2,6 +2,7 @@ package com.store.aladdin.filters;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -40,11 +42,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // Extract roles without adding "ROLE_"
                 String[] roles = JwtUtil.extractRoles(token); // No need to add "ROLE_" here
 
-                UserDetails userDetails = User.builder()
-                        .username(username)
-                        .password("") // Password not required for JWT-based auth
-                        .roles(roles) // Assign roles from JWT claims
-                        .build();
+                List<SimpleGrantedAuthority> authorities = Arrays.stream(roles)
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // ensures ROLE_ prefix
+                    .toList();
+
+                    UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                            username,
+                            "",
+                            authorities
+                    );
 
                 if (username != null) {
                     System.out.println("Authenticated user: " + username);
