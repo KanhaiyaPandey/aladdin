@@ -54,6 +54,7 @@ public class ProductHelper {
     //     }
     // }
 
+    @SuppressWarnings("unused")
     private String extractVariantIdFromMedia(MultipartFile media) {
         return "default-variant-id"; // Replace this with actual logic to extract variant ID from media
     }
