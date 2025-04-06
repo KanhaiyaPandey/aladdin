@@ -57,11 +57,16 @@ public class AuthController {
             // Add JWT token as a cookie
             Cookie cookie = new Cookie("JWT_TOKEN", token);
             cookie.setHttpOnly(true);
-            cookie.setSecure(false); // Set true in production
+            cookie.setSecure(true); // ✅ Required for SameSite=None to work on HTTPS
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
+            // Java's Cookie API doesn't support SameSite directly — override via header:
+            response.setHeader("Set-Cookie", "JWT_TOKEN=" + token +
+                "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400"); 
+            // Optionally add the cookie (redundant but okay)
             response.addCookie(cookie);
-            cookie.setAttribute("SameSite", "None");
+
+            
 
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
