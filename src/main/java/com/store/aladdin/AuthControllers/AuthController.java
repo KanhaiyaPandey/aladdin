@@ -1,6 +1,8 @@
 package com.store.aladdin.AuthControllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,14 +43,16 @@ public class AuthController {
         if (user == null) {
             return ResponseUtil.buildResponse("User not found", HttpStatus.BAD_REQUEST);
         }
+
+         User logedinUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
     
         // Check if password matches
-        if (userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword())) {
+        if (logedinUser != null) {
             // Retrieve roles for the user
             List<String> roles = userService.getUserRoles(loginUser.getEmail());
     
             // Generate JWT token with username and roles
-            String token = JwtUtil.generateToken(user.getEmail(), roles);
+            String token = JwtUtil.generateToken(logedinUser);
     
             // Add JWT token as a cookie
             Cookie cookie = new Cookie("JWT_TOKEN", token);
@@ -57,9 +61,14 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
             response.addCookie(cookie);
+
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("username", logedinUser.getName());
+            userInfo.put("email", logedinUser.getEmail());
+            userInfo.put("roles", roles); 
             
     
-            return ResponseUtil.buildResponse("Login successful", HttpStatus.OK);
+            return ResponseUtil.buildResponse("Login successful", userInfo , HttpStatus.OK);
         } else {
             return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
         }
@@ -89,7 +98,7 @@ public class AuthController {
                 userService.createUser(user);
 
                 // Generate JWT token
-                String token = JwtUtil.generateToken(user.getEmail(), user.getRoles());
+                String token = JwtUtil.generateToken(user);
 
                 // Set the token in an HTTP-only cookie
                 Cookie cookie = new Cookie("JWT_TOKEN", token);
@@ -106,5 +115,11 @@ public class AuthController {
                 return ResponseUtil.buildResponse("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+
+        // public static class resUser {
+        //  String name;
+        //  String 
+            
+        // }
 
 }

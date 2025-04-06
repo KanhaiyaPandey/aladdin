@@ -82,9 +82,12 @@ public class UserService {
         return user.getRoles();  
     }
 
-    public boolean authenticateUser(String email, String password) {
+    public User authenticateUser(String email, String password) {
         User user = getUserByEmail(email);
-        return passwordEncoder.matches(password, user.getPassword());  // Match the provided password with the stored one
+        if (passwordEncoder.matches(password, user.getPassword())) {
+           return user;  
+        }
+        return null;  // Match the provided password with the stored one
     }
 
     // Update a user

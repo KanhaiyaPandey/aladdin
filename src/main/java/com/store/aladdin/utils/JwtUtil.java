@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.store.aladdin.models.User;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,10 +26,10 @@ public class JwtUtil {
     private static final long EXPIRATION_TIME = 86400000;  // 1 day in ms
 
     // Generate JWT token with username and roles
-    public static String generateToken(String username, List<String> roles) {
+    public static String generateToken(User user) {
         return JWT.create()
-                .withSubject(username)  // Set the username (email) as the subject
-                .withClaim("roles", String.join(",", roles))  // Set the roles as a comma-separated string
+                .withSubject(user.getEmail())  // Set the username (email) as the subject
+                .withClaim("roles", String.join(",", user.getRoles()))  // Set the roles as a comma-separated string
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // Set expiration time
                 .sign(Algorithm.HMAC256(SECRET_KEY));  // Sign the token with HMAC256
     }
