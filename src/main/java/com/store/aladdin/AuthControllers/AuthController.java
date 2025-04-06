@@ -61,7 +61,7 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
             response.addCookie(cookie);
-            response.setHeader("Set-Cookie", "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
+            cookie.setAttribute("SameSite", "None");
 
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
