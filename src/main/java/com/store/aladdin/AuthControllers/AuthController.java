@@ -61,6 +61,7 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
             response.addCookie(cookie);
+            response.setHeader("Set-Cookie", "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
 
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
@@ -107,6 +108,7 @@ public class AuthController {
                 cookie.setPath("/");
                 cookie.setMaxAge(60 * 60 * 24); // 1 day
                 response.addCookie(cookie);
+                response.setHeader("Set-Cookie", "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
 
                 return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);
             } catch (IllegalArgumentException e) {
