@@ -57,7 +57,7 @@ public class AuthController {
             // Add JWT token as a cookie
             Cookie cookie = new Cookie("JWT_TOKEN", token);
             cookie.setHttpOnly(true);
-            cookie.setSecure(false); // Set true in production
+            cookie.setSecure(true); // Set true in production
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
             response.addCookie(cookie);
@@ -103,7 +103,7 @@ public class AuthController {
                 // Set the token in an HTTP-only cookie
                 Cookie cookie = new Cookie("JWT_TOKEN", token);
                 cookie.setHttpOnly(true);
-                cookie.setSecure(false); // Set true in production
+                cookie.setSecure(true); // Set true in production
                 cookie.setPath("/");
                 cookie.setMaxAge(60 * 60 * 24); // 1 day
                 response.addCookie(cookie);
