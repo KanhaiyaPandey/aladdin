@@ -29,7 +29,6 @@ public class UploadMedias {
     private MongoTemplate mongoTemplate;
 
     @PostMapping(value = "/media/upload-media", consumes = "multipart/form-data")
-    @PreAuthorize("hasRole('ADMIN')")
     @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
     try {
