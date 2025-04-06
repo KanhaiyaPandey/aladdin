@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
-import com.store.aladdin.services.ImageUploadService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.ResponseUtil;
 import com.store.aladdin.utils.helper.ProductHelper;
@@ -32,8 +31,6 @@ public class CreateProduct {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ImageUploadService imageUploadService;
 
     @Autowired
     private ProductHelper productHelper;
