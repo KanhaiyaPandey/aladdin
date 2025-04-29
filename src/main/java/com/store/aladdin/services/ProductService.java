@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +33,13 @@ public class ProductService {
 
 
     public Product updateProduct(ObjectId productId, Product updatedProduct) {
-      return productRepository.findById(productId).map(product -> {
-        System.out.println("to upadate product"+product);
-          product.setTitle(updatedProduct.getTitle());
-          product.setDescription(updatedProduct.getDescription());
-          product.setDate(LocalDateTime.now());
-          return productRepository.save(product);
-      }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-  }
+        return productRepository.findById(productId).map(existingProduct -> {
+            BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "date");
+            existingProduct.setDate(LocalDateTime.now());
+            return productRepository.save(existingProduct);
+        }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+    }
+
 
   public Product updateProductVariants(ObjectId productId, Product updatedProduct) {
     return productRepository.findById(productId).map(product -> {
