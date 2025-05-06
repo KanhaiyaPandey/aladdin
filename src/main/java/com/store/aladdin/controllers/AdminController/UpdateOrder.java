@@ -23,16 +23,15 @@ public class UpdateOrder {
     private OrderService orderService;
 
     @PostMapping("/update-order-status")
-      public ResponseEntity<?> updateOrderStatus(@RequestBody Map<String, Object> requestBody) {
-           List<String> orderIds = (List<String>) requestBody.get("orderIds");
-        String status = (String) requestBody.get("status");
+    public ResponseEntity<?> updateOrderStatus(@RequestBody Map<String, Object> requestBody) {
 
-        if (orderIds == null || orderIds.isEmpty() || status == null || status.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid request data");
-        }
-
-        List<Order> updatedOrders = orderService.updateOrderStatus(orderIds, status);
-
-        return ResponseUtil.buildResponse("Order status updated successfully", updatedOrders, HttpStatus.OK);
+            List<String> orderIds = (List<String>) requestBody.get("orderIds");
+            String status = (String) requestBody.get("status");
+            if (orderIds == null || orderIds.isEmpty() || status == null || status.isEmpty()) {
+                return ResponseEntity.badRequest().body("Invalid request data");
+            }
+            List<Order> updatedOrders = orderService.updateOrderStatus(orderIds, status);
+            return ResponseUtil.buildResponse("Order status updated successfully", updatedOrders, HttpStatus.OK);
+            
     }
 }

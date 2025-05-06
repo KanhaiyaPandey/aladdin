@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AdminController;
+package com.store.aladdin.controllers.AdminController.user;
 
 import java.util.List;
 
