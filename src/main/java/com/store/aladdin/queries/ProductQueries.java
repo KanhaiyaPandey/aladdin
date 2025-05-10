@@ -36,8 +36,8 @@ public class ProductQueries {
         }
     
         if (stockStatus != null && !stockStatus.isEmpty()) {
-            boolean inStock = stockStatus.equals("IN_STOCK");
-            criteriaList.add(Criteria.where("stockStatus").is(inStock));
+            // boolean inStock = stockStatus.equals("IN_STOCK");
+            criteriaList.add(Criteria.where("stockStatus").is("IN_STOCK"));
         }
     
         if (!criteriaList.isEmpty()) {
