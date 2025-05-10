@@ -32,6 +32,14 @@ public class ResponseUtil {
         return new ResponseEntity<>(response, status);
     }
 
+    public static ResponseEntity<?> buildResponse(String message, Boolean success, Object data, HttpStatus status){
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", message);
+        response.put("success", success);
+        response.put("data", data);
+         return new ResponseEntity<>(response, status);
+    }
+
     // Method to build a response with data and HTTP status
     public static ResponseEntity<?> buildResponse(Object data, HttpStatus status) {
         return new ResponseEntity<>(data, status);
@@ -44,6 +52,8 @@ public class ResponseUtil {
         response.put("status", status.value());
         return new ResponseEntity<>(response, status);
     }
+
+
 
     // Method to build an error response with message, status, and details
     public static ResponseEntity<?> buildErrorResponse(String message, HttpStatus status, Object details) {

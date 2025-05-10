@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.store.aladdin.models.Product;
+import com.store.aladdin.queries.ProductQueries;
 import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.utils.ResourceNotFoundException;
 
@@ -17,6 +18,9 @@ public class ProductService {
     
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductQueries productQueries;
 
     public Product createProduct(Product product){
         product.setDate(LocalDateTime.now());
@@ -28,7 +32,7 @@ public class ProductService {
     }
 
     public List<Product> getFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
-      return productRepository.findFilteredProducts(name, minPrice, maxPrice, stockStatus);
+      return productQueries.filteredProducts(name, minPrice, maxPrice, stockStatus);
   }
 
 

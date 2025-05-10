@@ -40,7 +40,7 @@ public class PublicControllers {
             @RequestParam(required = false) String stockStatus) {
         try {
             List<Product> products = productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus);
-            return ResponseEntity.ok(products);
+           return ResponseUtil.buildResponse("products fetched successfully", true, products, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Error fetching products: " + e.getMessage());
