@@ -53,7 +53,7 @@ public class PublicControllers {
 public ResponseEntity<?> getProductById(@PathVariable String productId) {
     try {
         Product product = productService.getProductById(new ObjectId(productId));
-        return ResponseUtil.buildResponse(product, HttpStatus.OK);
+        return ResponseUtil.buildResponse("product fetched successfully", true , product, HttpStatus.OK);
     } catch (Exception e) {
         return ResponseUtil.buildResponse("Product not found", HttpStatus.NOT_FOUND);
     }

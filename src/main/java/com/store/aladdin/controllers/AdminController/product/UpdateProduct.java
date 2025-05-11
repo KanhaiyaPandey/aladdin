@@ -30,7 +30,7 @@ public class UpdateProduct {
     public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody Product product) {
         try {
             Product updatedProduct = productService.updateProduct(productId, product);
-            return ResponseUtil.buildResponse("Product updated successfully", HttpStatus.OK, updatedProduct);
+            return ResponseUtil.buildResponse("Product updated successfully", true ,updatedProduct,HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Failed to update product", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

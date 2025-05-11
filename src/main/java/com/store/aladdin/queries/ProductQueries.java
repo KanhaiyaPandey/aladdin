@@ -46,5 +46,11 @@ public class ProductQueries {
     
         return mongoTemplate.find(query, Product.class);
     }
+
+    public boolean doesSkuExist(String sku) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("sku").is(sku));
+        return mongoTemplate.exists(query, Product.class);
+    }
     
 }

@@ -28,7 +28,7 @@ public class GetWarehouses {
     public ResponseEntity<?> getAllWarehouses() {
         try {
             List<Warehouse> warehouses = warehouseServices.getAllWarehouses();
-            return ResponseUtil.buildResponse("Warehouses fetched successfully", HttpStatus.OK, warehouses);
+            return ResponseUtil.buildResponse("Warehouses fetched successfully", true, warehouses,HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Failed to fetch warehouses", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

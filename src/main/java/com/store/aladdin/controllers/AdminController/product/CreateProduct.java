@@ -71,7 +71,7 @@ public class CreateProduct {
                 categoryService.addProductToCategories(pro, categoryIds);
             }
 
-            return ResponseUtil.buildResponse("Product created successfully", proUp, HttpStatus.OK);
+            return ResponseUtil.buildResponse("Product created successfully", true ,proUp, HttpStatus.OK);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
         } catch (Exception e) {

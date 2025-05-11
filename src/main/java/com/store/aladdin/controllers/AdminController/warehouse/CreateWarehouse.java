@@ -27,7 +27,7 @@ public class CreateWarehouse {
     public ResponseEntity<?> createWarehouse(@RequestBody Warehouse warehouse) {
         try {
             Warehouse createdWarehouse = warehouseServices.createWarehouse(warehouse);
-            return ResponseUtil.buildResponse("Warehouse created successfully", HttpStatus.CREATED, createdWarehouse);
+            return ResponseUtil.buildResponse("Warehouse created successfully", true ,createdWarehouse,HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Failed to create warehouse", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

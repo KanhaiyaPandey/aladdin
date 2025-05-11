@@ -31,7 +31,7 @@ public class UpdateOrder {
                 return ResponseEntity.badRequest().body("Invalid request data");
             }
             List<Order> updatedOrders = orderService.updateOrderStatus(orderIds, status);
-            return ResponseUtil.buildResponse("Order status updated successfully", updatedOrders, HttpStatus.OK);
+            return ResponseUtil.buildResponse("Order status updated successfully", true ,updatedOrders, HttpStatus.OK);
             
     }
 }

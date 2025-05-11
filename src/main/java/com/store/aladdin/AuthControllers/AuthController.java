@@ -49,7 +49,7 @@ public class AuthController {
         // Check if password matches
         if (logedinUser != null) {
             // Retrieve roles for the user
-            List<String> roles = userService.getUserRoles(loginUser.getEmail());
+            // List<String> roles = userService.getUserRoles(loginUser.getEmail());
     
             // Generate JWT token with username and roles
             String token = JwtUtil.generateToken(logedinUser);
@@ -71,10 +71,7 @@ public class AuthController {
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
             userInfo.put("email", logedinUser.getEmail());
-            userInfo.put("roles", roles); 
-            
-    
-            return ResponseUtil.buildResponse("Login successful", userInfo , HttpStatus.OK);
+            return ResponseUtil.buildResponse("Login successful", true ,userInfo , HttpStatus.OK);
         } else {
             return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
         }
