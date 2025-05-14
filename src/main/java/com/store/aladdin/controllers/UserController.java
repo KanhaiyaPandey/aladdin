@@ -3,9 +3,7 @@ package com.store.aladdin.controllers;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.CartItem;
 import com.store.aladdin.utils.CartResponseItem;
-import com.store.aladdin.utils.ResponseUtil;
-
-
+import com.store.aladdin.utils.response.ResponseUtil;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,12 @@
-package com.store.aladdin.utils;
+package com.store.aladdin.utils.response;
 
 import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.store.aladdin.utils.validation.ValidationException;
 
 public class GlobalExceptionHandler {
     

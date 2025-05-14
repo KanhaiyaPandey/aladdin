@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.JwtUtil;
-import com.store.aladdin.utils.ResponseUtil;
-import com.store.aladdin.utils.ValidationUtils;
+import com.store.aladdin.utils.response.ResponseUtil;
+import com.store.aladdin.utils.validation.ValidationUtils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

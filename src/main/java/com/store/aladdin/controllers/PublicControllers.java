@@ -18,7 +18,7 @@ import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
-import com.store.aladdin.utils.ResponseUtil;
+import com.store.aladdin.utils.response.ResponseUtil;
 
 
 @RestController

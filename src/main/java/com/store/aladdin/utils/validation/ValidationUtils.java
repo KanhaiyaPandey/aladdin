@@ -1,4 +1,4 @@
-package com.store.aladdin.utils;
+package com.store.aladdin.utils.validation;
 
 import com.store.aladdin.models.User;
 

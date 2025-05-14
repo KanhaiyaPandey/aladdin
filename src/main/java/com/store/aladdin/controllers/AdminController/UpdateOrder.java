@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.store.aladdin.models.Order;
 import com.store.aladdin.services.OrderService;
-import com.store.aladdin.utils.ResponseUtil;
+import com.store.aladdin.utils.response.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/admin")

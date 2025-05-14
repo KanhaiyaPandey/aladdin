@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
-import com.store.aladdin.utils.ResponseUtil;
+import com.store.aladdin.utils.response.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/user")

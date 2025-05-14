@@ -10,7 +10,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import com.store.aladdin.utils.ResponseUtil;
+import com.store.aladdin.utils.response.ResponseUtil;
 
 import java.io.IOException;
 

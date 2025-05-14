@@ -1,4 +1,4 @@
-package com.store.aladdin.utils;
+package com.store.aladdin.utils.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

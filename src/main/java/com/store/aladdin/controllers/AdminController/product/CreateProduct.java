@@ -20,9 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
-import com.store.aladdin.utils.ResponseUtil;
-import com.store.aladdin.utils.ValidationException;
 import com.store.aladdin.utils.helper.ProductHelper;
+import com.store.aladdin.utils.response.ResponseUtil;
+import com.store.aladdin.utils.validation.ValidationException;
 
 @RestController
 @RequestMapping("/api/admin")
