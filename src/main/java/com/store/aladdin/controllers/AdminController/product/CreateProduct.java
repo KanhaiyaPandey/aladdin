@@ -21,6 +21,7 @@ import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.ResponseUtil;
+import com.store.aladdin.utils.ValidationException;
 import com.store.aladdin.utils.helper.ProductHelper;
 
 @RestController
@@ -48,9 +49,6 @@ public class CreateProduct {
             Product product = objectMapper.readValue(productJson, Product.class);
 
             productHelper.validateProduct(product);
-            // product.setImages(productHelper.uploadImages(images, imageUploadService));
-            // productHelper.processVariantMedia(product, variantMedias, imageUploadService);
-
             for (Product.Variant variant : product.getVariants()) {
                 if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {
                     variant.setVariantId(UUID.randomUUID().toString());
@@ -71,12 +69,15 @@ public class CreateProduct {
                 categoryService.addProductToCategories(pro, categoryIds);
             }
 
-            return ResponseUtil.buildResponse("Product created successfully", true ,proUp, HttpStatus.OK);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-        }
+            return ResponseUtil.buildResponse("Product created successfully", true, proUp, HttpStatus.OK);
+            
+            } catch (ValidationException ve) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation error: " + ve.getMessage());
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+            }
     }
 
     

@@ -4,19 +4,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.store.aladdin.models.Product;
+import com.store.aladdin.queries.ProductQueries;
 import com.store.aladdin.services.ImageUploadService;
 
 @Service
 public class ProductHelper {
 
+    @Autowired
+    private ProductQueries productQueries;
+
  public void validateProduct(Product product) {
         if (product.getTitle() == null || product.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Product name is required");
+        }
+
+        if (product.getTitle() == null) {
+            throw new IllegalArgumentException("Product name is required.");
+        }
+
+        if (isNullOrEmpty(product.getSku())) {
+            throw new IllegalArgumentException("Product SKU is required.");
+        }
+
+        if (productQueries.doesSkuExist(product.getSku())) {
+            throw new IllegalArgumentException("Product SKU must be unique. SKU already exists: " + product.getSku());
         }
     }
 
@@ -57,6 +73,10 @@ public class ProductHelper {
     @SuppressWarnings("unused")
     private String extractVariantIdFromMedia(MultipartFile media) {
         return "default-variant-id"; // Replace this with actual logic to extract variant ID from media
+    }
+
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
     
 }
