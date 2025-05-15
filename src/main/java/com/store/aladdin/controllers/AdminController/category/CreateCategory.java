@@ -19,6 +19,7 @@ import com.store.aladdin.models.Category;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;
 import com.store.aladdin.utils.helper.ProductHelper;
+import com.store.aladdin.validations.CategoryValidation;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -32,6 +33,8 @@ public class CreateCategory {
 
     @Autowired
     private ProductHelper productHalper;
+
+    @Autowired CategoryValidation categoryValidation;
 
 
 
@@ -47,6 +50,7 @@ public class CreateCategory {
             Category category = objectMapper.readValue(categoryJson, Category.class);
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);
+            categoryValidation.validateCategory(category);
             Category savedCategory = categoryService.createCategory(category);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
 

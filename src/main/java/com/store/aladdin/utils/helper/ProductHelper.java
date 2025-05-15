@@ -23,10 +23,6 @@ public class ProductHelper {
             throw new IllegalArgumentException("Product name is required");
         }
 
-        if (product.getTitle() == null) {
-            throw new IllegalArgumentException("Product name is required.");
-        }
-
         if (isNullOrEmpty(product.getSku())) {
             throw new IllegalArgumentException("Product SKU is required.");
         }
