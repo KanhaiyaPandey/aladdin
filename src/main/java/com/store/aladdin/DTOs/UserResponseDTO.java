@@ -1,6 +1,5 @@
 package com.store.aladdin.DTOs;
 
-import java.util.List;
 
 import org.bson.types.ObjectId;
 

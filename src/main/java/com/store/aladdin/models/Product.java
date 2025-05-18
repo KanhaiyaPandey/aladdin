@@ -8,6 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.store.aladdin.utils.helper.Enums.Status;
+import com.store.aladdin.utils.helper.Enums.StockStatus;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -21,6 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Product {
 
+
     @Id
     private String productId;
 
@@ -28,12 +32,7 @@ public class Product {
     private String title;
 
     private String description;
-    private Status status;
-
-    public enum Status {
-        Active,
-        Draft,
-    }
+    private Status status = Status.Active;
 
     private Double costPrice;
     private Double sellPrice;
@@ -57,11 +56,7 @@ public class Product {
 
     private List<Dimension> dimensions = new ArrayList<>(); 
 
-    public enum StockStatus {
-        OUT_OF_STOCK,
-        IN_STOCK,
-        LIMITED_STOCK
-    }
+
 
     private LocalDateTime date;
 
