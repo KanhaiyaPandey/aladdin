@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.aladdin.DTOs.WarehouseDTO;
 import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.services.WarehouseServices;
 import com.store.aladdin.utils.response.ResponseUtil;
@@ -24,9 +25,9 @@ public class CreateWarehouse {
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createWarehouse(@RequestBody Warehouse warehouse) {
+    public ResponseEntity<?> createWarehouse(@RequestBody WarehouseDTO warehouseDTO) {
         try {
-            Warehouse createdWarehouse = warehouseServices.createWarehouse(warehouse);
+            Warehouse createdWarehouse = warehouseServices.createWarehouse(warehouseDTO);
             return ResponseUtil.buildResponse("Warehouse created successfully", true ,createdWarehouse,HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Failed to create warehouse", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

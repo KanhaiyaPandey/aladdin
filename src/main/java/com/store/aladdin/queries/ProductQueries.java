@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.store.aladdin.models.Product;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 public class ProductQueries {
@@ -21,7 +22,8 @@ public class ProductQueries {
         List<Criteria> criteriaList = new java.util.ArrayList<>();
     
         if (name != null && !name.isEmpty()) {
-            criteriaList.add(Criteria.where("name").regex(".*" + name + ".*", "i"));
+            String escaped = Pattern.quote(name);
+            criteriaList.add(Criteria.where("name").regex(escaped, "i"));
         }
     
         if (minPrice != null || maxPrice != null) {

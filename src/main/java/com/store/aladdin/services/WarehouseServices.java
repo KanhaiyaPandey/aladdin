@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.store.aladdin.DTOs.WarehouseDTO;
 import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.repository.WarehouseRepository;
 
@@ -18,8 +19,13 @@ public class WarehouseServices {
     private WarehouseRepository warehouseRepository;
 
     // Create a new Warehouse
-    public Warehouse createWarehouse(Warehouse Warehouse) {
-        return warehouseRepository.save(Warehouse);
+    public Warehouse createWarehouse(WarehouseDTO warehouseDTO) {
+        Warehouse warehouse = new Warehouse();
+        warehouse.setName(warehouseDTO.getName());
+        warehouse.setAddress(warehouseDTO.getAddress());
+        warehouse.setPincode(warehouseDTO.getPincode());
+
+        return warehouseRepository.save(warehouse);
     }
 
     // Get a Warehouse by ID
