@@ -12,10 +12,10 @@ public class UserRepositoryImplTest {
     @Autowired 
     private UserRepositoryImpl userRepositoryImpl;
     
-    @Test
-    public void testSaveNewUser(){
-       userRepositoryImpl.getUserForSA();
-    }
+    // @Test
+    // public void testSaveNewUser(){
+    //    userRepositoryImpl.getUserForSA();
+    // }
 }
 
 

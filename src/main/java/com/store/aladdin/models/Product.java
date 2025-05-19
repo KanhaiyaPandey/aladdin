@@ -44,6 +44,7 @@ public class Product {
     private String barcode;
     private List<String> attributes = new ArrayList<>();
     private List<ProductCategories> productCategories = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
     @Field("images")
     private List<String> images = new ArrayList<>(); 

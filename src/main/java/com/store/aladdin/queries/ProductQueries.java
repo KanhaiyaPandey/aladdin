@@ -20,11 +20,15 @@ public class ProductQueries {
     public List<Product> filteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
         Query query = new Query();
         List<Criteria> criteriaList = new java.util.ArrayList<>();
-    
+
         if (name != null && !name.isEmpty()) {
             String escaped = Pattern.quote(name);
-            criteriaList.add(Criteria.where("name").regex(escaped, "i"));
+            Criteria tagsCriteria = Criteria.where("tags").regex(".*" + escaped + ".*", "i");
+            Criteria titleCriteria = Criteria.where("title").regex(".*" + escaped + ".*", "i");
+            criteriaList.add(new Criteria().orOperator(tagsCriteria, titleCriteria));
         }
+        
+
     
         if (minPrice != null || maxPrice != null) {
             Criteria priceCriteria = Criteria.where("sellPrice");
