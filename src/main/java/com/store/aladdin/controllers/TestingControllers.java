@@ -19,8 +19,8 @@ public class TestingControllers {
 public ResponseEntity<?> testEndpoint(
     @RequestPart("product") String product,
     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-    System.out.println("Product: " + product);
-    System.out.println("Images: " + (images != null ? images.size() : "No images"));
+    // System.out.println("Product: " + product);
+    // System.out.println("Images: " + (images != null ? images.size() : "No images"));
     return ResponseEntity.ok("Test successful");
 }
     

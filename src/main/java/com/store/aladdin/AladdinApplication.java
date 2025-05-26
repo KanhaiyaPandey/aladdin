@@ -18,7 +18,7 @@ public class AladdinApplication {
 	public static void main(String[] args) {
 		try {
 		SpringApplication.run(AladdinApplication.class, args);
-		logger.info("Server is running. No compilation errors!");
+		System.out.println("Server is running. No compilation errors!");
 	} catch (Exception e) {
 		logger.error("Error during startup: ", e);
 	  }
