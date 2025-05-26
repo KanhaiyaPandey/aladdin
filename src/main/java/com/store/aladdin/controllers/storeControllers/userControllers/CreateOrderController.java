@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.userControllers;
+package com.store.aladdin.controllers.storeControllers.userControllers;
 
 
 import org.bson.types.ObjectId;
