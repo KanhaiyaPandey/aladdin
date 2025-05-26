@@ -34,7 +34,11 @@ public ResponseEntity<?> createOrder(@RequestParam int amount, @RequestParam Str
         response.put("order", order);
         response.put("message", "Order created successfully");
 
-        System.out.println(response);
+        if (Boolean.TRUE.equals(response.get("success"))) {
+            OrderResponseTest orderFromMap = (OrderResponseTest) response.get("order");
+            System.out.println("Order ID: " + orderFromMap.getId());
+        }
+
 
         return ResponseEntity.ok(response);
 

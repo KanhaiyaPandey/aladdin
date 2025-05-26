@@ -27,19 +27,30 @@ public class Order {
     private List<OrderItem> items;
     private OrderStatus status;
     private LocalDateTime createdAt;
-    private String paymentStatus;
-    private String paymentMode;
+    private PaymentStatus paymentStatus;
+    private PaymentMode paymentMode;
     private String shippingCharges;
     private String extraCharges;
     private String discountAmount;
     private String grandTotal;
+    private LocalDateTime deliveredDate;
     private List<Timeline> timeline;
+    private double gatewayDiscount;
   
     
 
     // Enum for order lifecycle
     public enum OrderStatus {
         PENDING, PROCESSING,CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+    }
+
+    public enum PaymentStatus {
+        PAID, PENDING
+    }
+
+
+    public enum PaymentMode {
+        RAZORPAY, CASH_ON_DELIVERY
     }
 
 
@@ -63,6 +74,9 @@ public class Order {
     public static class OrderItem {
     private String productId;
     private String variantId;
+    private List<String> attributes;
+    private List<String> options;
+    private String media;
     private int quantity;
     private double priceSnapshot; 
 }
