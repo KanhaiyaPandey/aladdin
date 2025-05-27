@@ -3,7 +3,7 @@ package com.store.aladdin.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.store.aladdin.models.Order;
-import com.store.aladdin.models.Order.OrderStatus;
+import com.store.aladdin.utils.helper.Enums.OrderStatus;
 import com.store.aladdin.repository.OrderRepository;
 import org.bson.types.ObjectId;
 

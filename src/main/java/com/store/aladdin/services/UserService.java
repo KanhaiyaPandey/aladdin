@@ -85,6 +85,7 @@ public class UserService {
     public User authenticateUser(String email, String password) {
         User user = getUserByEmail(email);
         if (passwordEncoder.matches(password, user.getPassword())) {
+            // System.out.println("user"+ user);
            return user;  
         }
         return null;  // Match the provided password with the stored one

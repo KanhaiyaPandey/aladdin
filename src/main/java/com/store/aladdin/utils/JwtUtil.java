@@ -28,7 +28,8 @@ public class JwtUtil {
     // Generate JWT token with username and roles
     public static String generateToken(User user) {
         return JWT.create()
-                .withSubject(user.getEmail())  // Set the username (email) as the subject
+                .withSubject(user.getEmail()) 
+                 .withClaim("userId", user.getId().toString()) // Set the username (email) as the subject
                 .withClaim("roles", String.join(",", user.getRoles()))  // Set the roles as a comma-separated string
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // Set expiration time
                 .sign(Algorithm.HMAC256(SECRET_KEY));  // Sign the token with HMAC256
@@ -59,4 +60,12 @@ public class JwtUtil {
             throw new RuntimeException("Unable to extract roles from token", e);
         }
     }
+
+    public static String extractUserId(String token) {
+    return JWT.require(Algorithm.HMAC256(SECRET_KEY))
+            .build()
+            .verify(token)
+            .getClaim("userId")
+            .asString();
+}
 }
