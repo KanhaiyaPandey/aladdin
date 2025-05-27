@@ -16,5 +16,20 @@ public class Enums {
         LIMITED_STOCK
     }
 
+        // Enum for order lifecycle
+    public enum OrderStatus {
+        PENDING, PROCESSING,CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+    }
+
+    public enum PaymentStatus {
+        PAID, PENDING
+    }
+
+
+    public enum PaymentMode {
+        RAZORPAY, CASH_ON_DELIVERY
+    }
+
+
     
 }

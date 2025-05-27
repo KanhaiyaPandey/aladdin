@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.store.aladdin.utils.validation.ValidationException;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleJsonParseError(HttpMessageNotReadableException ex) {
+        ex.printStackTrace(); // Logs the exact field mismatch
+        return ResponseEntity.badRequest().body("Invalid JSON: " + ex.getMessage());
     }
 
 }

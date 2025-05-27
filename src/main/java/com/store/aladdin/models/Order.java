@@ -7,6 +7,10 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.store.aladdin.utils.helper.Enums.OrderStatus;
+import com.store.aladdin.utils.helper.Enums.PaymentMode;
+import com.store.aladdin.utils.helper.Enums.PaymentStatus;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -22,7 +26,6 @@ public class Order {
     @Id
     private String orderId;
     private String userId;
-    private User customerDetails;
     private Address shippingAddress;
     private List<OrderItem> items;
     private OrderStatus status;
@@ -37,21 +40,7 @@ public class Order {
     private List<Timeline> timeline;
     private double gatewayDiscount;
   
-    
 
-    // Enum for order lifecycle
-    public enum OrderStatus {
-        PENDING, PROCESSING,CONFIRMED, SHIPPED, DELIVERED, CANCELLED
-    }
-
-    public enum PaymentStatus {
-        PAID, PENDING
-    }
-
-
-    public enum PaymentMode {
-        RAZORPAY, CASH_ON_DELIVERY
-    }
 
 
     @Data
