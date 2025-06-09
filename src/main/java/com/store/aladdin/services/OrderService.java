@@ -8,6 +8,8 @@ import com.store.aladdin.repository.OrderRepository;
 import org.bson.types.ObjectId;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,4 +40,35 @@ public class OrderService {
         }
         return orderRepository.saveAll(orders);
     }
+
+
+    public void updateShippingInfo(Map<String, Object> dataMap){
+
+        try {
+
+                if (dataMap == null) return;
+                String channelOrderId = (String) dataMap.get("channel_order_id");
+                ObjectId orderId = new ObjectId(channelOrderId);
+                Optional<Order> optionalOrder = orderRepository.findById(orderId);
+                if (optionalOrder.isEmpty()) {
+                    System.out.println("Order not found for channel_order_id: " + channelOrderId);
+                    return;
+                }
+                Order order = optionalOrder.get();
+                Order.ShippingDetails shippingDetails = new Order.ShippingDetails();
+                shippingDetails.setOrder_id(String.valueOf(dataMap.get("order_id")));
+                shippingDetails.setShipment_id(String.valueOf(dataMap.get("shipment_id")));
+                shippingDetails.setStatus((String) dataMap.get("status"));
+                shippingDetails.setAwb_code((String) dataMap.get("awb_code"));
+                shippingDetails.setCourier_name((String) dataMap.get("courier_name"));
+                shippingDetails.setPackaging_box_error((String) dataMap.get("packaging_box_error"));
+
+                order.setShippingDetails(shippingDetails);
+                orderRepository.save(order);
+            
+        } catch (Exception e) {
+           e.printStackTrace(); 
+        }
+    }
+
 }

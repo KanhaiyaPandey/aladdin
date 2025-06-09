@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.store.aladdin.services.OrderService;
 import com.store.aladdin.services.ShippingService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
@@ -23,6 +24,8 @@ public class CreateShipping {
     @Autowired
     private ShippingService shippingService;
 
+    @Autowired OrderService orderService;
+
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping(value = "/create-shipping", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createShipping(@RequestBody String orderPayload){
@@ -32,6 +35,9 @@ public class CreateShipping {
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> shippingResponse = mapper.readValue(responseJson, Map.class);
+        // System.out.println(shippingResponse);
+
+        orderService.updateShippingInfo(shippingResponse);
 
         return ResponseUtil.buildResponse("Shipping created successfully",true, shippingResponse, HttpStatus.OK);
     } catch (Exception e) {

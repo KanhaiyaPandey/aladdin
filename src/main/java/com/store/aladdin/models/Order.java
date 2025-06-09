@@ -39,6 +39,7 @@ public class Order {
     private LocalDateTime deliveredDate;
     private List<Timeline> timeline;
     private double gatewayDiscount;
+    private ShippingDetails shippingDetails;
   
 
 
@@ -78,5 +79,20 @@ public static class Timeline {
     private LocalDateTime time;
     
 }
+
+@Data
+@NoArgsConstructor
+public static class ShippingDetails {
+
+    private String order_id;
+    private String shipment_id;
+    private String status;
+    private String awb_code;
+    private String courier_name;
+    private String packaging_box_error;
+    
+}
+
+
     
 }
