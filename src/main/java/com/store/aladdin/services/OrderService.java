@@ -51,7 +51,7 @@ public class OrderService {
                 ObjectId orderId = new ObjectId(channelOrderId);
                 Optional<Order> optionalOrder = orderRepository.findById(orderId);
                 if (optionalOrder.isEmpty()) {
-                    System.out.println("Order not found for channel_order_id: " + channelOrderId);
+                    System.out.println("Order not found for orderId: " + channelOrderId);
                     return;
                 }
                 Order order = optionalOrder.get();
