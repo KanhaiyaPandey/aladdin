@@ -68,7 +68,7 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
             if (categories.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No categories found");
             }
-            return ResponseEntity.ok(categories);
+            return ResponseUtil.buildResponse("categories fetched successfully", true, categories, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Error fetching categories: " + e.getMessage());

@@ -9,11 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 
 @Data
 @Document(collection = "categories")
@@ -30,6 +26,16 @@ public class Category {
 
     private List<String> banner = new ArrayList<>(); 
 
-    private List<Product> CategoryProducts = new ArrayList<>();
+    private List<Product> categoryProducts = new ArrayList<>();
+
+    private String parentCategoryId;
+
+    // 🔁 Optional: Children categories - populated manually or via custom query
+    private List<ChildCategories> childCategoryIds = new ArrayList<>();
+
+    public static class ChildCategories {
+        private String categoryId;
+        private String title;       
+    }
     
 }

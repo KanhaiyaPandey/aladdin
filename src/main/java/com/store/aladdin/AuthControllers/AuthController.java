@@ -71,6 +71,7 @@ public class AuthController {
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
             userInfo.put("email", logedinUser.getEmail());
+            userInfo.put("roles", logedinUser.getRoles());
             return ResponseUtil.buildResponse("Login successful", true ,userInfo , HttpStatus.OK);
         } else {
             return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);

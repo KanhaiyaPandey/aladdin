@@ -19,6 +19,7 @@ import com.store.aladdin.models.Category;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;
 import com.store.aladdin.utils.helper.ProductHelper;
+import com.store.aladdin.utils.response.ResponseUtil;
 import com.store.aladdin.validations.CategoryValidation;
 
 @RestController
@@ -48,16 +49,16 @@ public class CreateCategory {
             
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
+            categoryValidation.validateCategory(category);
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);
-            categoryValidation.validateCategory(category);
             Category savedCategory = categoryService.createCategory(category);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category JSON format: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating category: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("error creating category", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }   
     }
     
