@@ -44,16 +44,17 @@ public class CreateCategory {
     public ResponseEntity<?> createCategory(
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
-    
+
         try {
             
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
+            System.out.println(category);
             categoryValidation.validateCategory(category);
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);
             Category savedCategory = categoryService.createCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+            return ResponseUtil.buildResponse("category created successfully", true, savedCategory, HttpStatus.CREATED);
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category JSON format: " + e.getMessage());
