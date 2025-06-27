@@ -41,6 +41,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/login").permitAll() 
                 .requestMatchers("/user/register").permitAll() 
+                .requestMatchers("/user/validate-token").permitAll()
+                .requestMatchers("/user/logout").permitAll()  
                 // Allow login without authentication
                 .requestMatchers("/api/public/**").permitAll() // Allow public routes
                 .requestMatchers("/api/user/**").authenticated() // Secure user routes

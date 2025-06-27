@@ -16,15 +16,16 @@ public class AladdinApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(AladdinApplication.class);
 	public static void main(String[] args) {
-		try {
+
+	try {
 		SpringApplication.run(AladdinApplication.class, args);
 		System.out.println("Server is running. No compilation errors!");
-	} catch (Exception e) {
-		logger.error("Error during startup: ", e);
-	  }
+		} catch (Exception e) {
+			logger.error("Error during startup: ", e);
+		}
 	}
 
-	    @Bean
+	@Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
             logger.info("Server has started successfully!");

@@ -29,23 +29,25 @@ public class JwtUtil {
     public static String generateToken(User user) {
         return JWT.create()
                 .withSubject(user.getEmail()) 
-                 .withClaim("userId", user.getId().toString()) // Set the username (email) as the subject
+                .withClaim("userId", user.getId().toString()) // Set the username (email) as the subject
                 .withClaim("roles", String.join(",", user.getRoles()))  // Set the roles as a comma-separated string
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // Set expiration time
                 .sign(Algorithm.HMAC256(SECRET_KEY));  // Sign the token with HMAC256
     }
 
-    // Validate JWT token and extract the subject (username)
-    public static String validateToken(String token) {
-        try {
-            return JWT.require(Algorithm.HMAC256(SECRET_KEY))
-                    .build()
-                    .verify(token)
-                    .getSubject();  // Extract the username (email) from the token
-        } catch (JWTVerificationException e) {
-            throw new RuntimeException("Invalid or expired token", e);
+        // Validate JWT token and extract the subject (username)
+        public static String validateToken(String token) {
+            try {
+                return JWT.require(Algorithm.HMAC256(SECRET_KEY))
+                        .build()
+                        .verify(token)
+                        .getSubject();  // Extract the username (email) from the token
+            } catch (JWTVerificationException e) {
+                throw new RuntimeException("Invalid or expired token", e);
+            }
         }
-    }
+
+    
 
     // Extract roles from the JWT token (no "ROLE_" prefix)
     public static String[] extractRoles(String token) {
@@ -67,5 +69,5 @@ public class JwtUtil {
             .verify(token)
             .getClaim("userId")
             .asString();
-}
+    }
 }
