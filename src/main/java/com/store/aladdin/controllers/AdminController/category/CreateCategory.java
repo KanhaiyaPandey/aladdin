@@ -49,7 +49,6 @@ public class CreateCategory {
             
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
-            System.out.println(category);
             categoryValidation.validateCategory(category);
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);

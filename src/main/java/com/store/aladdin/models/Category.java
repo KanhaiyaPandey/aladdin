@@ -29,13 +29,7 @@ public class Category {
     private List<Product> categoryProducts = new ArrayList<>();
 
     private String parentCategoryId;
-
-    // 🔁 Optional: Children categories - populated manually or via custom query
-    private List<ChildCategories> childCategoryIds = new ArrayList<>();
-
-    public static class ChildCategories {
-        private String categoryId;
-        private String title;       
-    }
+    
+    private List<String> childCategoryIds = new ArrayList<>();
     
 }

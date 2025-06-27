@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.aladdin.DTOs.CategoryResponse;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
@@ -64,7 +65,7 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
     @GetMapping("/category/all-categories")
     public ResponseEntity<?> getAllCategories() {
         try {
-            List<Category> categories = categoryService.getAllCategories();
+            List<CategoryResponse> categories = categoryService.getAllCategoryResponses();
             if (categories.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No categories found");
             }
