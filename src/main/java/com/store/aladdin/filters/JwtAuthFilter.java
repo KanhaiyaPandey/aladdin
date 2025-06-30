@@ -56,6 +56,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 //     System.out.println("Roles: " + Arrays.toString(userDetails.getAuthorities().toArray()));
                 // }
 
+                // System.out.println("JWT Token found in cookies");
+
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 

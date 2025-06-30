@@ -1,9 +1,11 @@
 package com.store.aladdin.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service;
 import com.store.aladdin.DTOs.CategoryResponse;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
+import com.store.aladdin.models.Product.ProductCategories;
 import com.store.aladdin.repository.CategoryRepository;
+import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.utils.helper.CategoryMapperUtil;
 
 @Service
@@ -22,19 +26,28 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+
     // Find category by ID
-    public Optional<Category> getCategoryById(ObjectId id) {
-        return categoryRepository.findById(id);
+    public CategoryResponse getCategoryById(ObjectId id) {
+        Optional<Category> categoryOptional = categoryRepository.findById(id);
+            if (categoryOptional.isEmpty()) {
+               return null;
+            }
+        Category category = categoryOptional.get();  
+        List<Category> allCategories = categoryRepository.findAll();
+        Map<String, Category> categoryMap = allCategories.stream()
+           .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
+        return CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
+
     }
 
     // Find category by title
     public Category getCategoryByTitle(String title) {
         return categoryRepository.findByTitle(title);
     }
-
-
-
-
 
     public List<CategoryResponse> getAllCategoryResponses() {
         List<Category> allCategories = categoryRepository.findAll();
@@ -45,11 +58,6 @@ public class CategoryService {
             .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
             .collect(Collectors.toList());
     }
-
-
-
-
-
 
 
     // Save a new category
@@ -83,13 +91,66 @@ public class CategoryService {
                                             .toList();
         List<Category> categories = categoryRepository.findAllById(objectIds);
         for (Category category : categories) {
-            // Add product to the category's product list if not already present
             if (!category.getCategoryProducts().contains(product)) {
                 category.getCategoryProducts().add(product);
             }
         }
         categoryRepository.saveAll(categories);
     }
+
+
+
+    public void deleteCategoriesByIds(List<String> categoryIds) {
+
+        Set<String> allToDelete = new HashSet<>();
+        for (String id : categoryIds) {
+            ObjectId objectId = new ObjectId(id);
+            collectCategoryAndChildren(objectId.toString(), allToDelete);
+        }
+        for (String id : allToDelete) {
+            categoryRepository.deleteById(new ObjectId(id));
+        }
+        removeCategoriesFromProducts(allToDelete);
+    }
+
+
+    private void collectCategoryAndChildren(String parentId, Set<String> toDelete) {
+        String parentIdStr = parentId.toString();
+        toDelete.add(parentIdStr);
+
+        List<Category> children = categoryRepository.findByParentCategoryId(parentIdStr);
+
+        for (Category child : children) {
+            collectCategoryAndChildren(child.getCategoryId(), toDelete);
+        }
+    }
+
+
+
+
+    private void removeCategoriesFromProducts(Set<String> deletedCategoryIds) {
+        List<Product> allProducts = productRepository.findAll();
+
+        for (Product product : allProducts) {
+            boolean modified = false;
+
+            List<ProductCategories> filtered = product.getProductCategories().stream()
+                .filter(cat -> !deletedCategoryIds.contains(cat.getCategoryId()))
+                .toList();
+
+            if (filtered.size() != product.getProductCategories().size()) {
+                product.setProductCategories(new ArrayList<>(filtered));
+                modified = true;
+            }
+
+            if (modified) {
+                productRepository.save(product);
+            }
+        }
+    }
+
+
+
 
 
 }

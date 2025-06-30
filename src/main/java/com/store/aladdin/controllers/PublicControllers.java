@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.aladdin.DTOs.CategoryResponse;
-import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
@@ -67,12 +66,29 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
         try {
             List<CategoryResponse> categories = categoryService.getAllCategoryResponses();
             if (categories.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No categories found");
-            }
+            return ResponseUtil.buildResponse("No categories found", false, categories, HttpStatus.OK);
+        }
             return ResponseUtil.buildResponse("categories fetched successfully", true, categories, HttpStatus.OK);
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching categories: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<?> getCategoryById(@PathVariable String id) {
+        try {
+            CategoryResponse category = categoryService.getCategoryById(new ObjectId(id));
+            if (category == null) {
+                return ResponseUtil.buildResponse("Category not found", false, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.buildResponse("Category fetched successfully", true, category, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body("Invalid category ID format: " + e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error fetching categories: " + e.getMessage());
+                                .body("Error fetching category: " + e.getMessage());
         }
     }
     
