@@ -1,5 +1,6 @@
 package com.store.aladdin.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.store.aladdin.DTOs.CategoryResponse;
 import com.store.aladdin.models.Category;
@@ -19,6 +21,7 @@ import com.store.aladdin.models.Product.ProductCategories;
 import com.store.aladdin.repository.CategoryRepository;
 import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.utils.helper.CategoryMapperUtil;
+import com.store.aladdin.utils.helper.ProductHelper;
 
 @Service
 public class CategoryService {
@@ -28,6 +31,12 @@ public class CategoryService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ImageUploadService imageUploadService;
+
+    @Autowired
+    private ProductHelper productHalper;
 
 
     // Find category by ID
@@ -148,6 +157,34 @@ public class CategoryService {
             }
         }
     }
+
+
+
+    public void updateCategory(String categoryId, String title, String description, List<MultipartFile> banners) throws IOException {
+    Optional<Category> optionalCategory = categoryRepository.findById(new ObjectId(categoryId));
+
+    if (optionalCategory.isEmpty()) {
+        throw new RuntimeException("Category not found");
+    }
+
+    Category category = optionalCategory.get();
+
+    if (title != null && !title.isBlank()) {
+        category.setTitle(title);
+    }
+
+    if (description != null && !description.isBlank()) {
+        category.setDescription(description);
+    }
+
+        if (banners != null) {
+            List<String> bannerUrls = productHalper.uploadImages(banners, imageUploadService);
+            category.setBanner(bannerUrls); // assuming `banner` is List<String>
+        }
+
+    categoryRepository.save(category);
+}
+
 
 
 

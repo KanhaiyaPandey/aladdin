@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,6 +68,26 @@ public class CategoryControllers {
             return ResponseUtil.buildErrorResponse("error creating category", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }   
     }
+
+    @PutMapping(value = "/update-category/{categoryId}", consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateCategory(
+        @PathVariable String categoryId,
+        @RequestParam(required = false) String title,
+        @RequestParam(required = false) String description,
+        @RequestPart(required = false) List<MultipartFile> banner // Accept multiple files
+    ) {
+        try {
+            categoryService.updateCategory(categoryId, title, description, banner);
+            return ResponseUtil.buildResponse("Category updated successfully", true, null, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Error updating category: " + e.getMessage());
+        }
+    }
+
+
+
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @DeleteMapping(value = "/delete-categories")
