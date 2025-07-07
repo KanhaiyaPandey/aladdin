@@ -61,10 +61,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-        @Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("http://localhost:5173"); // Allow frontend origin
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "https://aladdin01.netlify.app"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allowed HTTP methods
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (cookies)
