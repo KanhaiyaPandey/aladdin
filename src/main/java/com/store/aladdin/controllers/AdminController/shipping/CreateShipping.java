@@ -27,7 +27,7 @@ public class CreateShipping {
 
     @Autowired OrderService orderService;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PostMapping(value = "/create-shipping", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createShipping(@RequestBody String orderPayload) {

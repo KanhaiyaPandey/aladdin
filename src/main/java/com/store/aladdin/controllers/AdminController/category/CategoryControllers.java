@@ -45,7 +45,7 @@ public class CategoryControllers {
 
 
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PostMapping(value = "/create-category", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createCategory(
@@ -89,7 +89,7 @@ public class CategoryControllers {
 
 
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @DeleteMapping(value = "/delete-categories")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCategories(@RequestBody DeleteCategoryRequest request){

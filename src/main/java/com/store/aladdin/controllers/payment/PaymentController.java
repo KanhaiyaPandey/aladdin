@@ -23,7 +23,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+
 @PostMapping("/create-order")
 public ResponseEntity<?> createOrder(@RequestParam int amount, @RequestParam String currency) {
     try {

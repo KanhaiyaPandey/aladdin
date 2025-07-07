@@ -37,7 +37,7 @@ public class AuthController {
 
 
     // login
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginUser, HttpServletResponse response) {
         // Fetch user by email
@@ -83,7 +83,7 @@ public class AuthController {
 
 
     // register
-        @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+        
         @PostMapping("/register")
         public ResponseEntity<?> createUser(@RequestBody User user, HttpServletResponse response) {
             String validationMessage = ValidationUtils.validateUser(user);
@@ -127,7 +127,7 @@ public class AuthController {
         // validate token
 
 
-        @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+        
         @GetMapping("/validate-token")
         public ResponseEntity<?> validateToken(HttpServletRequest request) {
 
@@ -174,7 +174,7 @@ public class AuthController {
 
 
 
-        @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+        
         @PostMapping("/logout")
         public ResponseEntity<?> logout(HttpServletResponse response) {
             // Clear the JWT cookie

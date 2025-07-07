@@ -25,7 +25,7 @@ public class CreateOrder {
     @Autowired
     private UserService userService;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PostMapping("/create-order")
     public ResponseEntity<?> createOrder(
         @RequestBody Order order,

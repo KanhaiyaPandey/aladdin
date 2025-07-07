@@ -22,7 +22,7 @@ public class CreateWarehouse {
     @Autowired
     private WarehouseServices warehouseServices;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createWarehouse(@RequestBody WarehouseDTO warehouseDTO) {

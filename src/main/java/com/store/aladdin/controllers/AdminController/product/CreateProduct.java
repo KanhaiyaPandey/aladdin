@@ -39,7 +39,7 @@ public class CreateProduct {
     @Autowired
     private CategoryService categoryService;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PostMapping(value = "/create-product")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createProduct(

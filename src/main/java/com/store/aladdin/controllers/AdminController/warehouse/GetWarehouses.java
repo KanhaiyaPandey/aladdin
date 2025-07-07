@@ -22,7 +22,7 @@ public class GetWarehouses {
     @Autowired
     private WarehouseServices warehouseServices;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllWarehouses() {

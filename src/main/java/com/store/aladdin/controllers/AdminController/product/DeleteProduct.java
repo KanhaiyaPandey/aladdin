@@ -24,7 +24,7 @@ public class DeleteProduct {
     private ProductService productService;
 
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @DeleteMapping("/product/delete-product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteProduct(@PathVariable String productId) {

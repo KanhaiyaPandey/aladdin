@@ -24,7 +24,7 @@ public class UpdateProduct {
     @Autowired
     private ProductService productService;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    
     @PutMapping("/product/update-product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody Product product) {
