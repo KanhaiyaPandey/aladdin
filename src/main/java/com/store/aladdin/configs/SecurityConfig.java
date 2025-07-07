@@ -1,4 +1,3 @@
-
 package com.store.aladdin.configs;
 
 import com.store.aladdin.filters.JwtAuthFilter;
@@ -8,6 +7,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +22,6 @@ public class SecurityConfig {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    // Inject CustomAccessDeniedHandler into the configuration
     public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
@@ -32,32 +31,30 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/user/login").permitAll() 
-                .requestMatchers("/user/register").permitAll() 
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
+                .requestMatchers("/user/login").permitAll()
+                .requestMatchers("/user/register").permitAll()
                 .requestMatchers("/user/validate-token").permitAll()
-                .requestMatchers("/user/logout").permitAll()  
-                // Allow login without authentication
-                .requestMatchers("/api/public/**").permitAll() // Allow public routes
-                .requestMatchers("/api/user/**").authenticated() // Secure user routes
-                .requestMatchers("/api/admin/**").hasRole("ADMIN") // Role check expects ROLE_ADMIN internally
-                .anyRequest().denyAll() // Deny all other requests
+                .requestMatchers("/user/logout").permitAll()
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/user/**").authenticated()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().denyAll()
             )
-            .exceptionHandling()
-                .accessDeniedHandler(customAccessDeniedHandler) // Use custom handler for 403 Forbidden
-            .and()
+            .exceptionHandling(ex -> ex
+                .accessDeniedHandler(customAccessDeniedHandler)
+            )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session for JWT
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .addFilterBefore(new JwtAuthFilter(), 
-                UsernamePasswordAuthenticationFilter.class); // Add JWT filter before default filter
-    
+            .addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -65,14 +62,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173",
-                "https://aladdin01.netlify.app"
+            "http://localhost:5173",
+            "https://aladdin01.netlify.app"
         ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allowed HTTP methods
-        configuration.setAllowedHeaders(List.of("*")); // Allow all headers
-        configuration.setAllowCredentials(true); // Allow credentials (cookies)
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // allow sending cookies
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply to all endpoints
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
