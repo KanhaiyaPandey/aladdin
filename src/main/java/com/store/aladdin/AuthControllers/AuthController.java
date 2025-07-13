@@ -47,23 +47,34 @@ public class AuthController {
             return ResponseUtil.buildResponse("User not found", HttpStatus.BAD_REQUEST);
         }
 
-            User loggedInUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
-            if (loggedInUser != null) {
-                String token = JwtUtil.generateToken(loggedInUser);
-
-                // Set cookie using manual header (for SameSite support)
-                String cookieValue = String.format(
-                    "JWT_TOKEN=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400",
-                    java.net.URLEncoder.encode(token, StandardCharsets.UTF_8)
-                );
-                response.setHeader("Set-Cookie", cookieValue);
+                    User logedinUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
+    
+        // Check if password matches
+        if (logedinUser != null) {
+            // Retrieve roles for the user
+            // List<String> roles = userService.getUserRoles(loginUser.getEmail());
+    
+            // Generate JWT token with username and roles
+            String token = JwtUtil.generateToken(logedinUser);
+    
+            // Add JWT token as a cookie
+            Cookie cookie = new Cookie("JWT_TOKEN", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true); // ✅ Required for SameSite=None to work on HTTPS
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60 * 24); // 1 day
+            // Java's Cookie API doesn't support SameSite directly — override via header:
+            response.setHeader("Set-Cookie", "JWT_TOKEN=" + token +
+                "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400"); 
+            // Optionally add the cookie (redundant but okay)
+            response.addCookie(cookie);
 
             
 
             Map<String, Object> userInfo = new HashMap<>();
-            userInfo.put("username", loggedInUser.getName());
-            userInfo.put("email", loggedInUser.getEmail());
-            userInfo.put("roles", loggedInUser.getRoles());
+            userInfo.put("username", logedinUser.getName());
+            userInfo.put("email", logedinUser.getEmail());
+            userInfo.put("roles", logedinUser.getRoles());
             return ResponseUtil.buildResponse("Login successful", true ,userInfo , HttpStatus.OK);
         } else {
             return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
