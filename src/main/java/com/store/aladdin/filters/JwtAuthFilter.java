@@ -67,9 +67,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 System.err.println("Error during token validation: " + e.getMessage());
                 SecurityContextHolder.clearContext();
             }
-        } else {
-            System.out.println("JWT Token not found in cookies");
-        }
+        } 
 
         filterChain.doFilter(request, response);
     }
