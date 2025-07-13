@@ -64,7 +64,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-           configuration.setAllowedOrigins(List.of("https://aladdin01.netlify.app","http://localhost:5173"));
+
+        // Use allowed origin patterns instead of setAllowedOrigins
+        configuration.setAllowedOriginPatterns(List.of(
+            "https://aladdin01.netlify.app",
+            "http://localhost:5173"
+        ));
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true);
@@ -73,6 +79,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
