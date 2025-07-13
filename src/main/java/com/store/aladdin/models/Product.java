@@ -107,6 +107,7 @@ public class Product {
         private String warehouseId;
         private String name;
         private String location;
+        private String pincode;
         private Integer stock;
     }
 

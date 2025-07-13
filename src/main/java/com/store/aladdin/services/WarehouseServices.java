@@ -52,5 +52,10 @@ public class WarehouseServices {
     public void deleteWarehouse(ObjectId id) {
         warehouseRepository.deleteById(id);
     }
+
+    public boolean existsByName(String name) {
+    return warehouseRepository.existsByNameIgnoreCase(name);
+}
+
     
 }
