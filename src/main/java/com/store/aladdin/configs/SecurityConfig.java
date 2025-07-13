@@ -5,6 +5,9 @@ import com.store.aladdin.exceptions.CustomAccessDeniedHandler;
 
 import java.util.List;
 
+import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -63,12 +66,22 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
            configuration.setAllowedOrigins(List.of("https://aladdin01.netlify.app","http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
+        return factory -> factory.addContextCustomizers(context -> {
+            Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
+            cookieProcessor.setSameSiteCookies("None");
+            context.setCookieProcessor(cookieProcessor);
+        });
+    }
+
 
 }
