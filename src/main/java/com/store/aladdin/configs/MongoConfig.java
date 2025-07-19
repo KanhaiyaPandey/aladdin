@@ -14,6 +14,7 @@ public class MongoConfig {
 
         @Bean
         public MongoTemplate mongoTemplate() {
+        System.out.println("✅ MongoDB Connected");
         return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoUri));
     }
 }

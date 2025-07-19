@@ -1,5 +1,6 @@
 package com.store.aladdin.controllers.AdminController.category;
 
+
 import java.io.IOException;
 import java.util.List;
 
@@ -51,9 +52,8 @@ public class CategoryControllers {
     public ResponseEntity<?> createCategory(
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
-
         try {
-            
+             System.out.println("banner at creation = "+bannerImages);
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(category);
@@ -73,13 +73,17 @@ public class CategoryControllers {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateCategory(
         @PathVariable String categoryId,
-        @RequestParam(required = false) String title,
-        @RequestParam(required = false) String description,
-        @RequestPart(required = false) List<MultipartFile> banner // Accept multiple files
+        @RequestParam("category") String categoryJson,
+        @RequestPart(value = "banner", required = false) List<MultipartFile> banner
     ) {
         try {
-            categoryService.updateCategory(categoryId, title, description, banner);
-            return ResponseUtil.buildResponse("Category updated successfully", true, null, HttpStatus.OK);
+            System.out.println("banner at update = "+banner);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Category categoryPayload = objectMapper.readValue(categoryJson, Category.class);
+            List<String> bannerUrls = productHalper.uploadImages(banner, imageUploadService);
+           Category updatedCategory =  categoryService.updateCategory(categoryId, categoryPayload, bannerUrls);
+           System.out.println("updated category"+updatedCategory);
+            return ResponseUtil.buildResponse("Category updated successfully", true, updatedCategory, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body("Error updating category: " + e.getMessage());

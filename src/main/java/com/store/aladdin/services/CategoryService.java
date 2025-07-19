@@ -160,8 +160,10 @@ public class CategoryService {
 
 
 
-    public void updateCategory(String categoryId, String title, String description, List<MultipartFile> banners) throws IOException {
+   public Category updateCategory(String categoryId, Category payload, List<String> banners) throws IOException {
     Optional<Category> optionalCategory = categoryRepository.findById(new ObjectId(categoryId));
+
+   
 
     if (optionalCategory.isEmpty()) {
         throw new RuntimeException("Category not found");
@@ -169,20 +171,26 @@ public class CategoryService {
 
     Category category = optionalCategory.get();
 
-    if (title != null && !title.isBlank()) {
-        category.setTitle(title);
+
+    if (payload.getTitle() != null && !payload.getTitle().isBlank()) {
+        category.setTitle(payload.getTitle());
+        System.out.println("category title = "+ category.getTitle());
     }
 
-    if (description != null && !description.isBlank()) {
-        category.setDescription(description);
+  
+
+    if (payload.getDescription() != null && !payload.getDescription().isBlank()) {
+        category.setDescription(payload.getDescription());
+           System.out.println("category des = "+ category.getDescription());
     }
 
-        if (banners != null) {
-            List<String> bannerUrls = productHalper.uploadImages(banners, imageUploadService);
-            category.setBanner(bannerUrls); // assuming `banner` is List<String>
-        }
+    if (banners != null && !banners.isEmpty()) {
+        category.setBanner(banners);
+    }
 
-    categoryRepository.save(category);
+    // System.out.println("category"+category);
+
+    return categoryRepository.save(category);
 }
 
 

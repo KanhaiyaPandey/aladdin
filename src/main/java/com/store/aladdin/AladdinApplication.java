@@ -18,12 +18,11 @@ public class AladdinApplication {
 
 	try {
 		SpringApplication.run(AladdinApplication.class, args);
-		System.out.println("Server is running. No compilation errors!");
+		System.out.println("✅ Server is running on port 8080. No compilation errors!");
 		} catch (Exception e) {
 			logger.error("Error during startup: ", e);
 		}
 	}
-
 	@Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {

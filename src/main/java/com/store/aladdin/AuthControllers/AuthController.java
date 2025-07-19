@@ -186,7 +186,7 @@ public class AuthController {
             cookie.setMaxAge(0); // Deletes the cookie immediately
             response.addCookie(cookie);
             response.setHeader("Set-Cookie", "JWT_TOKEN=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0");
-            return ResponseUtil.buildResponse("Logged out successfully", HttpStatus.OK);
+            return ResponseUtil.buildResponse("Logged out successfully", true, null , HttpStatus.OK);
         }
 
 }

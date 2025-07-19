@@ -31,7 +31,6 @@ public class PublicControllers {
     @Autowired
     private CategoryService categoryService;
 
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/product/all-products")
     public ResponseEntity<?> getAllProducts(
             @RequestParam(required = false) String name,
