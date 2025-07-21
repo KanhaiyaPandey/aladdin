@@ -13,7 +13,8 @@ public class CorsFilter implements Filter {
 
     private static final List<String> allowedOrigins = List.of(
         "http://localhost:5173",
-        "http://localhost:5174"
+        "http://localhost:5174",
+        "https://aladdin01.netlify.app/"
     );
 
     @Override
