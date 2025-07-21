@@ -82,6 +82,9 @@ public class CategoryService {
                     parentCategory.setChildCategoryIds(new ArrayList<>());
                 }
                 parentCategory.getChildCategoryIds().add(savedCategory.getCategoryId());
+
+                System.out.println(parentCategory.getChildCategoryIds());
+
                 categoryRepository.save(parentCategory);
             } else {
                 throw new RuntimeException("Parent category not found with ID: " + category.getParentCategoryId());

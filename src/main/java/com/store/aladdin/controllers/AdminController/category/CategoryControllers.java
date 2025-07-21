@@ -53,10 +53,13 @@ public class CategoryControllers {
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
         try {
-             System.out.println("banner at creation = "+bannerImages);
+            //  System.out.println("banner at creation = "+bannerImages);
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(category);
+            if (category.getParentCategoryId() != null && !category.getParentCategoryId().isEmpty()) {
+                    categoryValidation.checkSubCategoryName(category.getTitle(), category.getParentCategoryId());
+                }
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);
             Category savedCategory = categoryService.createCategory(category);

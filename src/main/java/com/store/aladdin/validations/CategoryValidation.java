@@ -1,5 +1,10 @@
 package com.store.aladdin.validations;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -36,11 +41,45 @@ public class CategoryValidation {
         }
 
         boolean exists = mongoTemplate.exists(query, Category.class);
-        if (exists) {
+        if (exists && category.getParentCategoryId().isEmpty()) {
             throw new IllegalArgumentException("Category with this title already exists");
         }
 
 
     }
-    
+
+
+    public void checkSubCategoryName(String title, String parentId) {
+        // Step 1: Find the parent category by ID
+        Category parentCategory = mongoTemplate.findOne(
+            Query.query(Criteria.where("_id").is(new ObjectId(parentId))),
+            Category.class
+        );
+
+        if (parentCategory == null) {
+            throw new IllegalArgumentException("Parent category not found.");
+        }
+
+        // Step 2: Loop through childCategoryIds and fetch each subcategory
+        List<String> childIds = parentCategory.getChildCategoryIds(); // assuming List<String>
+        if (childIds == null || childIds.isEmpty()) return;
+
+        // Step 3: Find all child categories in a single query
+        List<Category> subCategories = mongoTemplate.find(
+            Query.query(Criteria.where("_id").in(
+                childIds.stream().map(ObjectId::new).collect(Collectors.toList())
+            )),
+            Category.class
+        );
+
+        for (Category sub : subCategories) {
+            if (sub.getTitle().equalsIgnoreCase(title)) {
+                throw new IllegalArgumentException(
+                    "Sub Category with title \"" + title + "\" already exists under the category \"" 
+                    + parentCategory.getTitle() + "\""
+                );
+            }
+        }
+    }
+        
 }
