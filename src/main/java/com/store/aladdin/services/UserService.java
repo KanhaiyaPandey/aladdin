@@ -41,12 +41,17 @@ public class UserService {
         // Check for existing user by name or email
         Optional<User> existingUserByName = userRepository.findByName(user.getName());
         Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+        Optional<User> existingUserByPhone = userRepository.findByEmail(user.getPhoneNumber());
 
         if (existingUserByName.isPresent()) {
             throw new IllegalArgumentException("A user with this name already exists.");
         }
         if (existingUserByEmail.isPresent()) {
             throw new IllegalArgumentException("A user with this email already exists.");
+        }
+
+        if (existingUserByPhone.isPresent()) {
+            throw new IllegalArgumentException("Phone number alrady in use! Enter different phone number");
         }
 
         userRepository.save(user);

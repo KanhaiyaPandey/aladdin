@@ -33,6 +33,7 @@ public class PaymentService {
         response.setCurrency(order.get("currency"));
         // response.setReceipt(order.get("receipt"));
         System.out.println("id == "+response.getId());
+        System.out.println("amount == "+response.getAmount() / 100);
 
         return response;
     }

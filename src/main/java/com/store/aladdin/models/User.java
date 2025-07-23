@@ -36,6 +36,8 @@ public class User {
     private String email;
 
     private String password;
+
+    @Indexed(unique = true)
     private String phoneNumber;
 
     @CreatedDate
@@ -51,5 +53,22 @@ public class User {
     private List<Order> orders = new ArrayList<>();
 
     private List<String> roles = new ArrayList<>();
+
+    private List<Address> Addresses = new ArrayList<>();
+
+
+    @Data
+    @NoArgsConstructor
+    public static class Address {
+    
+        private String street;
+        private String city;
+        private String state;
+        private String postalCode;
+        private String alt_Number;
+        private String country;
+        private boolean active; 
+        
+    }
 
 }

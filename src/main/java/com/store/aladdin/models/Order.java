@@ -38,7 +38,7 @@ public class Order {
     private String grandTotal;
     private LocalDateTime deliveredDate;
     private List<Timeline> timeline;
-    private double gatewayDiscount;
+    private String gatewayDiscount;
     private ShippingDetails shippingDetails;
   
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.JwtUtil;
@@ -38,7 +39,6 @@ public class AuthController {
 
 
     // login
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginUser, HttpServletResponse response) {
         // Fetch user by email
@@ -84,20 +84,24 @@ public class AuthController {
 
 
     // register
-        @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
         @PostMapping("/register")
-        public ResponseEntity<?> createUser(@RequestBody User user, HttpServletResponse response) {
-            String validationMessage = ValidationUtils.validateUser(user);
-            if (validationMessage != null) {
-                return ResponseUtil.buildResponse(validationMessage, HttpStatus.BAD_REQUEST);
-            }
-
-            if (user.getRoles() == null || user.getRoles().isEmpty()) {
-                user.setRoles(List.of("USER"));
-            }
+        public ResponseEntity<?> createUser(@RequestBody String userJson, HttpServletResponse response) {
+            ObjectMapper objectMapper = new ObjectMapper();
 
             try {
                 // Hash the password before storing
+
+                User user = objectMapper.readValue(userJson, User.class);
+                String validationMessage = ValidationUtils.validateUser(user);
+                
+                if (validationMessage != null) {
+                    return ResponseUtil.buildResponse(validationMessage, HttpStatus.BAD_REQUEST);
+                }
+
+                if (user.getRoles() == null || user.getRoles().isEmpty()) {
+                    user.setRoles(List.of("USER"));
+                }
+
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);
 
