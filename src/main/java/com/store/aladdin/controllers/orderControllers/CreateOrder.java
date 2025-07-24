@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
@@ -28,12 +29,14 @@ public class CreateOrder {
     
     @PostMapping("/create-order")
     public ResponseEntity<?> createOrder(
-        @RequestBody Order order,
+        @RequestBody String orderJson,
         HttpServletRequest request
     ) {
 
-        try {
+        ObjectMapper objectMapper = new ObjectMapper();
 
+        try {
+            Order order = objectMapper.readValue(orderJson, Order.class);
             ObjectId userId = TokenUtil.extractUserIdFromRequest(request);
             if (userId == null) {
                 return ResponseUtil.buildResponse("Unauthorized: Missing token", HttpStatus.UNAUTHORIZED);

@@ -11,6 +11,7 @@ import com.store.aladdin.utils.helper.Enums.OrderStatus;
 import com.store.aladdin.utils.helper.Enums.PaymentMode;
 import com.store.aladdin.utils.helper.Enums.PaymentStatus;
 
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class Order {
     private List<Timeline> timeline;
     private String gatewayDiscount;
     private ShippingDetails shippingDetails;
+    private PaymentInfo paymentInfo;
   
 
 
@@ -91,6 +93,15 @@ public static class ShippingDetails {
     private String courier_name;
     private String packaging_box_error;
     
+}
+
+@Data
+@NoArgsConstructor
+public static class PaymentInfo{
+    private String razorpay_payment_id;
+    private String razorpay_order_id;
+    private String razorpay_signature;
+    private String paymentMode;
 }
 
 
