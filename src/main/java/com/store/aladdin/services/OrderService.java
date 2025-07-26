@@ -1,12 +1,16 @@
 package com.store.aladdin.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import com.store.aladdin.models.Order;
+import com.store.aladdin.queries.OrderQueries;
 import com.store.aladdin.utils.helper.Enums.OrderStatus;
 import com.store.aladdin.repository.OrderRepository;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,7 +21,38 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
-    
+
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+
+    // get orders 
+
+    public List<Order> getOrders(
+        String userName,String minPrice,String maxPrice,String paymentStatus,
+        String status, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime deliveryStartDate,
+        LocalDateTime deliveryEndDate,String pincode,String orderId,String userId
+        ){
+
+           Query query = OrderQueries.buildOrderQuery(
+                userName,
+                minPrice,
+                maxPrice,
+                paymentStatus,
+                status,
+                startDate,
+                endDate,
+                deliveryStartDate,
+                deliveryEndDate,
+                pincode,
+                orderId,
+                userId
+        );
+
+        return mongoTemplate.find(query, Order.class);
+    }
+
 
     public List<Order> updateOrderStatus(List<String> orderIds, String status) {
 
