@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -213,10 +214,11 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
 // create order
    
 
-   public Order createOrder (Order order){
-   Order savedOrder =  orderRepository.save(order);
-   return savedOrder;
-   }
+public Order createOrder (Order order){
+    order.setCreatedAt(LocalDateTime.now());
+    Order savedOrder =  orderRepository.save(order);
+    return savedOrder;
+}
 
 
 

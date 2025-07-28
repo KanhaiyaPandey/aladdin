@@ -42,6 +42,10 @@ public class Order {
     private String gatewayDiscount;
     private ShippingDetails shippingDetails;
     private PaymentInfo paymentInfo;
+    private String gstNumber;
+
+
+    // constructors
   
 
 
@@ -103,6 +107,7 @@ public static class PaymentInfo{
     private String razorpay_signature;
     private String paymentMode;
 }
+
 
 
     
