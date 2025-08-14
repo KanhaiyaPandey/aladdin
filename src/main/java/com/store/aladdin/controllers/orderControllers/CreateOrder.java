@@ -48,7 +48,6 @@ public class CreateOrder {
             return ResponseUtil.buildResponse("Order creation successfull.", true, savedOrder, HttpStatus.OK);
 
         } catch (Exception e) {
-            e.printStackTrace(); 
             return ResponseUtil.buildResponse("Failed to create order: " + e.getMessage(), false, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

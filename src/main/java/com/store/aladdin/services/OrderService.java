@@ -102,7 +102,7 @@ public class OrderService {
                 orderRepository.save(order);
             
         } catch (Exception e) {
-           e.printStackTrace(); 
+           System.out.println(e);
         }
     }
 
