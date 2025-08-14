@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,10 @@ import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.utils.helper.CategoryMapperUtil;
 import com.store.aladdin.utils.helper.ProductHelper;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+
 @Service
 public class CategoryService {
 
@@ -31,6 +36,9 @@ public class CategoryService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private ImageUploadService imageUploadService;
@@ -72,24 +80,13 @@ public class CategoryService {
     // Save a new category
     public Category createCategory(Category category) {
         Category savedCategory = categoryRepository.save(category);
+
         if (category.getParentCategoryId() != null) {
             ObjectId parentId = new ObjectId(category.getParentCategoryId());
-            Optional<Category> parentCategoryOpt = categoryRepository.findById(parentId);
-
-            if (parentCategoryOpt.isPresent()) {
-                Category parentCategory = parentCategoryOpt.get();
-                if (parentCategory.getChildCategoryIds() == null) {
-                    parentCategory.setChildCategoryIds(new ArrayList<>());
-                }
-                parentCategory.getChildCategoryIds().add(savedCategory.getCategoryId());
-
-                System.out.println(parentCategory.getChildCategoryIds());
-
-                categoryRepository.save(parentCategory);
-            } else {
-                throw new RuntimeException("Parent category not found with ID: " + category.getParentCategoryId());
-            }
+            Update update = new Update().addToSet("childCategoryIds", savedCategory.getCategoryId());
+            mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(parentId)), update, Category.class);
         }
+
         return savedCategory;
     }
 

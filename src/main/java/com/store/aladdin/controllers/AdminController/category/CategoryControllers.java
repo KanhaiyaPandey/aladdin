@@ -45,9 +45,10 @@ public class CategoryControllers {
 
 
 
+    // create category
+
     
     @PostMapping(value = "/create-category", consumes = "multipart/form-data")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createCategory(
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
@@ -59,6 +60,7 @@ public class CategoryControllers {
             if (category.getParentCategoryId() != null && !category.getParentCategoryId().isEmpty()) {
                     categoryValidation.checkSubCategoryName(category.getTitle(), category.getParentCategoryId());
                 }
+            category.setSlug(generateSlug(category.getTitle()));    
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);
             Category savedCategory = categoryService.createCategory(category);
@@ -71,6 +73,10 @@ public class CategoryControllers {
         }   
     }
 
+
+
+    // update category
+
     @PutMapping(value = "/update-category/{categoryId}", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateCategory(
@@ -82,6 +88,8 @@ public class CategoryControllers {
             System.out.println("banner at update = "+banner);
             ObjectMapper objectMapper = new ObjectMapper();
             Category categoryPayload = objectMapper.readValue(categoryJson, Category.class);
+            categoryValidation.validateCategory(categoryPayload);
+            categoryPayload.setSlug(generateSlug(categoryPayload.getTitle())); 
             List<String> bannerUrls = productHalper.uploadImages(banner, imageUploadService);
            Category updatedCategory =  categoryService.updateCategory(categoryId, categoryPayload, bannerUrls);
            System.out.println("updated category"+updatedCategory);
@@ -94,6 +102,8 @@ public class CategoryControllers {
 
 
 
+
+    // delete category
 
     
     @DeleteMapping(value = "/delete-categories")
@@ -110,6 +120,16 @@ public class CategoryControllers {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting categories: " + e.getMessage());
         }
 
+    }
+
+
+    //  slug method
+
+        private String generateSlug(String title) {
+        return title.trim()
+                    .toLowerCase()
+                    .replaceAll("[^a-z0-9\\s-]", "") 
+                    .replaceAll("\\s+", "-");  
     }
     
 }

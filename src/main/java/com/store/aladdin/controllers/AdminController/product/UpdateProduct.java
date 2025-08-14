@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.response.ResponseUtil;
@@ -26,8 +27,10 @@ public class UpdateProduct {
     
     @PutMapping("/product/update-product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody String productJson) {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Product product = objectMapper.readValue(productJson, Product.class);
             Product updatedProduct = productService.updateProduct(productId, product);
             return ResponseUtil.buildResponse("Product updated successfully", true ,updatedProduct,HttpStatus.OK);
         } catch (Exception e) {

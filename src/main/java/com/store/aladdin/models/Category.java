@@ -22,6 +22,8 @@ public class Category {
     @NonNull
     private String title;
 
+    private String slug;
+
     private String description;
 
     private List<String> banner = new ArrayList<>(); 
