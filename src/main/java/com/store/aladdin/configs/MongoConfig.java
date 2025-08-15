@@ -8,19 +8,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
-import com.store.aladdin.AladdinApplication;
 
 @Configuration
 public class MongoConfig {
         
-    @Value("${spring.data.mongodb.uri}")
-    private String mongoUri;
+        @Value("${spring.data.mongodb.uri}")
+        private String mongoUri;
 
-    private static final Logger logger = LoggerFactory.getLogger(AladdinApplication.class);
+        private static final Logger logger = LoggerFactory.getLogger(MongoConfig.class);
 
         @Bean
         public MongoTemplate mongoTemplate() {
         logger.info("✅ MongoDB Connected");
         return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoUri));
+
     }
 }
