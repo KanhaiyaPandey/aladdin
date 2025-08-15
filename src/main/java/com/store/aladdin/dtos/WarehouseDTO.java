@@ -12,9 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WarehouseDTO {
-
     private String name;
     private String address;
-    private String pincode;
-    
+    private String pincode;   
 }

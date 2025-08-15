@@ -1,6 +1,5 @@
 package com.store.aladdin.dtos;
 
-
 import org.bson.types.ObjectId;
 
 import lombok.Getter;

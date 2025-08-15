@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class OrderDTO {
-
     private String orderId;
     private String userId;
     private UserDTO customerDetails;

@@ -10,4 +10,5 @@ public class OrderResponseTest {
     private int amount;
     private String currency;
     private String receipt;
+    
 }

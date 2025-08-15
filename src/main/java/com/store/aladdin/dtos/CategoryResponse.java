@@ -18,4 +18,5 @@ public class CategoryResponse {
     private CategoryResponse parentCategory;
     private List<CategoryResponse> subCategories;
     
+    
 }
