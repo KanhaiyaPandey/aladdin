@@ -1,6 +1,8 @@
 package com.store.aladdin.controllers.admincontroller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -33,6 +35,8 @@ public class UploadMedias {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
     try {
+        List<Medias> uploadedMedias = new ArrayList<>();
+
         for (MultipartFile file : files) {
             String imageUrl = imageUploadService.uploadImage(file);
             Medias media = Medias.builder()
@@ -42,9 +46,11 @@ public class UploadMedias {
                 .fileSize(file.getSize())
                 .createdAt(LocalDateTime.now())
                 .build();
+
             mongoTemplate.save(media);
+            uploadedMedias.add(media);
         }
-            return ResponseUtil.buildResponse("image uploaded", HttpStatus.OK);
+            return ResponseUtil.buildResponse("image uploaded", true, uploadedMedias, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error uploading images:", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
