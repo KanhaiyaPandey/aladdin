@@ -35,8 +35,6 @@ public class UploadMedias {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
     try {
-        List<Medias> uploadedMedias = new ArrayList<>();
-
         for (MultipartFile file : files) {
             String imageUrl = imageUploadService.uploadImage(file);
             Medias media = Medias.builder()
@@ -46,9 +44,7 @@ public class UploadMedias {
                 .fileSize(file.getSize())
                 .createdAt(LocalDateTime.now())
                 .build();
-
             mongoTemplate.save(media);
-            uploadedMedias.add(media);
         }
             return ResponseUtil.buildResponse("image uploaded", HttpStatus.OK);
         } catch (Exception e) {
