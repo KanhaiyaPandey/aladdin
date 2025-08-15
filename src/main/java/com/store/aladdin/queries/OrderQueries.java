@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Component
 public class OrderQueries {
 
-
     public static Query buildOrderQuery(
             String userName,
             String minPrice,
@@ -26,54 +25,32 @@ public class OrderQueries {
     ) {
         Criteria criteria = new Criteria();
 
-        if (userName != null && !userName.isEmpty()) {
-            criteria.and("shippingAddress.firstName").is(userName);
-        }
-
-        if (minPrice != null && maxPrice != null) {
-            criteria.and("grandTotal").gte(minPrice.toString()).lte(maxPrice.toString());
-        } else if (minPrice != null) {
-            criteria.and("grandTotal").gte(minPrice);
-        } else if (maxPrice != null) {
-            criteria.and("grandTotal").lte(maxPrice);
-        }
-
-        if (startDate != null && endDate != null) {
-            criteria.and("createdAt").gte(startDate).lte(endDate);
-        } else if (startDate != null) {
-            criteria.and("createdAt").gte(startDate);
-        } else if (endDate != null) {
-            criteria.and("createdAt").lte(endDate);
-        }
-
-        if (paymentStatus != null && !paymentStatus.isEmpty()) {
-            criteria.and("paymentStatus").is(paymentStatus);
-        }
-
-        if (status != null && !status.isEmpty()) {
-            criteria.and("status").is(status);
-        }
-
-        if (deliveryStartDate != null && deliveryEndDate != null) {
-            criteria.and("deliveredDate").gte(deliveryStartDate).lte(deliveryEndDate);
-        } else if (deliveryStartDate != null) {
-            criteria.and("deliveredDate").gte(deliveryStartDate);
-        } else if (deliveryEndDate != null) {
-            criteria.and("deliveredDate").lte(deliveryEndDate);
-        }
-
-        if (pincode != null && !pincode.isEmpty()) {
-            criteria.and("shippingAddress.pincode").is(pincode);
-        }
-
-        if (orderId != null && !orderId.isEmpty()) {
-            criteria.and("orderId").is(orderId);
-        }
-
-        if (userId != null && !userId.isEmpty()) {
-            criteria.and("userId").is(userId);
-        }
+        addStringCriteria(criteria, "shippingAddress.firstName", userName);
+        addRangeCriteria(criteria, "grandTotal", minPrice, maxPrice);
+        addRangeCriteria(criteria, "createdAt", startDate, endDate);
+        addStringCriteria(criteria, "paymentStatus", paymentStatus);
+        addStringCriteria(criteria, "status", status);
+        addRangeCriteria(criteria, "deliveredDate", deliveryStartDate, deliveryEndDate);
+        addStringCriteria(criteria, "shippingAddress.pincode", pincode);
+        addStringCriteria(criteria, "orderId", orderId);
+        addStringCriteria(criteria, "userId", userId);
 
         return new Query(criteria);
+    }
+
+    private static void addStringCriteria(Criteria criteria, String field, String value) {
+        if (value != null && !value.isEmpty()) {
+            criteria.and(field).is(value);
+        }
+    }
+
+    private static <T extends Comparable<T>> void addRangeCriteria(Criteria criteria, String field, T min, T max) {
+        if (min != null && max != null) {
+            criteria.and(field).gte(min).lte(max);
+        } else if (min != null) {
+            criteria.and(field).gte(min);
+        } else if (max != null) {
+            criteria.and(field).lte(max);
+        }
     }
 }
