@@ -30,14 +30,6 @@ public class UserController {
         return ResponseUtil.buildResponse("User deleted successfully", HttpStatus.OK);
     }
 
-    // Add product to cart
-    // @PostMapping("/{userId}/cart/add")
-    // public ResponseEntity<Map<String, Object>> addToCart(@PathVariable ObjectId userId, @RequestBody CartItem item) {
-    //     item.setId(null);
-    //     userService.addToCart(userId, item);
-    //     return ResponseEntity.ok("Product added to cart successfully");
-    // }
-    
 
     // Remove product from cart
     @DeleteMapping("/{userId}/cart/remove/{productId}")
@@ -58,12 +50,4 @@ public ResponseEntity<Map<String, Object>> getUserCart(@PathVariable ObjectId us
     return ResponseUtil.buildResponse("cart fetched", true, cart, HttpStatus.OK);
 }
 
-
-
-    // // Get user's orders
-    // @GetMapping("/{userId}/orders")
-    // public ResponseEntity<Map<String, Object>> getUserOrders(@PathVariable ObjectId userId) {
-    //     List<ObjectId> orders = userService.getUserOrders(userId);
-    //     return ResponseEntity.ok(orders);
-    // }
 }

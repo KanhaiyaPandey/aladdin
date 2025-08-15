@@ -188,7 +188,7 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(0);
             response.addCookie(cookie);
-            response.setHeader("Set-Cookie", "JWT_TOKEN=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0");
+            response.setHeader(SET, "JWT_TOKEN=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0");
             return ResponseUtil.buildResponse("Logged out successfully", true, null , HttpStatus.OK);
         }
 
