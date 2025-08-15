@@ -2,6 +2,7 @@ package com.store.aladdin.controllers.AdminController.orders;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class OrderControllers {
 
 
     @GetMapping("/get-orders")
-    public ResponseEntity<?> getOrders (
+    public ResponseEntity<Map<String, Object>> getOrders (
         @RequestParam(required = false) String userName,
         @RequestParam(required = false) String minPrice,
         @RequestParam(required = false) String maxPrice,

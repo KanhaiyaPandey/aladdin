@@ -30,7 +30,7 @@ public class CreateShipping {
     
     @PostMapping(value = "/create-shipping", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createShipping(@RequestBody String orderPayload) {
+    public ResponseEntity<Map<String, Object>> createShipping(@RequestBody String orderPayload) {
         try {
             String token;
             try {

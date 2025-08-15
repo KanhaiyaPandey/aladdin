@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.store.aladdin.utils.response.ResponseUtil;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
@@ -24,7 +25,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         // Build the error response
-        ResponseEntity<?> responseEntity = ResponseUtil.buildErrorResponse("Access Denied: You do not have permission to access this resource.", HttpStatus.FORBIDDEN);
+        ResponseEntity<Map<String, Object>> responseEntity = ResponseUtil.buildErrorResponse("Access Denied: You do not have permission to access this resource.", HttpStatus.FORBIDDEN);
 
         // Write the response body
         response.setContentType("application/json");

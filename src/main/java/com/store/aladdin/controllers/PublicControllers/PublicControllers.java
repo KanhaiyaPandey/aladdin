@@ -1,6 +1,7 @@
 package com.store.aladdin.controllers.PublicControllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class PublicControllers {
     private final CategoryService categoryService;
 
     @GetMapping("/product/all-products")
-    public ResponseEntity<?> getAllProducts(
+    public ResponseEntity<Map<String, Object>> getAllProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
@@ -47,7 +48,7 @@ public class PublicControllers {
 
     
     @GetMapping("product/{productId}")
-public ResponseEntity<?> getProductById(@PathVariable String productId) {
+public ResponseEntity<Map<String, Object>> getProductById(@PathVariable String productId) {
     try {
         Product product = productService.getProductById(new ObjectId(productId));
         return ResponseUtil.buildResponse("product fetched successfully", true , product, HttpStatus.OK);
@@ -59,7 +60,7 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
 
     // get all categories
     @GetMapping("/category/all-categories")
-    public ResponseEntity<?> getAllCategories() {
+    public ResponseEntity<Map<String, Object>> getAllCategories() {
         try {
             List<CategoryResponse> categories = categoryService.getAllCategoryResponses();
             if (categories.isEmpty()) {
@@ -73,7 +74,7 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
 
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<?> getCategoryById(@PathVariable String id) {
+    public ResponseEntity<Map<String, Object>> getCategoryById(@PathVariable String id) {
         try {
             CategoryResponse category = categoryService.getCategoryById(new ObjectId(id));
             if (category == null) {

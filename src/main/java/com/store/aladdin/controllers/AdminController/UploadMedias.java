@@ -3,6 +3,7 @@ package com.store.aladdin.controllers.AdminController;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class UploadMedias {
 
     @PostMapping(value = "/media/upload-media", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
+    public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
     try {
         List<Medias> uploadedMedias = new ArrayList<>();
 

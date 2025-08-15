@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,14 +25,14 @@ public class UserController {
 
     // Delete user
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable ObjectId userId) {
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable ObjectId userId) {
         userService.deleteUser(userId);
         return ResponseUtil.buildResponse("User deleted successfully", HttpStatus.OK);
     }
 
     // Add product to cart
     // @PostMapping("/{userId}/cart/add")
-    // public ResponseEntity<?> addToCart(@PathVariable ObjectId userId, @RequestBody CartItem item) {
+    // public ResponseEntity<Map<String, Object>> addToCart(@PathVariable ObjectId userId, @RequestBody CartItem item) {
     //     item.setId(null);
     //     userService.addToCart(userId, item);
     //     return ResponseEntity.ok("Product added to cart successfully");
@@ -40,14 +41,14 @@ public class UserController {
 
     // Remove product from cart
     @DeleteMapping("/{userId}/cart/remove/{productId}")
-    public ResponseEntity<?> removeFromCart(@PathVariable ObjectId userId, @PathVariable ObjectId productId) {
+    public ResponseEntity<Map<String, Object>> removeFromCart(@PathVariable ObjectId userId, @PathVariable ObjectId productId) {
         userService.removeFromCart(userId, productId);
         return ResponseUtil.buildResponse("Product removed from cart", HttpStatus.OK);
     }
 
     // Get user's cart
  @GetMapping("/{userId}/cart")
-public ResponseEntity<?> getUserCart(@PathVariable ObjectId userId) {
+public ResponseEntity<Map<String, Object>> getUserCart(@PathVariable ObjectId userId) {
     List<CartResponseItem> cart = userService.getUserCart(userId);
     
     if (cart.isEmpty()) {
@@ -61,7 +62,7 @@ public ResponseEntity<?> getUserCart(@PathVariable ObjectId userId) {
 
     // // Get user's orders
     // @GetMapping("/{userId}/orders")
-    // public ResponseEntity<?> getUserOrders(@PathVariable ObjectId userId) {
+    // public ResponseEntity<Map<String, Object>> getUserOrders(@PathVariable ObjectId userId) {
     //     List<ObjectId> orders = userService.getUserOrders(userId);
     //     return ResponseEntity.ok(orders);
     // }

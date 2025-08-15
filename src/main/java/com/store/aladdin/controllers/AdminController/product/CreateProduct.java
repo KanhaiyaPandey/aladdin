@@ -3,6 +3,7 @@ package com.store.aladdin.controllers.AdminController.product;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
@@ -36,7 +37,7 @@ public class CreateProduct {
     
     @PostMapping(value = "/create-product")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createProduct(
+    public ResponseEntity<Map<String, Object>> createProduct(
             @RequestParam("product") String productJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

@@ -41,7 +41,7 @@ public class AuthController {
 
     // login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
 
         // Fetch user by email
         User user = userService.getUserByEmail(loginUser.getEmail());
@@ -88,7 +88,7 @@ public class AuthController {
 
     // register
         @PostMapping("/register")
-        public ResponseEntity<?> createUser(@RequestBody String userJson, HttpServletResponse response) {
+        public ResponseEntity<Map<String, Object>> createUser(@RequestBody String userJson, HttpServletResponse response) {
             ObjectMapper objectMapper = new ObjectMapper();
 
             try {
@@ -137,7 +137,7 @@ public class AuthController {
 
         
         @GetMapping("/validate-token")
-        public ResponseEntity<?> validateToken(HttpServletRequest request) {
+        public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
 
         try {
         String token = null;
@@ -184,7 +184,7 @@ public class AuthController {
 
         
         @PostMapping("/logout")
-        public ResponseEntity<?> logout(HttpServletResponse response) {
+        public ResponseEntity<Map<String, Object>> logout(HttpServletResponse response) {
             // Clear the JWT cookie
             Cookie cookie = new Cookie(type, null);
             cookie.setHttpOnly(true);

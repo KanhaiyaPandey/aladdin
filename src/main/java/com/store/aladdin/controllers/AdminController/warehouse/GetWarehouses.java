@@ -1,6 +1,7 @@
 package com.store.aladdin.controllers.AdminController.warehouse;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class GetWarehouses {
  
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllWarehouses() {
+    public ResponseEntity<Map<String, Object>> getAllWarehouses() {
         try {
             List<Warehouse> warehouses = warehouseServices.getAllWarehouses();
             return ResponseUtil.buildResponse("Warehouses fetched successfully", true, warehouses,HttpStatus.OK);

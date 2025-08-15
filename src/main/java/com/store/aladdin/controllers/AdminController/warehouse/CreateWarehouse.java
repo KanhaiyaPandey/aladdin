@@ -1,5 +1,6 @@
 package com.store.aladdin.controllers.AdminController.warehouse;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -29,7 +30,7 @@ public class CreateWarehouse {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createWarehouse(@Valid @RequestBody WarehouseDTO warehouseDTO, BindingResult result) {
+    public ResponseEntity<Map<String, Object>> createWarehouse(@Valid @RequestBody WarehouseDTO warehouseDTO, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(error -> error.getDefaultMessage())

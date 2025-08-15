@@ -1,5 +1,7 @@
 package com.store.aladdin.controllers.AdminController.product;
 
+import java.util.Map;
+
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ public class DeleteProduct {
   
     @DeleteMapping("/product/delete-product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
+    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable String productId) {
         productService.deleteProduct(new ObjectId(productId)); 
         return ResponseUtil.buildResponse("Product deleted successfully", HttpStatus.OK);
     }

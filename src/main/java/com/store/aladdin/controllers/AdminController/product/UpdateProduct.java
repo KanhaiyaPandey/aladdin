@@ -1,5 +1,7 @@
 package com.store.aladdin.controllers.AdminController.product;
 
+import java.util.Map;
+
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class UpdateProduct {
     
     @PutMapping("/product/update-product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody String productJson) {
+    public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable ObjectId productId, @RequestBody String productJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());

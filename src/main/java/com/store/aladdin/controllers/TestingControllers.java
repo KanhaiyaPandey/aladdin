@@ -1,6 +1,7 @@
 package com.store.aladdin.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +20,7 @@ public class TestingControllers {
 
 
 @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<?> testEndpoint(
+public ResponseEntity<Map<String, Object>> testEndpoint(
     @RequestPart("product") String product,
     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
     return ResponseUtil.buildResponse("Test successfull", HttpStatus.OK);

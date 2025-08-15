@@ -77,7 +77,7 @@ public class CategoryControllers {
 
     @PutMapping(value = "/update-category/{categoryId}", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateCategory(
+    public ResponseEntity<Map<String, Object>> updateCategory(
         @PathVariable String categoryId,
         @RequestParam("category") String categoryJson,
         @RequestPart(value = "banner", required = false) List<MultipartFile> banner
@@ -105,7 +105,7 @@ public class CategoryControllers {
     
     @DeleteMapping(value = "/delete-categories")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteCategories(@RequestBody DeleteCategoryRequest request){
+    public ResponseEntity<Map<String, Object>> deleteCategories(@RequestBody DeleteCategoryRequest request){
         try {
             List<String> categoryIds = request.getCategoryIds();
             if (categoryIds == null || categoryIds.isEmpty()) {
