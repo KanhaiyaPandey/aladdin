@@ -51,10 +51,10 @@ public ResponseEntity<?> getUserCart(@PathVariable ObjectId userId) {
     List<CartResponseItem> cart = userService.getUserCart(userId);
     
     if (cart.isEmpty()) {
-        return ResponseEntity.ok("Cart is empty");
+        return ResponseUtil.buildResponse("cart is empty", HttpStatus.OK);
     }
 
-    return ResponseEntity.ok(cart);
+    return ResponseUtil.buildResponse("cart fetched", true, cart, HttpStatus.OK);
 }
 
 
