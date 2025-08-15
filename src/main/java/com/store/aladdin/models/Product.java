@@ -32,7 +32,7 @@ public class Product {
     private String title;
 
     private String description;
-    private Status status = Status.Active;
+    private Status status = Status.ACTIVE;
 
     private Double costPrice;
     private Double sellPrice;

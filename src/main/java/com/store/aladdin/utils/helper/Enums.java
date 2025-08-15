@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 public class Enums {
 
     public enum Status {
-        Active,
-        Draft
+        ACTIVE,
+        DRAFT
     }
 
     public enum StockStatus {
