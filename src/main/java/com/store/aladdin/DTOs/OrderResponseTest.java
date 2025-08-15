@@ -1,4 +1,4 @@
-package com.store.aladdin.DTOs;
+package com.store.aladdin.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

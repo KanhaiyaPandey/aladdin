@@ -3,7 +3,7 @@ package com.store.aladdin.utils.helper;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.store.aladdin.DTOs.CategoryResponse;
+import com.store.aladdin.dtos.CategoryResponse;
 import com.store.aladdin.models.Category;
 
 public class CategoryMapperUtil {

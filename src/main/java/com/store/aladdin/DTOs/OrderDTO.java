@@ -1,4 +1,4 @@
-package com.store.aladdin.DTOs;
+package com.store.aladdin.dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

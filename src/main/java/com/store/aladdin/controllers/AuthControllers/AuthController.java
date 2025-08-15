@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.store.aladdin.DTOs.AuthPojo;
+import com.store.aladdin.dtos.AuthPojo;
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.JwtUtil;

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import com.store.aladdin.DTOs.WarehouseDTO;
+import com.store.aladdin.dtos.WarehouseDTO;
 import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.repository.WarehouseRepository;
 

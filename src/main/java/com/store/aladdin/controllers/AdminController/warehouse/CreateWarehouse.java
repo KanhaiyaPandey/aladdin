@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.store.aladdin.DTOs.WarehouseDTO;
+import com.store.aladdin.dtos.WarehouseDTO;
 import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.services.WarehouseServices;
 import com.store.aladdin.utils.response.ResponseUtil;

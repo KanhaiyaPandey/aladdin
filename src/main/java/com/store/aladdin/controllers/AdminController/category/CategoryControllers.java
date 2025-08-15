@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.store.aladdin.DTOs.DeleteCategoryRequest;
+import com.store.aladdin.dtos.DeleteCategoryRequest;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-import com.store.aladdin.DTOs.OrderResponseTest;
+import com.store.aladdin.dtos.OrderResponseTest;
 
 @Service
 public class PaymentService {

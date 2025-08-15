@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.store.aladdin.DTOs.CategoryResponse;
+import com.store.aladdin.dtos.CategoryResponse;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;

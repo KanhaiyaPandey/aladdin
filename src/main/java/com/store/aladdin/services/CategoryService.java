@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import com.store.aladdin.DTOs.CategoryResponse;
+import com.store.aladdin.dtos.CategoryResponse;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.models.Product.ProductCategories;

@@ -1,4 +1,4 @@
-package com.store.aladdin.DTOs;
+package com.store.aladdin.dtos;
 
 import java.util.ArrayList;
 import java.util.List;

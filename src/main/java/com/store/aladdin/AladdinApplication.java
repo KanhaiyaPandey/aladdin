@@ -18,7 +18,7 @@ public class AladdinApplication {
 
 	try {
 		SpringApplication.run(AladdinApplication.class, args);
-		System.out.println("✅ Server is running on port 8080. No compilation errors!");
+		logger.info("✅ Server is running on port 8080. No compilation errors!");
 		} catch (Exception e) {
 			logger.error("Error during startup: ", e);
 		}
