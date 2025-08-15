@@ -9,14 +9,14 @@ import java.util.Map;
 public class ResponseUtil {
 
     // Method to build a response with a message and HTTP status
-    public static ResponseEntity<?> buildResponse(String message, HttpStatus status) {
+    public static ResponseEntity<Map<String, Object>> buildResponse(String message, HttpStatus status) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         response.put("status", status.value());
         return new ResponseEntity<>(response, status);
     }
 
-    public static ResponseEntity<?> buildResponse(String message, Boolean success, Object data, HttpStatus status){
+    public static ResponseEntity<Map<String, Object>> buildResponse(String message, Boolean success, Object data, HttpStatus status){
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         response.put("success", success);
@@ -25,7 +25,7 @@ public class ResponseUtil {
     }
 
     // Method to build an error response with a message and status
-    public static ResponseEntity<?> buildErrorResponse(String message, HttpStatus status) {
+    public static ResponseEntity<Map<String, Object>> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> response = new HashMap<>();
         response.put("error", message);
         response.put("status", status.value());
@@ -35,7 +35,7 @@ public class ResponseUtil {
 
 
     // Method to build an error response with message, status, and details
-    public static ResponseEntity<?> buildErrorResponse(String message, HttpStatus status, Object details) {
+    public static ResponseEntity<Map<String, Object>> buildErrorResponse(String message, HttpStatus status, Object details) {
         Map<String, Object> response = new HashMap<>();
         response.put("error", message);
         response.put("status", status.value());

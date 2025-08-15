@@ -3,6 +3,7 @@ package com.store.aladdin.controllers.AdminController.category;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,11 +47,11 @@ public class CategoryControllers {
 
     
     @PostMapping(value = "/create-category", consumes = "multipart/form-data")
-    public ResponseEntity<?> createCategory(
+    public ResponseEntity<Map<String, Object>> createCategory(
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
         try {
-            //  System.out.println("banner at creation = "+bannerImages);
+
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(category);
@@ -64,7 +65,7 @@ public class CategoryControllers {
             return ResponseUtil.buildResponse("category created successfully", true, savedCategory, HttpStatus.CREATED);
 
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category JSON format: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Invalid category JSON format: ", HttpStatus.BAD_REQUEST , e.getMessage());
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("error creating category", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }   
@@ -92,8 +93,7 @@ public class CategoryControllers {
            System.out.println("updated category"+updatedCategory);
             return ResponseUtil.buildResponse("Category updated successfully", true, updatedCategory, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body("Error updating category: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Error updating category", HttpStatus.INTERNAL_SERVER_ERROR,  e.getMessage());
         }
     }
 
@@ -114,7 +114,7 @@ public class CategoryControllers {
             categoryService.deleteCategoriesByIds(categoryIds);
             return ResponseUtil.buildResponse("Categories deleted successfully", true, null, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting categories: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Error deleting categories", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
     }

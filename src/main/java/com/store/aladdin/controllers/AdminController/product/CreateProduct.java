@@ -66,11 +66,11 @@ public class CreateProduct {
             return ResponseUtil.buildResponse("Product created successfully", true, proUp, HttpStatus.OK);
             
             } catch (ValidationException ve) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation error: " + ve.getMessage());
+                return ResponseUtil.buildErrorResponse("Validation error", HttpStatus.BAD_REQUEST, ve.getMessage());
             } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading images: " + e.getMessage());
+                return ResponseUtil.buildErrorResponse("Error uploading images", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+                return ResponseUtil.buildErrorResponse("Error", HttpStatus.BAD_REQUEST, e.getMessage());
             }
     }
 

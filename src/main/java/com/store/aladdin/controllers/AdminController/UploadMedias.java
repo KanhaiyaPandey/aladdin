@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.store.aladdin.models.Medias;
 import com.store.aladdin.services.ImageUploadService;
+import com.store.aladdin.utils.response.ResponseUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,10 +49,9 @@ public class UploadMedias {
             mongoTemplate.save(media);
             uploadedMedias.add(media);
         }
-
-            return ResponseEntity.ok().body(uploadedMedias); 
+            return ResponseUtil.buildResponse("image uploaded", HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error uploading images: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Error uploading images:", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 }
 

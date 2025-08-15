@@ -40,8 +40,7 @@ public class PublicControllers {
             List<Product> products = productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus);
            return ResponseUtil.buildResponse("products fetched successfully", true, products, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error fetching products: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Error fetching products", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
     
@@ -68,7 +67,7 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
         }
             return ResponseUtil.buildResponse("categories fetched successfully", true, categories, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching categories: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Error fetching categories", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -82,11 +81,10 @@ public ResponseEntity<?> getProductById(@PathVariable String productId) {
             }
             return ResponseUtil.buildResponse("Category fetched successfully", true, category, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body("Invalid category ID format: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Invalid category ID format", HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body("Error fetching category: " + e.getMessage());
+            return ResponseUtil.buildErrorResponse("Error fetching categories", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+
         }
     }
     
