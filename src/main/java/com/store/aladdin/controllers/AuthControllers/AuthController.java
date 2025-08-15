@@ -35,8 +35,8 @@ public class AuthController {
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    private final String type = "JWT_TOKEN";
-    private final String set = "Set-Cookie";
+    private static final String TYPE = "JWT_TOKEN";
+    private static final String SET = "Set-Cookie";
 
     // login
     @PostMapping("/login")
@@ -53,22 +53,19 @@ public class AuthController {
     
         // Check if password matches
         if (logedinUser != null) {
-            // Retrieve roles for the user
-            // List<String> roles = userService.getUserRoles(loginUser.getEmail());
+   
     
             // Generate JWT token with username and roles
             String token = JwtUtil.generateToken(logedinUser);
     
             // Add JWT token as a cookie
-            Cookie cookie = new Cookie(type, token);
+            Cookie cookie = new Cookie(SET, token);
             cookie.setHttpOnly(true);
-            cookie.setSecure(true); // ✅ Required for SameSite=None to work on HTTPS
+            cookie.setSecure(true);
             cookie.setPath("/");
-            cookie.setMaxAge(60 * 60 * 24); // 1 day
-            // Java's Cookie API doesn't support SameSite directly — override via header:
-            response.setHeader(set, "JWT_TOKEN=" + token +
+            cookie.setMaxAge(60 * 60 * 24); 
+            response.setHeader(SET, "JWT_TOKEN=" + token +
                 "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400"); 
-            // Optionally add the cookie (redundant but okay)
             response.addCookie(cookie);
 
             
@@ -114,13 +111,13 @@ public class AuthController {
                 String token = JwtUtil.generateToken(user);
 
                 // Set the token in an HTTP-only cookie
-                Cookie cookie = new Cookie(type, token);
+                Cookie cookie = new Cookie(TYPE, token);
                 cookie.setHttpOnly(true);
-                cookie.setSecure(false); // Set true in production
+                cookie.setSecure(false); 
                 cookie.setPath("/");
-                cookie.setMaxAge(60 * 60 * 24); // 1 day
+                cookie.setMaxAge(60 * 60 * 24); 
                 response.addCookie(cookie);
-                response.setHeader(set, "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
+                response.setHeader(SET, "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
 
                 return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);
             } catch (IllegalArgumentException e) {
@@ -144,7 +141,7 @@ public class AuthController {
         // Extract token from cookies
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if (type.equals(cookie.getName())) {
+                if (TYPE.equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
                 }
@@ -185,11 +182,11 @@ public class AuthController {
         @PostMapping("/logout")
         public ResponseEntity<Map<String, Object>> logout(HttpServletResponse response) {
             // Clear the JWT cookie
-            Cookie cookie = new Cookie(type, null);
+            Cookie cookie = new Cookie(TYPE, null);
             cookie.setHttpOnly(true);
-            cookie.setSecure(true); // Set to false if not using HTTPS locally
+            cookie.setSecure(true); 
             cookie.setPath("/");
-            cookie.setMaxAge(0); // Deletes the cookie immediately
+            cookie.setMaxAge(0);
             response.addCookie(cookie);
             response.setHeader("Set-Cookie", "JWT_TOKEN=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0");
             return ResponseUtil.buildResponse("Logged out successfully", true, null , HttpStatus.OK);
