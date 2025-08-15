@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AdminController.orders;
+package com.store.aladdin.controllers.admincontroller.orders;
 
 import java.time.LocalDateTime;
 import java.util.List;

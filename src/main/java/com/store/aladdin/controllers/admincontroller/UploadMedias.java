@@ -1,8 +1,6 @@
-package com.store.aladdin.controllers.AdminController;
+package com.store.aladdin.controllers.admincontroller;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.MongoTemplate;

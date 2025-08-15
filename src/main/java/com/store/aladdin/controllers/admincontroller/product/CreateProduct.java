@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AdminController.product;
+package com.store.aladdin.controllers.admincontroller.product;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

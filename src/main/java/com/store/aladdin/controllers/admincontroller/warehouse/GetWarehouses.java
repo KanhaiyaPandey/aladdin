@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AdminController.warehouse;
+package com.store.aladdin.controllers.admincontroller.warehouse;
 
 import java.util.List;
 import java.util.Map;

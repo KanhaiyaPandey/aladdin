@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AdminController.shipping;
+package com.store.aladdin.controllers.admincontroller.shipping;
 
 import java.util.Map;
 

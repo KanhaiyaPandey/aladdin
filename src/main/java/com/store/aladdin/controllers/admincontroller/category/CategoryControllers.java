@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AdminController.category;
+package com.store.aladdin.controllers.admincontroller.category;
 
 
 import java.io.IOException;
