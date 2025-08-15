@@ -3,7 +3,6 @@ package com.store.aladdin.controllers.AdminController.orders;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +14,15 @@ import com.store.aladdin.models.Order;
 import com.store.aladdin.services.OrderService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/admin/orders")
+@RequiredArgsConstructor
 public class OrderControllers {
 
-    @Autowired
-    private OrderService orderService;
+
+    private final OrderService orderService;
 
 
     @GetMapping("/get-orders")

@@ -1,6 +1,5 @@
 package com.store.aladdin.queries;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -8,14 +7,16 @@ import org.springframework.stereotype.Component;
 
 import com.store.aladdin.models.Product;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
+@RequiredArgsConstructor
 public class ProductQueries {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     public List<Product> filteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
         Query query = new Query();

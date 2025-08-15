@@ -1,19 +1,21 @@
 package com.store.aladdin.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import com.store.aladdin.models.Product;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public List<Product> findFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {

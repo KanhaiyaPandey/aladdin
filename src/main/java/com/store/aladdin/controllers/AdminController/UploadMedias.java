@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,15 +16,17 @@ import org.springframework.web.multipart.MultipartFile;
 import com.store.aladdin.models.Medias;
 import com.store.aladdin.services.ImageUploadService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class UploadMedias {
 
-    @Autowired
-    private ImageUploadService imageUploadService;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final ImageUploadService imageUploadService;
+
+    private final MongoTemplate mongoTemplate;
 
     @PostMapping(value = "/media/upload-media", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")

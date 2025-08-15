@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.store.aladdin.DTOs.AuthPojo;
 import com.store.aladdin.models.User;
 import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.JwtUtil;
@@ -25,25 +25,27 @@ import com.store.aladdin.utils.validation.ValidationUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class AuthController {
 
-     @Autowired
-    private UserService userService;
+    
+    private final UserService userService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private final String type = "JWT_TOKEN";
 
-
     // login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User loginUser, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
+
         // Fetch user by email
         User user = userService.getUserByEmail(loginUser.getEmail());
+  
         if (user == null) {
             return ResponseUtil.buildResponse("User not found", HttpStatus.BAD_REQUEST);
         }

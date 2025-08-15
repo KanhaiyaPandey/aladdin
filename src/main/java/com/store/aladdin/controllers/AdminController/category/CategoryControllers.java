@@ -4,7 +4,6 @@ package com.store.aladdin.controllers.AdminController.category;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,20 +27,18 @@ import com.store.aladdin.utils.helper.ProductHelper;
 import com.store.aladdin.utils.response.ResponseUtil;
 import com.store.aladdin.validations.CategoryValidation;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/admin/category")
+@RequiredArgsConstructor
 public class CategoryControllers {
 
-    @Autowired
-    private ImageUploadService imageUploadService;
 
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ProductHelper productHalper;
-
-    @Autowired CategoryValidation categoryValidation;
+    private final ImageUploadService imageUploadService;
+    private final CategoryService categoryService;
+    private final ProductHelper productHalper;
+    private final CategoryValidation categoryValidation;
 
 
 

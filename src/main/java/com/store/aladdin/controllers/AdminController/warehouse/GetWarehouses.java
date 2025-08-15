@@ -2,7 +2,6 @@ package com.store.aladdin.controllers.AdminController.warehouse;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,14 +13,15 @@ import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.services.WarehouseServices;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/admin/warehouses")
+@RequiredArgsConstructor
 public class GetWarehouses {
 
-    @Autowired
-    private WarehouseServices warehouseServices;
-
-    
+    private final WarehouseServices warehouseServices;
+ 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllWarehouses() {

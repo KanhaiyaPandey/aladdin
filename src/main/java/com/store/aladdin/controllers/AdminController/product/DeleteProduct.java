@@ -1,7 +1,6 @@
 package com.store.aladdin.controllers.AdminController.product;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,17 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class DeleteProduct {
     
-
-    @Autowired
-    private ProductService productService;
-
-
-    
+    private final ProductService productService;
+  
     @DeleteMapping("/product/delete-product/{productId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteProduct(@PathVariable String productId) {

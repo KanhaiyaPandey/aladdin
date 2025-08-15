@@ -1,12 +1,12 @@
 package com.store.aladdin.controllers;
 
 import com.store.aladdin.services.UserService;
-import com.store.aladdin.utils.CartItem;
 import com.store.aladdin.utils.CartResponseItem;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
+
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+   
+    private final UserService userService;
 
 
     // Delete user
@@ -29,12 +30,12 @@ public class UserController {
     }
 
     // Add product to cart
-    @PostMapping("/{userId}/cart/add")
-    public ResponseEntity<?> addToCart(@PathVariable ObjectId userId, @RequestBody CartItem item) {
-        item.setId(null);
-        userService.addToCart(userId, item);
-        return ResponseEntity.ok("Product added to cart successfully");
-    }
+    // @PostMapping("/{userId}/cart/add")
+    // public ResponseEntity<?> addToCart(@PathVariable ObjectId userId, @RequestBody CartItem item) {
+    //     item.setId(null);
+    //     userService.addToCart(userId, item);
+    //     return ResponseEntity.ok("Product added to cart successfully");
+    // }
     
 
     // Remove product from cart

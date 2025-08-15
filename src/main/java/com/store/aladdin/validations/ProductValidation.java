@@ -1,16 +1,17 @@
 package com.store.aladdin.validations;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.store.aladdin.models.Product;
 import com.store.aladdin.queries.ProductQueries;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class ProductValidation {
 
-    @Autowired
-    private ProductQueries productQueries;
+    private final ProductQueries productQueries;
     
     public void validateProduct(Product product) {
         if (product.getTitle() == null) {

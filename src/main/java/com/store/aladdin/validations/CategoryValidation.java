@@ -1,11 +1,9 @@
 package com.store.aladdin.validations;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.store.aladdin.models.Category;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CategoryValidation {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     public void validateCategory(Category category) {
         if (category.getTitle() == null || category.getTitle().isEmpty()) {

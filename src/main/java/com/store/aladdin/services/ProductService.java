@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.store.aladdin.models.Product;
@@ -13,14 +12,14 @@ import com.store.aladdin.queries.ProductQueries;
 import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.utils.ResourceNotFoundException;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ProductQueries productQueries;
+    private final ProductRepository productRepository;
+    private final ProductQueries productQueries;
 
     public Product createProduct(Product product){
         product.setCreatedAt(LocalDateTime.now());

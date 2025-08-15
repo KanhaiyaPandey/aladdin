@@ -2,7 +2,7 @@ package com.store.aladdin.controllers.AdminController.shipping;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,15 @@ import com.store.aladdin.services.OrderService;
 import com.store.aladdin.services.ShippingService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/admin/shipping")
+@RequiredArgsConstructor
 public class CreateShipping {
 
-    @Autowired
-    private ShippingService shippingService;
-
-    @Autowired OrderService orderService;
+    private final ShippingService shippingService;
+    private final OrderService orderService;
 
     
     @PostMapping(value = "/create-shipping", consumes = MediaType.APPLICATION_JSON_VALUE)

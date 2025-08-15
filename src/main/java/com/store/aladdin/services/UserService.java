@@ -10,8 +10,9 @@ import com.store.aladdin.utils.CartItem;
 import com.store.aladdin.utils.CartResponseItem;
 import com.store.aladdin.utils.ResourceNotFoundException;
 
+import lombok.RequiredArgsConstructor;
+
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +23,13 @@ import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-      @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final OrderRepository orderRepository;
 
 
     // Create a new user

@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.store.aladdin.DTOs.WarehouseDTO;
 import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.repository.WarehouseRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class WarehouseServices {
 
-
-    @Autowired
-    private WarehouseRepository warehouseRepository;
+    private final WarehouseRepository warehouseRepository;
 
     // Create a new Warehouse
     public Warehouse createWarehouse(WarehouseDTO warehouseDTO) {

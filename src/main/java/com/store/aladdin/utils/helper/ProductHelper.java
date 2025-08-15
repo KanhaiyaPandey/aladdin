@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,11 +11,13 @@ import com.store.aladdin.models.Product;
 import com.store.aladdin.queries.ProductQueries;
 import com.store.aladdin.services.ImageUploadService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProductHelper {
 
-    @Autowired
-    private ProductQueries productQueries;
+    private final ProductQueries productQueries;
 
  public void validateProduct(Product product) {
         if (product.getTitle() == null || product.getTitle().isEmpty()) {

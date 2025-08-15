@@ -10,10 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.store.aladdin.DTOs.CategoryResponse;
 import com.store.aladdin.models.Category;
@@ -22,29 +20,21 @@ import com.store.aladdin.models.Product.ProductCategories;
 import com.store.aladdin.repository.CategoryRepository;
 import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.utils.helper.CategoryMapperUtil;
-import com.store.aladdin.utils.helper.ProductHelper;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private ImageUploadService imageUploadService;
-
-    @Autowired
-    private ProductHelper productHalper;
+    
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;  
+    private final MongoTemplate mongoTemplate;
 
 
     // Find category by ID

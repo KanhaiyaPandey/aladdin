@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,20 +22,16 @@ import com.store.aladdin.utils.helper.ProductHelper;
 import com.store.aladdin.utils.response.ResponseUtil;
 import com.store.aladdin.utils.validation.ValidationException;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class CreateProduct {
 
-
-    @Autowired
-    private ProductService productService;
-
-
-    @Autowired
-    private ProductHelper productHelper;
-
-    @Autowired
-    private CategoryService categoryService;
+    private final ProductService productService;
+    private final ProductHelper productHelper;
+    private final CategoryService categoryService;
 
     
     @PostMapping(value = "/create-product")

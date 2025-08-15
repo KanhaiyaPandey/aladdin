@@ -2,8 +2,7 @@ package com.store.aladdin.utils.helper;
 
 import org.springframework.stereotype.Service;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
 
 @Service
 public class Enums {

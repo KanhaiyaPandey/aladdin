@@ -3,7 +3,6 @@ package com.store.aladdin.controllers.PublicControllers;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +18,17 @@ import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/api/public")
+@RequiredArgsConstructor
 public class PublicControllers {
     
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @GetMapping("/product/all-products")
     public ResponseEntity<?> getAllProducts(
