@@ -32,12 +32,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-    
     private final UserService userService;
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final String type = "JWT_TOKEN";
+    private final String set = "Set-Cookie";
 
     // login
     @PostMapping("/login")
@@ -67,7 +66,7 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); // 1 day
             // Java's Cookie API doesn't support SameSite directly — override via header:
-            response.setHeader("Set-Cookie", "JWT_TOKEN=" + token +
+            response.setHeader(set, "JWT_TOKEN=" + token +
                 "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400"); 
             // Optionally add the cookie (redundant but okay)
             response.addCookie(cookie);
@@ -121,7 +120,7 @@ public class AuthController {
                 cookie.setPath("/");
                 cookie.setMaxAge(60 * 60 * 24); // 1 day
                 response.addCookie(cookie);
-                response.setHeader("Set-Cookie", "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
+                response.setHeader(set, "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
 
                 return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);
             } catch (IllegalArgumentException e) {
