@@ -28,7 +28,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleJsonParseError(HttpMessageNotReadableException ex) {
-        ex.printStackTrace(); // Logs the exact field mismatch
         return ResponseEntity.badRequest().body("Invalid JSON: " + ex.getMessage());
     }
 

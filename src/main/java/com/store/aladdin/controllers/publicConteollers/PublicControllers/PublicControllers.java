@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers;
+package com.store.aladdin.controllers.publicConteollers.PublicControllers;
 
 import java.util.List;
 

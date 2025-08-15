@@ -23,7 +23,7 @@ public class ProductService {
     private ProductQueries productQueries;
 
     public Product createProduct(Product product){
-        product.setDate(LocalDateTime.now());
+        product.setCreatedAt(LocalDateTime.now());
         return productRepository.save(product);
     }
 
@@ -38,8 +38,8 @@ public class ProductService {
 
     public Product updateProduct(ObjectId productId, Product updatedProduct) {
         return productRepository.findById(productId).map(existingProduct -> {
-            BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "date");
-            existingProduct.setDate(LocalDateTime.now());
+            BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "createdAt");
+            existingProduct.setLastUpdateedAt(LocalDateTime.now());
             return productRepository.save(existingProduct);
         }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
     }

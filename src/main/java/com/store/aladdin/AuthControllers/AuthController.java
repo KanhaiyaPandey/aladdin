@@ -36,6 +36,8 @@ public class AuthController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    private final String type = "JWT_TOKEN";
+
 
     // login
     @PostMapping("/login")
@@ -57,7 +59,7 @@ public class AuthController {
             String token = JwtUtil.generateToken(logedinUser);
     
             // Add JWT token as a cookie
-            Cookie cookie = new Cookie("JWT_TOKEN", token);
+            Cookie cookie = new Cookie(type, token);
             cookie.setHttpOnly(true);
             cookie.setSecure(true); // ✅ Required for SameSite=None to work on HTTPS
             cookie.setPath("/");
@@ -111,7 +113,7 @@ public class AuthController {
                 String token = JwtUtil.generateToken(user);
 
                 // Set the token in an HTTP-only cookie
-                Cookie cookie = new Cookie("JWT_TOKEN", token);
+                Cookie cookie = new Cookie(type, token);
                 cookie.setHttpOnly(true);
                 cookie.setSecure(false); // Set true in production
                 cookie.setPath("/");
@@ -141,7 +143,7 @@ public class AuthController {
         // Extract token from cookies
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT_TOKEN".equals(cookie.getName())) {
+                if (type.equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
                 }
@@ -182,7 +184,7 @@ public class AuthController {
         @PostMapping("/logout")
         public ResponseEntity<?> logout(HttpServletResponse response) {
             // Clear the JWT cookie
-            Cookie cookie = new Cookie("JWT_TOKEN", null);
+            Cookie cookie = new Cookie(type, null);
             cookie.setHttpOnly(true);
             cookie.setSecure(true); // Set to false if not using HTTPS locally
             cookie.setPath("/");

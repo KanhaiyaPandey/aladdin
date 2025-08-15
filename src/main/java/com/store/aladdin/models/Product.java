@@ -56,19 +56,10 @@ public class Product {
     private List<Warehouse> warehouseData = new ArrayList<>(); 
 
     private List<Dimension> dimensions = new ArrayList<>(); 
-
-
-
-    private LocalDateTime date;
-
     private LocalDateTime createdAt;
-
-
-
+    private LocalDateTime lastUpdateedAt;
 
     // other constructors
-
-
 
     @Data
     @NoArgsConstructor

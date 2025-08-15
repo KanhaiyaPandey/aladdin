@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.response.ResponseUtil;
@@ -30,6 +32,8 @@ public class UpdateProduct {
     public ResponseEntity<?> updateProduct(@PathVariable ObjectId productId, @RequestBody String productJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             Product product = objectMapper.readValue(productJson, Product.class);
             Product updatedProduct = productService.updateProduct(productId, product);
             return ResponseUtil.buildResponse("Product updated successfully", true ,updatedProduct,HttpStatus.OK);
