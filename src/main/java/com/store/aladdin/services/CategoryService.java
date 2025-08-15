@@ -164,21 +164,19 @@ public class CategoryService {
 
     if (payload.getTitle() != null && !payload.getTitle().isBlank()) {
         category.setTitle(payload.getTitle());
-        System.out.println("category title = "+ category.getTitle());
     }
 
   
 
     if (payload.getDescription() != null && !payload.getDescription().isBlank()) {
         category.setDescription(payload.getDescription());
-           System.out.println("category des = "+ category.getDescription());
     }
 
     if (banners != null && !banners.isEmpty()) {
         category.setBanner(banners);
     }
 
-    // System.out.println("category"+category);
+    // ("category"+category);
 
     return categoryRepository.save(category);
 }

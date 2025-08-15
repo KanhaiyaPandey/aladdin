@@ -19,7 +19,7 @@ public class PaymentService {
         private String apiSecret;
 
     public OrderResponseTest createOrder(int amount, String currency, String receiptId) throws RazorpayException  {
-        // System.out.println("Razorpay API key: " + apiKey);
+        // ("Razorpay API key: " + apiKey);
         RazorpayClient razorpayClient = new RazorpayClient(apiKey, apiSecret);
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", amount * 100);
@@ -32,8 +32,6 @@ public class PaymentService {
         response.setAmount(order.get("amount"));
         response.setCurrency(order.get("currency"));
         // response.setReceipt(order.get("receipt"));
-        System.out.println("id == "+response.getId());
-        System.out.println("amount == "+response.getAmount() / 100);
 
         return response;
     }

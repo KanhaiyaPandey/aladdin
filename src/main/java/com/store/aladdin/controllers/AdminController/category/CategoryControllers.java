@@ -83,14 +83,12 @@ public class CategoryControllers {
         @RequestPart(value = "banner", required = false) List<MultipartFile> banner
     ) {
         try {
-            System.out.println("banner at update = "+banner);
             ObjectMapper objectMapper = new ObjectMapper();
             Category categoryPayload = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(categoryPayload);
             categoryPayload.setSlug(generateSlug(categoryPayload.getTitle())); 
             List<String> bannerUrls = productHalper.uploadImages(banner, imageUploadService);
            Category updatedCategory =  categoryService.updateCategory(categoryId, categoryPayload, bannerUrls);
-           System.out.println("updated category"+updatedCategory);
             return ResponseUtil.buildResponse("Category updated successfully", true, updatedCategory, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error updating category", HttpStatus.INTERNAL_SERVER_ERROR,  e.getMessage());

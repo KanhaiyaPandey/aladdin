@@ -35,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                // System.out.println("JWT Token: " + token);
+                // ("JWT Token: " + token);
                 String username = JwtUtil.validateToken(token); 
 
                 // Extract roles without adding "ROLE_"
@@ -52,11 +52,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     );
 
                 // if (username != null) {
-                //     System.out.println("Authenticated user: " + username);
-                //     System.out.println("Roles: " + Arrays.toString(userDetails.getAuthorities().toArray()));
+                //     ("Authenticated user: " + username);
+                //     ("Roles: " + Arrays.toString(userDetails.getAuthorities().toArray()));
                 // }
 
-                // System.out.println("JWT Token found in cookies");
+                // ("JWT Token found in cookies");
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

@@ -3,6 +3,7 @@ package com.store.aladdin.services;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
 import com.store.aladdin.models.Order;
 import com.store.aladdin.queries.OrderQueries;
 import com.store.aladdin.utils.helper.Enums.OrderStatus;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 import com.store.aladdin.repository.OrderRepository;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +27,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final MongoTemplate mongoTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     // get orders 
 
@@ -84,7 +89,6 @@ public class OrderService {
                 ObjectId orderId = new ObjectId(channelOrderId);
                 Optional<Order> optionalOrder = orderRepository.findById(orderId);
                 if (optionalOrder.isEmpty()) {
-                    System.out.println("Order not found for orderId: " + channelOrderId);
                     return;
                 }
                 Order order = optionalOrder.get();
@@ -100,7 +104,7 @@ public class OrderService {
                 orderRepository.save(order);
             
         } catch (Exception e) {
-           System.out.println(e);
+           logger.error("error",e);
         }
     }
 
