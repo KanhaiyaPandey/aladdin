@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.authcontrollers;
+package com.store.aladdin.controllers.AuthControllers;
 
 
 import java.util.HashMap;

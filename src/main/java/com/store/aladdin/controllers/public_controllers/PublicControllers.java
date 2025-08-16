@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.publiccontrollers;
+package com.store.aladdin.controllers.public_controllers;
 
 import java.util.List;
 import java.util.Map;
