@@ -1,7 +1,6 @@
 package com.store.aladdin.validations;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -65,9 +64,9 @@ public class CategoryValidation {
         if (childIds == null || childIds.isEmpty()) return;
 
         // Step 3: Find all child categories in a single query
-        List<Category> subCategories = mongoTemplate.find(
+       List<Category> subCategories = mongoTemplate.find(
             Query.query(Criteria.where("_id").in(
-                childIds.stream().map(ObjectId::new).collect(Collectors.toList())
+                childIds.stream().map(ObjectId::new).toList()
             )),
             Category.class
         );

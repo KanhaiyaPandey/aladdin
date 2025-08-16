@@ -8,6 +8,10 @@ import java.util.Map;
 
 public class ResponseUtil {
 
+    private ResponseUtil(){
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     private static final String STATUS_KEY = "status";
     private static final String MESSAGE_KEY = "message";
     private static final String SUCCESS_KEY = "success";

@@ -196,7 +196,6 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
                 product.getTitle(),
                 product.getDescription(),
                 product.getSellPrice(),
-                product.getCompareAtPrice(),
                 item.getQuantity()
         );
 
@@ -207,7 +206,7 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
 }
 
    // create order
-   
+
     public Order createOrder (Order order){
         order.setCreatedAt(LocalDateTime.now());
         return orderRepository.save(order);

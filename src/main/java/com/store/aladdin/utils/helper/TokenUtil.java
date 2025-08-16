@@ -11,6 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class TokenUtil {
 
+    private TokenUtil() {
+      throw new UnsupportedOperationException("Utility class");
+    }
+
         public static ObjectId extractUserIdFromRequest(HttpServletRequest request) {
         String token = Arrays.stream(request.getCookies())
                 .filter(cookie -> "JWT_TOKEN".equals(cookie.getName()))

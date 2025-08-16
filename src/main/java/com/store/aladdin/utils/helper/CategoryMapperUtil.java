@@ -8,6 +8,10 @@ import com.store.aladdin.models.Category;
 
 public class CategoryMapperUtil {
 
+    private CategoryMapperUtil(){
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     // Public entry point
     public static CategoryResponse mapToCategoryResponse(Category category, Map<String, Category> categoryMap) {
         return mapToCategoryResponse(category, categoryMap, new HashSet<>());

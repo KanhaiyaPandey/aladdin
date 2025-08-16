@@ -8,6 +8,7 @@ class AladdinApplicationTests {
 
 	@Test
 	void contextLoads() {
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
 }
