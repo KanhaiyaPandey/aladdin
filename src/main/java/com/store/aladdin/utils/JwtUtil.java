@@ -18,14 +18,14 @@ import java.util.Date;
 @Component  
 public class JwtUtil {
 
-    private static String SECRET_KEY;
+    private static String secretKey;
 
     @Value("${spring.data.secretkey}")
-    private String secretKey;
+    private String secret;
 
     @PostConstruct
     public void init() {
-        JwtUtil.SECRET_KEY = secretKey;
+        JwtUtil.secretKey = secret;
     }
 
     private static final long EXPIRATION_TIME = 86400000;  
@@ -37,13 +37,13 @@ public class JwtUtil {
                 .withClaim("userId", user.getId().toString()) 
                 .withClaim("roles", String.join(",", user.getRoles()))  
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  
-                .sign(Algorithm.HMAC256(SECRET_KEY));
+                .sign(Algorithm.HMAC256(secretKey));
     }
 
         // Validate JWT token and extract the subject (username)
         public static String validateToken(String token) {
             try {
-                return JWT.require(Algorithm.HMAC256(SECRET_KEY))
+                return JWT.require(Algorithm.HMAC256(secretKey))
                         .build()
                         .verify(token)
                         .getSubject(); 
@@ -57,18 +57,18 @@ public class JwtUtil {
     // Extract roles from the JWT token (no "ROLE_" prefix)
     public static String[] extractRoles(String token) {
         try {
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SECRET_KEY))
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(secretKey))
                     .build()
                     .verify(token);
             String rolesClaim = decodedJWT.getClaim("roles").asString();
             return rolesClaim.split(",");
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Unable to extract roles from token", e);
+            throw new CustomeRuntimeExceptionsHandler("Unable to extract roles from token", e);
         }
     }
 
     public static String extractUserId(String token) {
-    return JWT.require(Algorithm.HMAC256(SECRET_KEY))
+    return JWT.require(Algorithm.HMAC256(secretKey))
             .build()
             .verify(token)
             .getClaim("userId")

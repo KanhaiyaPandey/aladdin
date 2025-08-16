@@ -4,6 +4,14 @@ import com.store.aladdin.models.User;
 
 
 public class ValidationUtils {
+
+
+        private ValidationUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
+
+
     public static String validateUser(User user) {
         // Validate name
         if (user.getName() == null || user.getName().trim().isEmpty()) {

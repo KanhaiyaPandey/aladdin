@@ -206,20 +206,11 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
     return cartResponse;
 }
 
-// create order
+   // create order
    
+    public Order createOrder (Order order){
+        order.setCreatedAt(LocalDateTime.now());
+        return orderRepository.save(order);
+    }
 
-public Order createOrder (Order order){
-    order.setCreatedAt(LocalDateTime.now());
-    Order savedOrder =  orderRepository.save(order);
-    return savedOrder;
-}
-
-
-
-    // Get user's orders
-    // public List<ObjectId> getUserOrders(ObjectId userId) {
-    //     User user = getUserById(userId);
-    //     return user.getOrders();
-    // }
 }

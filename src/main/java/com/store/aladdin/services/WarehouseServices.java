@@ -41,11 +41,11 @@ public class WarehouseServices {
 
     // Update a Warehouse
     public Warehouse updateWarehouse(ObjectId id, Warehouse updatedWarehouse) {
-        return warehouseRepository.findById(id).map(Warehouse -> {
-            Warehouse.setName(updatedWarehouse.getName());
-            Warehouse.setAddress(updatedWarehouse.getAddress());
-            Warehouse.setPincode(updatedWarehouse.getPincode());
-            return warehouseRepository.save(Warehouse);
+        return warehouseRepository.findById(id).map(warehouse -> {
+            warehouse.setName(updatedWarehouse.getName());
+            warehouse.setAddress(updatedWarehouse.getAddress());
+            warehouse.setPincode(updatedWarehouse.getPincode());
+            return warehouseRepository.save(warehouse);
         }).orElseThrow(() -> new CustomeRuntimeExceptionsHandler("Warehouse not found with id: " + id));
     }
 

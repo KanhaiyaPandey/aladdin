@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.queries.ProductQueries;
 import com.store.aladdin.services.ImageUploadService;
@@ -40,32 +41,12 @@ public class ProductHelper {
                 try {
                     imageUrls.add(imageUploadService.uploadImage(image));
                 } catch (IOException e) {
-                    throw new RuntimeException("Failed to upload image: " + image.getOriginalFilename(), e);
+                    throw new CustomeRuntimeExceptionsHandler("Failed to upload image: " + image.getOriginalFilename(), e);
                 }
             }
         }
         return imageUrls;
     }
-
-    // public void processVariantMedia(Product product, List<MultipartFile> variantMedias, ImageUploadService imageUploadService) {
-    //     if (product.getVariants() != null && !product.getVariants().isEmpty()) {
-    //         Map<String, List<String>> variantMediaUrlsMap = new HashMap<>();
-    //         if (variantMedias != null && !variantMedias.isEmpty()) {
-    //             for (MultipartFile media : variantMedias) {
-    //                 try {
-    //                     String mediaUrl = imageUploadService.uploadImage(media);
-    //                     String variantId = extractVariantIdFromMedia(media);
-    //                     variantMediaUrlsMap.computeIfAbsent(variantId, k -> new ArrayList<>()).add(mediaUrl);
-    //                 } catch (IOException e) {
-    //                     throw new RuntimeException("Failed to upload media: " + media.getOriginalFilename(), e);
-    //                 }
-    //             }
-    //         }
-    //         for (Product.Variant variant : product.getVariants()) {
-    //             variant.setMedias(variantMediaUrlsMap.getOrDefault(variant.getVariantId(), new ArrayList<>()));
-    //         }
-    //     }
-    // }
 
     @SuppressWarnings("unused")
     private String extractVariantIdFromMedia(MultipartFile media) {
