@@ -56,7 +56,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
       
             } catch (RuntimeException e) {
-                System.err.println("Error during token validation: " + e.getMessage());
                 SecurityContextHolder.clearContext();
             }
         } 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.store.aladdin.exceptions.ShippingTokenException;
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.services.ShippingService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
@@ -53,15 +53,15 @@ private String generateShippingToken() {
     try {
         return shippingService.createToken();
     } catch (Exception e) {
-        throw new ShippingTokenException("Failed to generate shipping token", e);
+        throw new CustomeRuntimeExceptionsHandler("Failed to generate shipping token", e);
     }
 }
 
-private String attemptCreateShipping(String orderPayload, String token) throws ShippingTokenException {
+private String attemptCreateShipping(String orderPayload, String token) throws CustomeRuntimeExceptionsHandler {
     try {
         return shippingService.createShipping(orderPayload, token);
     } catch (Exception e) {
-        throw new ShippingTokenException("Failed to generate shipping token", e);
+        throw new CustomeRuntimeExceptionsHandler("Failed to generate shipping token", e);
     }
 }
 

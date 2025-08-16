@@ -57,7 +57,8 @@ public class Order {
 
         private String firstName; 
         private String lastName; 
-        private String address; 
+        private String houseNumber;
+        private String area; 
         private String city; 
         private String state;
         private String pincode;
