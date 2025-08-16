@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import com.store.aladdin.dtos.WarehouseDTO;
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.repository.WarehouseRepository;
 
@@ -45,7 +46,7 @@ public class WarehouseServices {
             Warehouse.setAddress(updatedWarehouse.getAddress());
             Warehouse.setPincode(updatedWarehouse.getPincode());
             return warehouseRepository.save(Warehouse);
-        }).orElseThrow(() -> new RuntimeException("Warehouse not found with id: " + id));
+        }).orElseThrow(() -> new CustomeRuntimeExceptionsHandler("Warehouse not found with id: " + id));
     }
 
     // Delete a Warehouse

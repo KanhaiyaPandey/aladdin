@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import com.store.aladdin.dtos.CategoryResponse;
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.models.Product.ProductCategories;
@@ -153,7 +154,7 @@ public class CategoryService {
    
 
     if (optionalCategory.isEmpty()) {
-        throw new RuntimeException("Category not found");
+        throw new CustomeRuntimeExceptionsHandler("Category not found");
     }
 
     Category category = optionalCategory.get();

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.User;
 
 import jakarta.annotation.PostConstruct;
@@ -47,7 +48,7 @@ public class JwtUtil {
                         .verify(token)
                         .getSubject(); 
             } catch (JWTVerificationException e) {
-                throw new RuntimeException("Invalid or expired token", e);
+                throw new CustomeRuntimeExceptionsHandler("Invalid or expired token");
             }
         }
 

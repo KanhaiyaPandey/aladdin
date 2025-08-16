@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.queries.OrderQueries;
 import com.store.aladdin.utils.helper.Enums.OrderStatus;
@@ -70,7 +71,7 @@ public class OrderService {
         try {
             orderStatus = OrderStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Invalid order status: " + status);
+            throw new CustomeRuntimeExceptionsHandler("Invalid order status:");
         }
 
         for (Order order : orders) {

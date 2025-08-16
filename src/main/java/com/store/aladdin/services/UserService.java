@@ -1,5 +1,6 @@
 package com.store.aladdin.services;
 
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.models.User;
@@ -135,7 +136,7 @@ public void addToCart(ObjectId userId, CartItem item) {
     
     // Check if the product exists
     if (!productExists(item.getProductId())) {
-        throw new RuntimeException("Product does not exist");
+        throw new CustomeRuntimeExceptionsHandler("Product does not exist");
     }
 
     // Find existing cart item for the product
@@ -187,7 +188,7 @@ public List<CartResponseItem> getUserCart(ObjectId userId) {
     for (CartItem item : user.getCart()) {
         // Fetch product details for each productId
         Product product = productRepository.findById(item.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found: " + item.getProductId()));
+                .orElseThrow(() ->  new CustomeRuntimeExceptionsHandler("product not found"));
 
         // Create a CartResponseItem with both Product and CartItem details
         CartResponseItem responseItem = new CartResponseItem(
