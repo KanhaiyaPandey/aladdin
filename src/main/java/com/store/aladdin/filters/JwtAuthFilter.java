@@ -39,10 +39,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String username = JwtUtil.validateToken(token); 
 
                 // Extract roles without adding "ROLE_"
-                String[] roles = JwtUtil.extractRoles(token); // No need to add "ROLE_" here
+                String[] roles = JwtUtil.extractRoles(token); 
 
                 List<SimpleGrantedAuthority> authorities = Arrays.stream(roles)
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // ensures ROLE_ prefix
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();
 
                     UserDetails userDetails = new org.springframework.security.core.userdetails.User(
@@ -50,13 +50,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             "",
                             authorities
                     );
-
-                // if (username != null) {
-                //     ("Authenticated user: " + username);
-                //     ("Roles: " + Arrays.toString(userDetails.getAuthorities().toArray()));
-                // }
-
-                // ("JWT Token found in cookies");
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

@@ -61,7 +61,7 @@ private String attemptCreateShipping(String orderPayload, String token) throws E
     try {
         return shippingService.createShipping(orderPayload, token);
     } catch (Exception e) {
-        throw new Exception("Error while calling shipping service: " + e.getMessage(), e);
+        throw new ShippingTokenException("Failed to generate shipping token", e);
     }
 }
 

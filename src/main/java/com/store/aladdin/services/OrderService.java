@@ -93,12 +93,12 @@ public class OrderService {
                 }
                 Order order = optionalOrder.get();
                 Order.ShippingDetails shippingDetails = new Order.ShippingDetails();
-                shippingDetails.setOrder_id(String.valueOf(dataMap.get("order_id")));
-                shippingDetails.setShipment_id(String.valueOf(dataMap.get("shipment_id")));
+                shippingDetails.setShipRocketOrderId(String.valueOf(dataMap.get("order_id")));
+                shippingDetails.setShipmentId(String.valueOf(dataMap.get("shipment_id")));
                 shippingDetails.setStatus((String) dataMap.get("status"));
-                shippingDetails.setAwb_code((String) dataMap.get("awb_code"));
-                shippingDetails.setCourier_name((String) dataMap.get("courier_name"));
-                shippingDetails.setPackaging_box_error((String) dataMap.get("packaging_box_error"));
+                shippingDetails.setAwbCode((String) dataMap.get("awb_code"));
+                shippingDetails.setCourierName((String) dataMap.get("courier_name"));
+                shippingDetails.setPackagingBoxError((String) dataMap.get("packaging_box_error"));
 
                 order.setShippingDetails(shippingDetails);
                 orderRepository.save(order);

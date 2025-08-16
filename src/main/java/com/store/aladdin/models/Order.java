@@ -90,21 +90,21 @@ public static class Timeline {
 @NoArgsConstructor
 public static class ShippingDetails {
 
-    private String order_id;
-    private String shipment_id;
+    private String shipRocketOrderId;
+    private String shipmentId;
     private String status;
-    private String awb_code;
-    private String courier_name;
-    private String packaging_box_error;
+    private String awbCode;
+    private String courierName;
+    private String packagingBoxError;
     
 }
 
 @Data
 @NoArgsConstructor
 public static class PaymentInfo{
-    private String razorpay_payment_id;
-    private String razorpay_order_id;
-    private String razorpay_signature;
+    private String razorpayPaymentId;
+    private String razorpayOrderId;
+    private String razorpaySignature;
     private String paymentMode;
 }
 
