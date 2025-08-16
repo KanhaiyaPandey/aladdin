@@ -7,8 +7,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.User;
 
-import jakarta.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +19,7 @@ public class JwtUtil {
     private static String secretKey;
 
     @Value("${spring.data.secretkey}")
-    private String secret;
-
-    @PostConstruct
-    public void init() {
+    public void setSecretKey(String secret) {
         JwtUtil.secretKey = secret;
     }
 
