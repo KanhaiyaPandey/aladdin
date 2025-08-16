@@ -2,11 +2,11 @@ package com.store.aladdin.queries;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Component;
+
 
 import java.time.LocalDateTime;
 
-@Component
+
 public class OrderQueries {
 
     private OrderQueries() {

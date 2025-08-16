@@ -8,6 +8,7 @@ import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.User;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -19,7 +20,10 @@ public class JwtUtil {
     private static String secretKey;
 
     @Value("${spring.data.secretkey}")
-    public void setSecretKey(String secret) {
+    private String secret;
+
+    @Bean
+    public void configureJwtUtil() {
         JwtUtil.secretKey = secret;
     }
 
