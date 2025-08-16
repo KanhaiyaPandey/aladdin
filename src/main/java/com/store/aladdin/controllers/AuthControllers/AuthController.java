@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.AuthControllers;
+package com.store.aladdin.controllers.authcontrollers;
 
 
 import java.util.HashMap;
@@ -51,14 +51,9 @@ public class AuthController {
 
                     User logedinUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
     
-        // Check if password matches
         if (logedinUser != null) {
-   
-    
-            // Generate JWT token with username and roles
+
             String token = JwtUtil.generateToken(logedinUser);
-    
-            // Add JWT token as a cookie
             Cookie cookie = new Cookie(SET, token);
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
@@ -67,8 +62,6 @@ public class AuthController {
             response.setHeader(SET, "JWT_TOKEN=" + token +
                 "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400"); 
             response.addCookie(cookie);
-
-            
 
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
@@ -88,7 +81,6 @@ public class AuthController {
             ObjectMapper objectMapper = new ObjectMapper();
 
             try {
-                // Hash the password before storing
 
                 User user = objectMapper.readValue(userJson, User.class);
                 String validationMessage = ValidationUtils.validateUser(user);
@@ -130,8 +122,6 @@ public class AuthController {
 
         // validate token
 
-
-        
         @GetMapping("/validate-token")
         public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
 

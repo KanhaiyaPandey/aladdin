@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.publicControllers;
+package com.store.aladdin.controllers.publiccontrollers;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class PublicControllers {
     
     private final ProductService productService;
-
     private final CategoryService categoryService;
 
     @GetMapping("/product/all-products")
@@ -45,8 +44,7 @@ public class PublicControllers {
         }
     }
     
-
-    
+   
     @GetMapping("product/{productId}")
 public ResponseEntity<Map<String, Object>> getProductById(@PathVariable String productId) {
     try {
@@ -57,8 +55,6 @@ public ResponseEntity<Map<String, Object>> getProductById(@PathVariable String p
     }
 }
 
-
-    // get all categories
     @GetMapping("/category/all-categories")
     public ResponseEntity<Map<String, Object>> getAllCategories() {
         try {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.store.aladdin.exceptions.ShippingTokenException;
 import com.store.aladdin.services.ShippingService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
@@ -31,27 +31,20 @@ public class CreateShipping {
     public ResponseEntity<Map<String, Object>> createShipping(@RequestBody String orderPayload) {
     try {
         String token = generateShippingToken();
-        
-        String responseJson;
-        try {
-            responseJson = shippingService.createShipping(orderPayload, token);
-        } catch (Exception e) {
-            return ResponseUtil.buildResponse(
-                "Failed to create shipping order: " + e.getMessage(),
-                false,
-                null,
-                HttpStatus.BAD_GATEWAY
-            );
-        }
-
-        return ResponseUtil.buildResponse("Shipping created successfully", true, responseJson, HttpStatus.OK);
+        String responseJson = attemptCreateShipping(orderPayload, token);
+        return ResponseUtil.buildResponse(
+            "Shipping order created successfully",
+            true,
+            responseJson,
+            HttpStatus.OK
+        );
 
     } catch (Exception e) {
         return ResponseUtil.buildResponse(
-            "Unexpected error: " + e.getMessage(),
+            "Failed to create shipping order: " + e.getMessage(),
             false,
             null,
-            HttpStatus.INTERNAL_SERVER_ERROR
+            HttpStatus.BAD_GATEWAY
         );
     }
 }
@@ -60,7 +53,15 @@ private String generateShippingToken() {
     try {
         return shippingService.createToken();
     } catch (Exception e) {
-        throw new RuntimeException("Failed to generate shipping token: " + e.getMessage());
+        throw new ShippingTokenException("Failed to generate shipping token", e);
+    }
+}
+
+private String attemptCreateShipping(String orderPayload, String token) throws Exception {
+    try {
+        return shippingService.createShipping(orderPayload, token);
+    } catch (Exception e) {
+        throw new Exception("Error while calling shipping service: " + e.getMessage(), e);
     }
 }
 
