@@ -54,7 +54,7 @@ public class User {
 
     private List<String> roles = new ArrayList<>();
 
-    private List<Address> Addresses = new ArrayList<>();
+    private List<Address> addresses = new ArrayList<>();
 
 
     @Data
@@ -65,7 +65,7 @@ public class User {
         private String city;
         private String state;
         private String postalCode;
-        private String alt_Number;
+        private String alternateNumber;
         private String country;
         private boolean active; 
         

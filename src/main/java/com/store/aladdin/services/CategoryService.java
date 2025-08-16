@@ -63,7 +63,7 @@ public class CategoryService {
         return allCategories.stream()
             .filter(cat -> cat.getParentCategoryId() == null)
             .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
-            .collect(Collectors.toList());
+            .toList();
     }
 
 
@@ -114,11 +114,8 @@ public class CategoryService {
 
 
     private void collectCategoryAndChildren(String parentId, Set<String> toDelete) {
-        String parentIdStr = parentId.toString();
-        toDelete.add(parentIdStr);
-
-        List<Category> children = categoryRepository.findByParentCategoryId(parentIdStr);
-
+        toDelete.add(parentId);
+        List<Category> children = categoryRepository.findByParentCategoryId(parentId);
         for (Category child : children) {
             collectCategoryAndChildren(child.getCategoryId(), toDelete);
         }

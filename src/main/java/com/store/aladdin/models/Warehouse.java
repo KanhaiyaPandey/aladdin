@@ -33,7 +33,7 @@ public class Warehouse {
     private String address;
 
     @NotBlank(message = "Pincode is required")
-    @Pattern(regexp = "^[1-9][0-9]{5}$", message = "Pincode must be a valid 6-digit Indian pincode")
+    @Pattern(regexp = "^[1-9]\\d{5}$", message = "Pincode must be a valid 6-digit Indian pincode")
     private String pincode;
 
 }

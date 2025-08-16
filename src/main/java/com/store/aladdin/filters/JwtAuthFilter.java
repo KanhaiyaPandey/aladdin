@@ -35,7 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                // ("JWT Token: " + token);
                 String username = JwtUtil.validateToken(token); 
 
                 // Extract roles without adding "ROLE_"

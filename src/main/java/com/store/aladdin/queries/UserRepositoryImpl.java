@@ -20,8 +20,8 @@ public class UserRepositoryImpl {
     public List<User> getUserForSA(){
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is("kanhaiya"));
-        List <User> users = mongoTemplate.find(query, User.class);
-        return users;
+        return mongoTemplate.find(query, User.class);
+       
     }
 
 }

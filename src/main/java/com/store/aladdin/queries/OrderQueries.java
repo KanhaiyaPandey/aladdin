@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @Component
 public class OrderQueries {
 
+    private OrderQueries() {
+        throw new UnsupportedOperationException("Utility class - cannot be instantiated");
+    }
+
     public static Query buildOrderQuery(
             String userName,
             String minPrice,

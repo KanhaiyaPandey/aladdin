@@ -57,7 +57,7 @@ private String generateShippingToken() {
     }
 }
 
-private String attemptCreateShipping(String orderPayload, String token) throws Exception {
+private String attemptCreateShipping(String orderPayload, String token) throws ShippingTokenException {
     try {
         return shippingService.createShipping(orderPayload, token);
     } catch (Exception e) {
