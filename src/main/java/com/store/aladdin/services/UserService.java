@@ -86,10 +86,9 @@ public class UserService {
     public User authenticateUser(String email, String password) {
         User user = getUserByEmail(email);
         if (passwordEncoder.matches(password, user.getPassword())) {
-            // ("user"+ user);
            return user;  
         }
-        return null;  // Match the provided password with the stored one
+        return null;
     }
 
     // Update a user

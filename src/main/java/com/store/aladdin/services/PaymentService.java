@@ -18,20 +18,17 @@ public class PaymentService {
         @Value("${razorpay.api.secret}")
         private String apiSecret;
 
-    public OrderResponseTest createOrder(int amount, String currency, String receiptId) throws RazorpayException  {
-        // ("Razorpay API key: " + apiKey);
+    public OrderResponseTest createOrder(int amount, String currency) throws RazorpayException  {
         RazorpayClient razorpayClient = new RazorpayClient(apiKey, apiSecret);
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", amount * 100);
         orderRequest.put("currency", currency);
-        // orderRequest.put("receiptId", receiptId);
         Order order = razorpayClient.orders.create(orderRequest);
 
         OrderResponseTest response = new OrderResponseTest();
         response.setId(order.get("id"));
         response.setAmount(order.get("amount"));
         response.setCurrency(order.get("currency"));
-        // response.setReceipt(order.get("receipt"));
 
         return response;
     }

@@ -173,8 +173,6 @@ public class CategoryService {
         category.setBanner(banners);
     }
 
-    // ("category"+category);
-
     return categoryRepository.save(category);
 }
 
