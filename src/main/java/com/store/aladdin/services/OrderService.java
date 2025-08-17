@@ -17,6 +17,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,9 +41,10 @@ public class OrderService {
 
 
     public List<Order> updateOrderStatus(List<String> orderIds, String status) {
-        List<ObjectId> objectIdList = orderIds.stream()
+       List<ObjectId> objectIdList = new ArrayList<>(
+        orderIds.stream()
                 .map(ObjectId::new)
-                .collect(Collectors.toList());
+                .toList());
         List<Order> orders = orderRepository.findAllById(objectIdList);
         OrderStatus orderStatus;
         try {

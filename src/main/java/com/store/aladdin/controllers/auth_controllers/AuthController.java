@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,6 +39,9 @@ public class AuthController {
     private static final String TYPE = "JWT_TOKEN";
     private static final String SET = "Set-Cookie";
 
+    @Value("${app.cookie.secure}")
+    private boolean secure;
+
     // login
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
@@ -56,7 +60,7 @@ public class AuthController {
             String token = JwtUtil.generateToken(logedinUser);
             Cookie cookie = new Cookie(SET, token);
             cookie.setHttpOnly(true);
-            cookie.setSecure(true);
+            cookie.setSecure(secure);
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24); 
             response.setHeader(SET, "JWT_TOKEN=" + token +
@@ -105,7 +109,7 @@ public class AuthController {
                 // Set the token in an HTTP-only cookie
                 Cookie cookie = new Cookie(TYPE, token);
                 cookie.setHttpOnly(true);
-                cookie.setSecure(false); 
+                cookie.setSecure(secure); 
                 cookie.setPath("/");
                 cookie.setMaxAge(60 * 60 * 24); 
                 response.addCookie(cookie);
