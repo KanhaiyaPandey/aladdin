@@ -42,21 +42,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
  
-        if (csrfEnabled) {
-            http.csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            );
-        } else {
-            http.csrf(csrf -> csrf.disable());
-        }
-
         http
+            .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/login").permitAll() 
                 .requestMatchers("/user/register").permitAll() 
                 .requestMatchers("/user/validate-token").permitAll()
                 .requestMatchers("/user/logout").permitAll()  
+                // Allow login without authentication
                 .requestMatchers("/api/public/**").permitAll() // Allow public routes
                 .requestMatchers("/api/user/**").authenticated() // Secure user routes
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Role check expects ROLE_ADMIN internally
