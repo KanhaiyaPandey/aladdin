@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.aladdin.dtos.OrderFilterDto;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.services.OrderService;
 import com.store.aladdin.utils.response.ResponseUtil;
@@ -41,8 +42,21 @@ public class OrderControllers {
         @RequestParam(required = false) String orderId,
         @RequestParam(required = false) String userId
     ){
-
-     List <Order> orders = orderService.getOrders(userName, minPrice, maxPrice, paymentStatus, status, startDate, endDate, deliveryStartDate, deliveryEndDate, pincode, orderId, userId);
+        OrderFilterDto filter = OrderFilterDto.builder()
+        .userName(userName)
+        .minPrice(minPrice)
+        .maxPrice(maxPrice)
+        .paymentStatus(paymentStatus)
+        .status(status)
+        .startDate(startDate)
+        .endDate(endDate)
+        .deliveryStartDate(deliveryStartDate)
+        .deliveryEndDate(deliveryEndDate)
+        .pincode(pincode)
+        .orderId(orderId)
+        .userId(userId)
+        .build();
+     List <Order> orders = orderService.getOrders(filter);
     return ResponseUtil.buildResponse("Orders fetched successfully.", true, orders, HttpStatus.OK);
  
 

@@ -17,7 +17,6 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,39 +33,16 @@ public class OrderService {
 
     // get orders 
 
-    public List<Order> getOrders(
-        String userName,String minPrice,String maxPrice,String paymentStatus,
-        String status, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime deliveryStartDate,
-        LocalDateTime deliveryEndDate,String pincode,String orderId,String userId
-        ){
-         OrderFilterDto filter = OrderFilterDto.builder()
-        .userName(userName)
-        .minPrice(minPrice)
-        .maxPrice(maxPrice)
-        .paymentStatus(paymentStatus)
-        .status(status)
-        .startDate(startDate)
-        .endDate(endDate)
-        .deliveryStartDate(deliveryStartDate)
-        .deliveryEndDate(deliveryEndDate)
-        .pincode(pincode)
-        .orderId(orderId)
-        .userId(userId)
-        .build();
+    public List<Order> getOrders(OrderFilterDto filter){
         Query query = OrderQueries.buildOrderQuery(filter);
-
         return mongoTemplate.find(query, Order.class);
     }
 
 
     public List<Order> updateOrderStatus(List<String> orderIds, String status) {
-
-        
         List<ObjectId> objectIdList = orderIds.stream()
                 .map(ObjectId::new)
                 .collect(Collectors.toList());
-
-
         List<Order> orders = orderRepository.findAllById(objectIdList);
         OrderStatus orderStatus;
         try {
