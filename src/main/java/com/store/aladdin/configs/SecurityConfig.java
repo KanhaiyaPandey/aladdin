@@ -7,6 +7,7 @@ import com.store.aladdin.exceptions.CustomAccessDeniedHandler;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 public class SecurityConfig {
@@ -33,18 +35,28 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Value("${app.csrf.enabled}") 
+    private boolean csrfEnabled;
+
     @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+ 
+        if (csrfEnabled) {
+            http.csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            );
+        } else {
+            http.csrf(csrf -> csrf.disable());
+        }
+
         http
-            .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/login").permitAll() 
                 .requestMatchers("/user/register").permitAll() 
                 .requestMatchers("/user/validate-token").permitAll()
                 .requestMatchers("/user/logout").permitAll()  
-                // Allow login without authentication
                 .requestMatchers("/api/public/**").permitAll() // Allow public routes
                 .requestMatchers("/api/user/**").authenticated() // Secure user routes
                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Role check expects ROLE_ADMIN internally
