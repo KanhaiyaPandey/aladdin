@@ -3,6 +3,7 @@ package com.store.aladdin.queries;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.store.aladdin.dtos.OrderFilterDto;
 
 import java.time.LocalDateTime;
 
@@ -13,31 +14,19 @@ public class OrderQueries {
         throw new UnsupportedOperationException("Utility class - cannot be instantiated");
     }
 
-    public static Query buildOrderQuery(
-            String userName,
-            String minPrice,
-            String maxPrice,
-            String paymentStatus,
-            String status,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            LocalDateTime deliveryStartDate,
-            LocalDateTime deliveryEndDate,
-            String pincode,
-            String orderId,
-            String userId
-    ) {
+    public static Query buildOrderQuery(OrderFilterDto filter ) {
         Criteria criteria = new Criteria();
 
-        addStringCriteria(criteria, "shippingAddress.firstName", userName);
-        addRangeCriteria(criteria, "grandTotal", minPrice, maxPrice);
-        addRangeCriteria(criteria, "createdAt", startDate, endDate);
-        addStringCriteria(criteria, "paymentStatus", paymentStatus);
-        addStringCriteria(criteria, "status", status);
-        addRangeCriteria(criteria, "deliveredDate", deliveryStartDate, deliveryEndDate);
-        addStringCriteria(criteria, "shippingAddress.pincode", pincode);
-        addStringCriteria(criteria, "orderId", orderId);
-        addStringCriteria(criteria, "userId", userId);
+
+        addStringCriteria(criteria, "shippingAddress.firstName", filter.getUserName());
+        addRangeCriteria(criteria, "grandTotal", filter.getMinPrice(), filter.getMaxPrice());
+        addRangeCriteria(criteria, "createdAt", filter.getStartDate(), filter.getEndDate());
+        addStringCriteria(criteria, "paymentStatus", filter.getPaymentStatus());
+        addStringCriteria(criteria, "status", filter.getStatus());
+        addRangeCriteria(criteria, "deliveredDate", filter.getDeliveryStartDate(), filter.getDeliveryEndDate());
+        addStringCriteria(criteria, "shippingAddress.pincode", filter.getPincode());
+        addStringCriteria(criteria, "orderId", filter.getOrderId());
+        addStringCriteria(criteria, "userId", filter.getUserId());
 
         return new Query(criteria);
     }

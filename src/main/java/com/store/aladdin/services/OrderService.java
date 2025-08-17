@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.store.aladdin.dtos.OrderFilterDto;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.queries.OrderQueries;
@@ -38,21 +39,21 @@ public class OrderService {
         String status, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime deliveryStartDate,
         LocalDateTime deliveryEndDate,String pincode,String orderId,String userId
         ){
-
-           Query query = OrderQueries.buildOrderQuery(
-                userName,
-                minPrice,
-                maxPrice,
-                paymentStatus,
-                status,
-                startDate,
-                endDate,
-                deliveryStartDate,
-                deliveryEndDate,
-                pincode,
-                orderId,
-                userId
-        );
+         OrderFilterDto filter = OrderFilterDto.builder()
+        .userName(userName)
+        .minPrice(minPrice)
+        .maxPrice(maxPrice)
+        .paymentStatus(paymentStatus)
+        .status(status)
+        .startDate(startDate)
+        .endDate(endDate)
+        .deliveryStartDate(deliveryStartDate)
+        .deliveryEndDate(deliveryEndDate)
+        .pincode(pincode)
+        .orderId(orderId)
+        .userId(userId)
+        .build();
+        Query query = OrderQueries.buildOrderQuery(filter);
 
         return mongoTemplate.find(query, Order.class);
     }
