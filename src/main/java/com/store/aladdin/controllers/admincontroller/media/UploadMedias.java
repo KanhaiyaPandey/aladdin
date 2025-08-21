@@ -1,4 +1,4 @@
-package com.store.aladdin.controllers.admincontroller;
+package com.store.aladdin.controllers.admincontroller.media;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
