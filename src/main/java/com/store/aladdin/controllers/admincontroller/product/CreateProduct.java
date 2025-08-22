@@ -1,12 +1,11 @@
 package com.store.aladdin.controllers.admincontroller.product;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
+
 import java.util.Map;
 import java.util.UUID;
 
-import com.store.aladdin.dtos.ProductDto;
+
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +48,6 @@ public class CreateProduct {
                     variant.setVariantId(UUID.randomUUID().toString());
                 }
             }
-            product.setCreatedAt(LocalDateTime.now());
             Product pro = productService.createProduct(product);
             ObjectId objectId = new ObjectId(pro.getProductId());
             Product proUp = productService.updateProductVariants(objectId, product);

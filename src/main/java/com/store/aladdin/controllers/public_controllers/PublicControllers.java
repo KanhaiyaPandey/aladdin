@@ -3,11 +3,9 @@ package com.store.aladdin.controllers.public_controllers;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.store.aladdin.dtos.ProductDto;
+
 import com.store.aladdin.services.RedisCacheService;
 import org.bson.types.ObjectId;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,12 +41,8 @@ public class PublicControllers {
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String stockStatus) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             List<Product> products = productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus);
-            List<ProductDto> productDtos = products.stream()
-                    .map(product -> objectMapper.convertValue(product, ProductDto.class))
-                    .toList();
-            return ResponseUtil.buildResponse("products fetched successfully", true, productDtos, HttpStatus.OK);
+            return ResponseUtil.buildResponse("products fetched successfully", true, products, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error fetching products", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

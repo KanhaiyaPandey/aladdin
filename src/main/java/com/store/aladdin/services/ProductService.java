@@ -23,6 +23,7 @@ public class ProductService {
 
     public Product createProduct(Product product) {
         product.setCreatedAt(LocalDateTime.now());
+        product.setLastUpdateedAt(LocalDateTime.now());
         return productRepository.save(product);
     }
 
