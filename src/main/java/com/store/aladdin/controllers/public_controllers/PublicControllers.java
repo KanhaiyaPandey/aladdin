@@ -2,7 +2,6 @@ package com.store.aladdin.controllers.public_controllers;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.dtos.ProductDto;
@@ -34,7 +33,6 @@ public class PublicControllers {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private  final RedisTemplate redisTemplate;
     private final RedisCacheService redisCacheService;
 
 
