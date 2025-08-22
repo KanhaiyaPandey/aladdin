@@ -119,7 +119,7 @@ public class Product {
      @NoArgsConstructor
      public static class ProductCategories {
         private String categoryId;
-        private String title;        
+        private String slug;
      }
 
 }

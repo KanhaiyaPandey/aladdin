@@ -71,7 +71,6 @@ public class CategoryService {
     // Save a new category
     public Category createCategory(Category category) {
         Category savedCategory = categoryRepository.save(category);
-
         if (category.getParentCategoryId() != null) {
             ObjectId parentId = new ObjectId(category.getParentCategoryId());
             Update update = new Update().addToSet("childCategoryIds", savedCategory.getCategoryId());
@@ -101,7 +100,6 @@ public class CategoryService {
 
 
     public void deleteCategoriesByIds(List<String> categoryIds) {
-
         Set<String> allToDelete = new HashSet<>();
         for (String id : categoryIds) {
             ObjectId objectId = new ObjectId(id);
@@ -123,23 +121,17 @@ public class CategoryService {
     }
 
 
-
-
     private void removeCategoriesFromProducts(Set<String> deletedCategoryIds) {
         List<Product> allProducts = productRepository.findAll();
-
         for (Product product : allProducts) {
             boolean modified = false;
-
             List<ProductCategories> filtered = product.getProductCategories().stream()
                 .filter(cat -> !deletedCategoryIds.contains(cat.getCategoryId()))
                 .toList();
-
             if (filtered.size() != product.getProductCategories().size()) {
                 product.setProductCategories(new ArrayList<>(filtered));
                 modified = true;
             }
-
             if (modified) {
                 productRepository.save(product);
             }
@@ -148,38 +140,22 @@ public class CategoryService {
 
 
 
-   public Category updateCategory(String categoryId, Category payload, List<String> banners) throws IOException {
-    Optional<Category> optionalCategory = categoryRepository.findById(new ObjectId(categoryId));
-
-   
-
-    if (optionalCategory.isEmpty()) {
-        throw new CustomeRuntimeExceptionsHandler("Category not found");
+       public Category updateCategory(String categoryId, Category payload, List<String> banners) throws IOException {
+        Optional<Category> optionalCategory = categoryRepository.findById(new ObjectId(categoryId));
+        if (optionalCategory.isEmpty()) {
+            throw new CustomeRuntimeExceptionsHandler("Category not found");
+        }
+        Category category = optionalCategory.get();
+        if (payload.getTitle() != null && !payload.getTitle().isBlank()) {
+            category.setTitle(payload.getTitle());
+        }
+        if (payload.getDescription() != null && !payload.getDescription().isBlank()) {
+            category.setDescription(payload.getDescription());
+        }
+        if (banners != null && !banners.isEmpty()) {
+            category.setBanner(banners);
+        }
+        return categoryRepository.save(category);
     }
-
-    Category category = optionalCategory.get();
-
-
-    if (payload.getTitle() != null && !payload.getTitle().isBlank()) {
-        category.setTitle(payload.getTitle());
-    }
-
-  
-
-    if (payload.getDescription() != null && !payload.getDescription().isBlank()) {
-        category.setDescription(payload.getDescription());
-    }
-
-    if (banners != null && !banners.isEmpty()) {
-        category.setBanner(banners);
-    }
-
-    return categoryRepository.save(category);
-}
-
-
-
-
-
 
 }

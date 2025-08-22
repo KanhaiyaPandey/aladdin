@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.store.aladdin.dtos.ProductDto;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,30 +43,17 @@ public class CreateProduct {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Product product = objectMapper.readValue(productJson, Product.class);
-
             productHelper.validateProduct(product);
             for (Product.Variant variant : product.getVariants()) {
                 if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {
                     variant.setVariantId(UUID.randomUUID().toString());
                 }
             }
-
             product.setCreatedAt(LocalDateTime.now());
             Product pro = productService.createProduct(product);
-
             ObjectId objectId = new ObjectId(pro.getProductId());
             Product proUp = productService.updateProductVariants(objectId, product);
-
-            List<String> categoryIds = product.getProductCategories().stream()
-            .map(Product.ProductCategories::getCategoryId)
-            .toList();
-
-            if (categoryIds != null && !categoryIds.isEmpty()) {
-                categoryService.addProductToCategories(pro, categoryIds);
-            }
-
             return ResponseUtil.buildResponse("Product created successfully", true, proUp, HttpStatus.OK);
-            
             } catch (ValidationException ve) {
                 return ResponseUtil.buildErrorResponse("Validation error", HttpStatus.BAD_REQUEST, ve.getMessage());
             } catch (IOException e) {

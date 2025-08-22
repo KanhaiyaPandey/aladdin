@@ -17,22 +17,22 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    
+
     private final ProductRepository productRepository;
     private final ProductQueries productQueries;
 
-    public Product createProduct(Product product){
+    public Product createProduct(Product product) {
         product.setCreatedAt(LocalDateTime.now());
         return productRepository.save(product);
     }
 
     public List<Product> getAllProducts() {
-      return productRepository.findAll();
+        return productRepository.findAll();
     }
 
     public List<Product> getFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
-      return productQueries.filteredProducts(name, minPrice, maxPrice, stockStatus);
-  }
+        return productQueries.filteredProducts(name, minPrice, maxPrice, stockStatus);
+    }
 
 
     public Product updateProduct(ObjectId productId, Product updatedProduct) {
@@ -44,36 +44,29 @@ public class ProductService {
     }
 
 
-  public Product updateProductVariants(ObjectId productId, Product updatedProduct) {
-    return productRepository.findById(productId).map(product -> {
+    public Product updateProductVariants(ObjectId productId, Product updatedProduct) {
+        return productRepository.findById(productId).map(product -> {
+            List<Product.Variant> variants = updatedProduct.getVariants(); // Fully qualified name
+            if (variants != null) {
+                variants.forEach(variant -> variant.setParentProductId(productId.toHexString())); // Convert ObjectId to String
+                product.setVariants(variants);
+            }
+            return productRepository.save(product);
+        }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+    }
 
-        List<Product.Variant> variants = updatedProduct.getVariants(); // Fully qualified name
-        if (variants != null) {
-            variants.forEach(variant -> variant.setParentProductId(productId.toHexString())); // Convert ObjectId to String
-            product.setVariants(variants);
+
+    public void deleteProduct(ObjectId productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ResourceNotFoundException("Product not found with id: " + productId);
         }
-
-        return productRepository.save(product);
-    }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-}
+        productRepository.deleteById(productId);
+    }
 
 
-
-
-
-
-
-  public void deleteProduct(ObjectId productId) {
-    if (!productRepository.existsById(productId)) {
-    throw new ResourceNotFoundException("Product not found with id: " + productId);
-  }
-  productRepository.deleteById(productId);
-  }
-
-
-  public Product getProductById(ObjectId productId) throws Exception {
-    return productRepository.findById(productId)
-            .orElseThrow(() -> new Exception("Product not found"));
-}
+    public Product getProductById(ObjectId productId) throws Exception {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new Exception("Product not found"));
+    }
 
 }
