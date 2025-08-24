@@ -40,6 +40,8 @@ public class CategoryService {
     private final ProductRepository productRepository;
     private final AttributesRepository attributesRepository;
     private final MongoTemplate mongoTemplate;
+    private final RedisCacheService redisCacheService;
+    private static final String ALL_ATTRIBUTES_CACHE_KEY = "all-attributes";
 
 
     // Find category by ID
@@ -162,13 +164,24 @@ public class CategoryService {
 //    save attributes
 
     public Attribute saveAttribute(Attribute attribute) {
+        boolean exists = attributesRepository.existsByName(attribute.getName());
+        if (exists) {
+            throw new CustomeRuntimeExceptionsHandler("Attribute with name '" + attribute.getName() + "' already exists");
+        }
+        redisCacheService.delete(ALL_ATTRIBUTES_CACHE_KEY);
         return attributesRepository.save(attribute);
     }
 
 //    get all attributes
 
     public List<Attribute> gettAllAttributes() {
-        return attributesRepository.findAll();
+        List<Attribute> cached = redisCacheService.getList(ALL_ATTRIBUTES_CACHE_KEY, Attribute.class);
+        if (cached != null) {
+            return cached;
+        }
+        List<Attribute> attributes = attributesRepository.findAll();
+        redisCacheService.set(ALL_ATTRIBUTES_CACHE_KEY, attributes, 300L); // cache for 5 min
+        return attributes;
     }
 
 //    update attribute
@@ -183,8 +196,20 @@ public class CategoryService {
         if (updatedData.getValues() != null && !updatedData.getValues().isEmpty()) {
             existing.setValues(updatedData.getValues());
         }
-
+        redisCacheService.delete(ALL_ATTRIBUTES_CACHE_KEY);
         return attributesRepository.save(existing);
+    }
+
+//   delete attributes
+
+    public void deleteAttributes(List<String> attributeIds) {
+        try{
+            attributesRepository.deleteAllById(attributeIds);
+            redisCacheService.delete(ALL_ATTRIBUTES_CACHE_KEY);
+        } catch (Exception e) {
+            throw new CustomeRuntimeExceptionsHandler("error deleting attributes", e);
+        }
+
     }
 
 

@@ -6,22 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.store.aladdin.models.Attribute;
+import com.store.aladdin.routes.ApiRoutes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.dtos.DeleteCategoryRequest;
+import com.store.aladdin.dtos.DeleteAttributesRequest;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ImageUploadService;
@@ -32,7 +26,7 @@ import com.store.aladdin.validations.CategoryValidation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin/category")
+@RequestMapping(ApiRoutes.CATEGORY_BASE)
 @RequiredArgsConstructor
 public class CategoryControllers {
 
@@ -41,6 +35,7 @@ public class CategoryControllers {
     private final CategoryService categoryService;
     private final ProductHelper productHalper;
     private final CategoryValidation categoryValidation;
+
 
 
 
@@ -131,7 +126,7 @@ public class CategoryControllers {
         }
     }
 
-    @PostMapping(value = "/all-attribute")
+    @GetMapping(value = "/all-attributes")
     public ResponseEntity<Map<String, Object>> allAttributes(){
         try{
            List <Attribute> attributes = categoryService.gettAllAttributes();
@@ -151,6 +146,16 @@ public class CategoryControllers {
 
        }
 
+    }
+
+    @DeleteMapping(value = "/delete-attributes")
+    public  ResponseEntity<Map<String,Object>> deleteAttributes(@RequestBody DeleteAttributesRequest request){
+        try{
+             categoryService.deleteAttributes(request.getAttributeIds());
+            return  ResponseUtil.buildResponse("attributes deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseUtil.buildErrorResponse("Error deleting attribute", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

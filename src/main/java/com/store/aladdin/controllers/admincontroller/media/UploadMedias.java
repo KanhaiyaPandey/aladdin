@@ -22,7 +22,7 @@ import com.store.aladdin.utils.response.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/media")
 @RequiredArgsConstructor
 public class UploadMedias {
 
@@ -31,7 +31,7 @@ public class UploadMedias {
 
     private final MongoTemplate mongoTemplate;
 
-    @PostMapping(value = "/media/upload-media", consumes = "multipart/form-data")
+    @PostMapping(value = "/upload-media", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
     try {

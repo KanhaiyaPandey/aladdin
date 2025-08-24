@@ -19,7 +19,7 @@ public class CategoryValidation {
     private final MongoTemplate mongoTemplate;
 
     public void validateCategory(Category category) {
-        if (category.getTitle() == null || category.getTitle().isEmpty()) {
+        if (category.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be empty");
         }
 
@@ -40,12 +40,12 @@ public class CategoryValidation {
         }
 
         boolean exists = mongoTemplate.exists(query, Category.class);
-        if (exists && category.getParentCategoryId().isEmpty()) {
+
+        if (exists && (category.getParentCategoryId() == null || category.getParentCategoryId().isEmpty())) {
             throw new IllegalArgumentException("Category with this title already exists");
         }
-
-
     }
+
 
 
     public void checkSubCategoryName(String title, String parentId) {
