@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.store.aladdin.models.Attribute;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -114,6 +115,41 @@ public class CategoryControllers {
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error deleting categories", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+
+    }
+
+
+//    attributes
+
+    @PostMapping(value = "/create-attribute")
+    public ResponseEntity<Map<String, Object>> createAttributes(@RequestBody Attribute attributes){
+        try{
+           Attribute savedAttribute = categoryService.saveAttribute(attributes);
+           return ResponseUtil.buildResponse("Attribute added", true, savedAttribute, HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseUtil.buildErrorResponse("Error creating attribute", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/all-attribute")
+    public ResponseEntity<Map<String, Object>> allAttributes(){
+        try{
+           List <Attribute> attributes = categoryService.gettAllAttributes();
+            return ResponseUtil.buildResponse("Attributes fetched successfully", true, attributes, HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseUtil.buildErrorResponse("Error fetching attributes", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(value = "/update-attribute/{attributeId}")
+    public ResponseEntity<Map<String,Object>> updateAttribute( @PathVariable String attributeId, @RequestBody Attribute attribute){
+       try{
+           Attribute updated = categoryService.updateAttribute(attributeId, attribute);
+           return  ResponseUtil.buildResponse("attribute updated successfully", true, updated, HttpStatus.OK);
+       } catch (Exception e) {
+           return ResponseUtil.buildErrorResponse("Error updating attribute", HttpStatus.INTERNAL_SERVER_ERROR);
+
+       }
 
     }
 

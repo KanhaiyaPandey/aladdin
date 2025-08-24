@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.store.aladdin.models.Attribute;
+import com.store.aladdin.repository.AttributesRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
@@ -28,26 +30,28 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
 
-    
+
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;  
+    private final ProductRepository productRepository;
+    private final AttributesRepository attributesRepository;
     private final MongoTemplate mongoTemplate;
 
 
     // Find category by ID
     public CategoryResponse getCategoryById(ObjectId id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
-            if (categoryOptional.isEmpty()) {
-               return null;
-            }
-        Category category = categoryOptional.get();  
+        if (categoryOptional.isEmpty()) {
+            return null;
+        }
+        Category category = categoryOptional.get();
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
-           .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
+                .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
         return CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
 
     }
@@ -60,11 +64,11 @@ public class CategoryService {
     public List<CategoryResponse> getAllCategoryResponses() {
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
-        .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
+                .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
         return allCategories.stream()
-            .filter(cat -> cat.getParentCategoryId() == null)
-            .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
-            .toList();
+                .filter(cat -> cat.getParentCategoryId() == null)
+                .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
+                .toList();
     }
 
 
@@ -81,13 +85,11 @@ public class CategoryService {
     }
 
 
-
-
     // Add a product to the specified categories
     public void addProductToCategories(Product product, List<String> categoryIds) {
         List<ObjectId> objectIds = categoryIds.stream()
-                                            .map(ObjectId::new)
-                                            .toList();
+                .map(ObjectId::new)
+                .toList();
         List<Category> categories = categoryRepository.findAllById(objectIds);
         for (Category category : categories) {
             if (!category.getCategoryProducts().contains(product)) {
@@ -96,7 +98,6 @@ public class CategoryService {
         }
         categoryRepository.saveAll(categories);
     }
-
 
 
     public void deleteCategoriesByIds(List<String> categoryIds) {
@@ -126,8 +127,8 @@ public class CategoryService {
         for (Product product : allProducts) {
             boolean modified = false;
             List<ProductCategories> filtered = product.getProductCategories().stream()
-                .filter(cat -> !deletedCategoryIds.contains(cat.getCategoryId()))
-                .toList();
+                    .filter(cat -> !deletedCategoryIds.contains(cat.getCategoryId()))
+                    .toList();
             if (filtered.size() != product.getProductCategories().size()) {
                 product.setProductCategories(new ArrayList<>(filtered));
                 modified = true;
@@ -139,8 +140,7 @@ public class CategoryService {
     }
 
 
-
-       public Category updateCategory(String categoryId, Category payload, List<String> banners) throws IOException {
+    public Category updateCategory(String categoryId, Category payload, List<String> banners) throws IOException {
         Optional<Category> optionalCategory = categoryRepository.findById(new ObjectId(categoryId));
         if (optionalCategory.isEmpty()) {
             throw new CustomeRuntimeExceptionsHandler("Category not found");
@@ -157,5 +157,35 @@ public class CategoryService {
         }
         return categoryRepository.save(category);
     }
+
+
+//    save attributes
+
+    public Attribute saveAttribute(Attribute attribute) {
+        return attributesRepository.save(attribute);
+    }
+
+//    get all attributes
+
+    public List<Attribute> gettAllAttributes() {
+        return attributesRepository.findAll();
+    }
+
+//    update attribute
+
+
+    public Attribute updateAttribute(String attributeId, Attribute updatedData) {
+        Attribute existing = attributesRepository.findById(attributeId)
+                .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("Attribute not found with id: " + attributeId));
+        if (updatedData.getName() != null && !updatedData.getName().isEmpty()) {
+            existing.setName(updatedData.getName());
+        }
+        if (updatedData.getValues() != null && !updatedData.getValues().isEmpty()) {
+            existing.setValues(updatedData.getValues());
+        }
+
+        return attributesRepository.save(existing);
+    }
+
 
 }
