@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
+import com.store.aladdin.routes.ProductRoutes;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import com.store.aladdin.utils.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping(ProductRoutes.PRODUCT_BASE)
 @RequiredArgsConstructor
 public class CreateProduct {
 
@@ -35,7 +36,7 @@ public class CreateProduct {
     private final CategoryService categoryService;
 
     
-    @PostMapping(value = "/create-product")
+    @PostMapping(value = ProductRoutes.CREATE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createProduct(
             @RequestParam("product") String productJson) {

@@ -148,7 +148,7 @@ public class CategoryService {
             throw new CustomeRuntimeExceptionsHandler("Category not found");
         }
         Category category = optionalCategory.get();
-        if (payload.getTitle() != null && !payload.getTitle().isBlank()) {
+        if (!payload.getTitle().isBlank()) {
             category.setTitle(payload.getTitle());
         }
         if (payload.getDescription() != null && !payload.getDescription().isBlank()) {

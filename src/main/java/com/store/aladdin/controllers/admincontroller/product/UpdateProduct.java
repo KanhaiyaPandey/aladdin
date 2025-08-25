@@ -2,6 +2,7 @@ package com.store.aladdin.controllers.admincontroller.product;
 
 import java.util.Map;
 
+import com.store.aladdin.routes.ProductRoutes;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,14 @@ import com.store.aladdin.utils.response.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping(ProductRoutes.PRODUCT_BASE)
 @RequiredArgsConstructor
 public class UpdateProduct {
     
     private final ProductService productService;
 
     
-    @PutMapping("/product/update-product/{productId}")
+    @PutMapping(ProductRoutes.UPDATE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable ObjectId productId, @RequestBody String productJson) {
         try {

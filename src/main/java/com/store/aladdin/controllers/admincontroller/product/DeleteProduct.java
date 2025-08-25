@@ -2,6 +2,7 @@ package com.store.aladdin.controllers.admincontroller.product;
 
 import java.util.Map;
 
+import com.store.aladdin.routes.ProductRoutes;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,13 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping(ProductRoutes.PRODUCT_BASE)
 @RequiredArgsConstructor
 public class DeleteProduct {
     
     private final ProductService productService;
   
-    @DeleteMapping("/product/delete-product/{productId}")
+    @DeleteMapping(ProductRoutes.DELETE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable String productId) {
         productService.deleteProduct(new ObjectId(productId)); 

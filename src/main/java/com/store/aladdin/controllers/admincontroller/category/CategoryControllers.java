@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.store.aladdin.models.Attribute;
-import com.store.aladdin.routes.ApiRoutes;
+import com.store.aladdin.routes.CategoryRoutes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +26,7 @@ import com.store.aladdin.validations.CategoryValidation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(ApiRoutes.CATEGORY_BASE)
+@RequestMapping(CategoryRoutes.CATEGORY_BASE)
 @RequiredArgsConstructor
 public class CategoryControllers {
 
@@ -42,7 +42,7 @@ public class CategoryControllers {
     // create category
 
     
-    @PostMapping(value = "/create-category", consumes = "multipart/form-data")
+    @PostMapping(value = CategoryRoutes.CREATE_CATEGORY, consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> createCategory(
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
@@ -71,7 +71,7 @@ public class CategoryControllers {
 
     // update category
 
-    @PutMapping(value = "/update-category/{categoryId}", consumes = "multipart/form-data")
+    @PutMapping(value = CategoryRoutes.UPDATE_CATEGORY, consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateCategory(
         @PathVariable String categoryId,
@@ -82,7 +82,7 @@ public class CategoryControllers {
             ObjectMapper objectMapper = new ObjectMapper();
             Category categoryPayload = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(categoryPayload);
-            categoryPayload.setSlug(generateSlug(categoryPayload.getTitle())); 
+            categoryPayload.setSlug(generateSlug(categoryPayload.getTitle()));
             List<String> bannerUrls = productHalper.uploadImages(banner, imageUploadService);
            Category updatedCategory =  categoryService.updateCategory(categoryId, categoryPayload, bannerUrls);
             return ResponseUtil.buildResponse("Category updated successfully", true, updatedCategory, HttpStatus.OK);
@@ -97,7 +97,7 @@ public class CategoryControllers {
     // delete category
 
     
-    @DeleteMapping(value = "/delete-categories")
+    @DeleteMapping(value = CategoryRoutes.UPDATE_CATEGORY)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteCategories(@RequestBody DeleteCategoryRequest request){
         try {
@@ -116,7 +116,7 @@ public class CategoryControllers {
 
 //    attributes
 
-    @PostMapping(value = "/create-attribute")
+    @PostMapping(value = CategoryRoutes.CREATE_ATTRIBUTE)
     public ResponseEntity<Map<String, Object>> createAttributes(@RequestBody Attribute attributes){
         try{
            Attribute savedAttribute = categoryService.saveAttribute(attributes);
@@ -136,7 +136,7 @@ public class CategoryControllers {
         }
     }
 
-    @PutMapping(value = "/update-attribute/{attributeId}")
+    @PutMapping(value = CategoryRoutes.UPDATE_ATTRIBUTE)
     public ResponseEntity<Map<String,Object>> updateAttribute( @PathVariable String attributeId, @RequestBody Attribute attribute){
        try{
            Attribute updated = categoryService.updateAttribute(attributeId, attribute);
@@ -148,7 +148,7 @@ public class CategoryControllers {
 
     }
 
-    @DeleteMapping(value = "/delete-attributes")
+    @DeleteMapping(value = CategoryRoutes.DELETE_ATTRIBUTES)
     public  ResponseEntity<Map<String,Object>> deleteAttributes(@RequestBody DeleteAttributesRequest request){
         try{
              categoryService.deleteAttributes(request.getAttributeIds());

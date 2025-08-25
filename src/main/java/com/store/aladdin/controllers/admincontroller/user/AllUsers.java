@@ -27,4 +27,6 @@ public class AllUsers {
             List<User> users = userService.getAllUsers();
             return ResponseEntity.ok(users);
         }
+
+
 }
