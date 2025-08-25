@@ -1,11 +1,14 @@
 
 package com.store.aladdin.configs;
 
+
 import com.store.aladdin.filters.JwtAuthFilter;
 import com.store.aladdin.exceptions.CustomAccessDeniedHandler;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.store.aladdin.routes.AuthRoutes.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -46,15 +49,18 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/user/login").permitAll() 
-                .requestMatchers("/user/register").permitAll() 
-                .requestMatchers("/user/validate-token").permitAll()
-                .requestMatchers("/user/logout").permitAll()  
+                    // Open authentication endpoints
+                    .requestMatchers(AUTH_BASE + LOGIN_ROUTE).permitAll()
+                    .requestMatchers(AUTH_BASE + REGISTER_ROUTE).permitAll()
+                    .requestMatchers(AUTH_BASE + VALIDATION_ROUTE).permitAll()
 
-                .requestMatchers("/api/public/**").permitAll() // Allow public routes
-                .requestMatchers("/api/user/**").authenticated() // Secure user routes
-                .requestMatchers("/api/admin/**").hasRole("ADMIN") // Role check expects ROLE_ADMIN internally
-                .anyRequest().denyAll() // Deny all other requests
+                    // Public API is open
+                    .requestMatchers(PUBLIC_BASE + "/**").permitAll()
+
+                    // Admin can access everything
+                    .requestMatchers(ADMIN_BASE + "/**").hasRole("ADMIN")
+                    .requestMatchers(USER_BASE + "/**").authenticated()
+                    .anyRequest().denyAll()
             )
             .exceptionHandling()
                 .accessDeniedHandler(customAccessDeniedHandler) // Use custom handler for 403 Forbidden

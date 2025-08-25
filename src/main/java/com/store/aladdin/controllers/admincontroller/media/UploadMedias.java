@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.store.aladdin.routes.MediaRoutes;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import com.store.aladdin.utils.response.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin/media")
+@RequestMapping(MediaRoutes.MEDIA_BASE)
 @RequiredArgsConstructor
 public class UploadMedias {
 
@@ -31,7 +32,7 @@ public class UploadMedias {
 
     private final MongoTemplate mongoTemplate;
 
-    @PostMapping(value = "/upload-media", consumes = "multipart/form-data")
+    @PostMapping(value = MediaRoutes.UPLOAD_MEDIA, consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
     try {

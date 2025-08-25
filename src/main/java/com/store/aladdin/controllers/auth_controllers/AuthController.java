@@ -1,10 +1,13 @@
 package com.store.aladdin.controllers.auth_controllers;
 
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.store.aladdin.routes.AuthRoutes.*;
+import com.store.aladdin.routes.AuthRoutes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +32,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(AUTH_BASE)
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -43,7 +46,7 @@ public class AuthController {
     private boolean secure;
 
     // login
-    @PostMapping("/login")
+    @PostMapping(LOGIN_ROUTE)
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
 
         // Fetch user by email
@@ -80,7 +83,7 @@ public class AuthController {
 
 
     // register
-        @PostMapping("/register")
+        @PostMapping(REGISTER_ROUTE)
         public ResponseEntity<Map<String, Object>> createUser(@RequestBody String userJson, HttpServletResponse response) {
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -126,7 +129,7 @@ public class AuthController {
 
         // validate token
 
-        @GetMapping("/validate-token")
+        @GetMapping(VALIDATION_ROUTE)
         public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
 
         try {
@@ -173,7 +176,7 @@ public class AuthController {
 
 
         
-        @PostMapping("/logout")
+        @PostMapping(LOGOUT_ROUTE)
         public ResponseEntity<Map<String, Object>> logout(HttpServletResponse response) {
             // Clear the JWT cookie
             Cookie cookie = new Cookie(TYPE, null);

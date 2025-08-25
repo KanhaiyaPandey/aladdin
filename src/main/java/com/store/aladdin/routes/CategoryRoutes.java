@@ -1,9 +1,9 @@
 package com.store.aladdin.routes;
 
+import static com.store.aladdin.routes.AuthRoutes.ADMIN_BASE;
+
 public class CategoryRoutes {
 
-    //    Admin's
-    public static final String ADMIN_BASE = "/api/admin";
     public static final String CATEGORY_BASE = ADMIN_BASE + "/category";
     public static final String CREATE_CATEGORY  =  "/create-category";
     public static final String UPDATE_CATEGORY  =  "/update-category/{categoryId}";

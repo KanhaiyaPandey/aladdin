@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Attribute;
 import com.store.aladdin.routes.CategoryRoutes;
 import org.springframework.http.HttpStatus;
@@ -47,24 +48,21 @@ public class CategoryControllers {
     @RequestParam("category") String categoryJson,
     @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
         try {
-
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(category);
             if (category.getParentCategoryId() != null && !category.getParentCategoryId().isEmpty()) {
-                    categoryValidation.checkSubCategoryName(category.getTitle(), category.getParentCategoryId());
-                }
-            category.setSlug(generateSlug(category.getTitle()));    
+                categoryValidation.checkSubCategoryName(category.getTitle(), category.getParentCategoryId());
+            }
+            category.setSlug(generateSlug(category.getTitle()));
             List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
             category.setBanner(bannerUrls);
             Category savedCategory = categoryService.createCategory(category);
-            return ResponseUtil.buildResponse("category created successfully", true, savedCategory, HttpStatus.CREATED);
+            return ResponseUtil.buildResponse("Category created successfully", true, savedCategory, HttpStatus.CREATED);
 
         } catch (IOException e) {
-            return ResponseUtil.buildErrorResponse("Invalid category JSON format: ", HttpStatus.BAD_REQUEST , e.getMessage());
-        } catch (Exception e) {
-            return ResponseUtil.buildErrorResponse("error creating category", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }   
+            throw new CustomeRuntimeExceptionsHandler("Invalid category JSON format: " + e.getMessage(), e);
+        }
     }
 
 

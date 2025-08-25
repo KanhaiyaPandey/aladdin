@@ -1,6 +1,7 @@
 package com.store.aladdin.routes;
 
-import static com.store.aladdin.routes.CategoryRoutes.ADMIN_BASE;
+
+import static com.store.aladdin.routes.AuthRoutes.ADMIN_BASE;
 
 public class ProductRoutes {
     public static final String PRODUCT_BASE   =  ADMIN_BASE + "/product";

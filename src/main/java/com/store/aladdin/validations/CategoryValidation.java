@@ -2,6 +2,7 @@ package com.store.aladdin.validations;
 
 import java.util.List;
 
+import com.store.aladdin.exceptions.BadRequestException;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -20,15 +21,15 @@ public class CategoryValidation {
 
     public void validateCategory(Category category) {
         if (category.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
+            throw new BadRequestException("Title cannot be empty");
         }
 
         if (category.getBanner() == null) {
-            throw new IllegalArgumentException("Banner required");
+            throw new BadRequestException("Banner required");
         }
 
         if (category.getDescription() == null || category.getDescription().isEmpty()) {
-            throw new IllegalArgumentException("Description cannot be empty");
+            throw new BadRequestException("Description cannot be empty");
         }
 
         Query query = new Query();
@@ -42,7 +43,7 @@ public class CategoryValidation {
         boolean exists = mongoTemplate.exists(query, Category.class);
 
         if (exists && (category.getParentCategoryId() == null || category.getParentCategoryId().isEmpty())) {
-            throw new IllegalArgumentException("Category with this title already exists");
+            throw new BadRequestException("Category with this title already exists");
         }
     }
 
@@ -56,7 +57,7 @@ public class CategoryValidation {
         );
 
         if (parentCategory == null) {
-            throw new IllegalArgumentException("Parent category not found.");
+            throw new BadRequestException("Parent category not found.");
         }
 
         // Step 2: Loop through childCategoryIds and fetch each subcategory
@@ -73,7 +74,7 @@ public class CategoryValidation {
 
         for (Category sub : subCategories) {
             if (sub.getTitle().equalsIgnoreCase(title)) {
-                throw new IllegalArgumentException(
+                throw new BadRequestException(
                     "Sub Category with title \"" + title + "\" already exists under the category \"" 
                     + parentCategory.getTitle() + "\""
                 );
