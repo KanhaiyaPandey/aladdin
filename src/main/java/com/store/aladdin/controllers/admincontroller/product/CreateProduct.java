@@ -11,10 +11,7 @@ import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.models.Product;
@@ -36,10 +33,10 @@ public class CreateProduct {
     private final CategoryService categoryService;
 
     
-    @PostMapping(value = ProductRoutes.CREATE_PRODUCT)
+    @PostMapping(value = ProductRoutes.CREATE_PRODUCT, consumes = "application/json")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createProduct(
-            @RequestParam("product") String productJson) {
+            @RequestBody String productJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Product product = objectMapper.readValue(productJson, Product.class);
