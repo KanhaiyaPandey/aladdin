@@ -21,17 +21,11 @@ public class Category {
 
     @NonNull
     private String title;
-
     private String slug;
-
     private String description;
-
-    private List<String> banner = new ArrayList<>(); 
-
-    private List<Product> categoryProducts = new ArrayList<>();
-
+    private String banner;
     private String parentCategoryId;
-    
     private List<String> childCategoryIds = new ArrayList<>();
+    private List<String> path = new ArrayList<>();
     
 }

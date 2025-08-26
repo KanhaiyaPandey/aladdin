@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.store.aladdin.models.Category;
 
 @Repository
-public interface CategoryRepository extends MongoRepository<Category, ObjectId> {
+public interface CategoryRepository extends MongoRepository<Category, String> {
     
     Category findByTitle(String title);
     List<Category> findByParentCategoryId(String parentCategoryId);

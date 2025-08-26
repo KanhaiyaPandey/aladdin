@@ -31,6 +31,7 @@ public class Product {
 
     @NonNull
     private String title;
+    private String slug;
 
     private String description;
     private Status status = Status.ACTIVE;
@@ -62,7 +63,7 @@ public class Product {
     private LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime lastUpdateedAt;
+    private LocalDateTime lastUpdatedAt;
 
     // other constructors
 

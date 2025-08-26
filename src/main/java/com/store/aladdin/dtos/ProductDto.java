@@ -31,4 +31,5 @@ public class ProductDto {
     private List<Product.ProductMedia> productMedias = new ArrayList<>();
     private List<Product.Dimension> dimensions = new ArrayList<>();
     private LocalDateTime createdAt;
+    private LocalDateTime lastUpdatedAt;
 }

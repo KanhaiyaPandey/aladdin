@@ -21,11 +21,13 @@ import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.response.ResponseUtil;
 
+import static com.store.aladdin.routes.PublicRoutes. *;
+
 import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping(PUBLIC_BASE)
 @RequiredArgsConstructor
 public class PublicControllers {
 
@@ -34,7 +36,7 @@ public class PublicControllers {
     private final RedisCacheService redisCacheService;
 
 
-    @GetMapping("/product/all-products")
+    @GetMapping(PUBLIC_ALL_PRODUCTS)
     public ResponseEntity<Map<String, Object>> getAllProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Double minPrice,
@@ -49,7 +51,7 @@ public class PublicControllers {
     }
 
 
-    @GetMapping("product/{productId}")
+    @GetMapping(PUBLIC_SINGLE_PRODUCT)
     public ResponseEntity<Map<String, Object>> getProductById(@PathVariable String productId) {
         try {
             Product product = productService.getProductById(new ObjectId(productId));
@@ -59,7 +61,7 @@ public class PublicControllers {
         }
     }
 
-    @GetMapping("/category/all-categories")
+    @GetMapping(PUBLIC_ALL_CATEGORIES)
     public ResponseEntity<Map<String, Object>> getAllCategories() {
         try {
             List<CategoryResponse> categories = categoryService.getAllCategoryResponses();
@@ -73,7 +75,7 @@ public class PublicControllers {
     }
 
 
-    @GetMapping("/category/{id}")
+    @GetMapping(PUBLIC_SINGLE_CATEGORY)
     public ResponseEntity<Map<String, Object>> getCategoryById(@PathVariable String id) {
         try {
 
@@ -82,7 +84,7 @@ public class PublicControllers {
             if (cached != null) {
                 return ResponseUtil.buildResponse("Category fetched from Redis", true, cached, HttpStatus.OK);
             }
-            CategoryResponse category = categoryService.getCategoryById(new ObjectId(id));
+            CategoryResponse category = categoryService.getCategoryById(id);
             if (category == null) {
                 return ResponseUtil.buildResponse("Category not found", false, null, HttpStatus.NOT_FOUND);
             }

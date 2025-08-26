@@ -35,24 +35,15 @@ public class CategoryMapperUtil {
         response.setTitle(category.getTitle());
         response.setDescription(category.getDescription());
         response.setBanner(category.getBanner());
-
-        // If products are stored as Product objects, convert them to string IDs
-        if (category.getCategoryProducts() != null) {
-            response.setCategoryProducts(category.getCategoryProducts());
-        }
-
-        // Set parentCategory
-        if (category.getParentCategoryId() != null) {
-            Category parent = categoryMap.get(category.getParentCategoryId());
-            response.setParentCategory(mapToCategoryResponse(parent, categoryMap, visited));
-        }
+        response.setPath(category.getPath());
+        response.setParentCategoryId(category.getParentCategoryId()); // ✅ fixed
 
         // Set subCategories
         if (category.getChildCategoryIds() != null && !category.getChildCategoryIds().isEmpty()) {
             List<CategoryResponse> subCategories = category.getChildCategoryIds().stream()
-                .map(id -> mapToCategoryResponse(categoryMap.get(id), categoryMap, visited))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                    .map(id -> mapToCategoryResponse(categoryMap.get(id), categoryMap, visited))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
             response.setSubCategories(subCategories);
         }
 

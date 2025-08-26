@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.aladdin.dtos.DeleteCategoryRequest;
@@ -43,10 +42,8 @@ public class CategoryControllers {
     // create category
 
     
-    @PostMapping(value = CategoryRoutes.CREATE_CATEGORY, consumes = "multipart/form-data")
-    public ResponseEntity<Map<String, Object>> createCategory(
-    @RequestParam("category") String categoryJson,
-    @RequestPart(value = "banner", required = false) List<MultipartFile> bannerImages) {
+    @PostMapping(value = CategoryRoutes.CREATE_CATEGORY)
+    public ResponseEntity<Map<String, Object>> createCategory( @RequestBody String categoryJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Category category = objectMapper.readValue(categoryJson, Category.class);
@@ -55,11 +52,8 @@ public class CategoryControllers {
                 categoryValidation.checkSubCategoryName(category.getTitle(), category.getParentCategoryId());
             }
             category.setSlug(generateSlug(category.getTitle()));
-            List<String> bannerUrls = productHalper.uploadImages(bannerImages, imageUploadService);
-            category.setBanner(bannerUrls);
             Category savedCategory = categoryService.createCategory(category);
             return ResponseUtil.buildResponse("Category created successfully", true, savedCategory, HttpStatus.CREATED);
-
         } catch (IOException e) {
             throw new CustomeRuntimeExceptionsHandler("Invalid category JSON format: " + e.getMessage(), e);
         }
@@ -73,16 +67,14 @@ public class CategoryControllers {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateCategory(
         @PathVariable String categoryId,
-        @RequestParam("category") String categoryJson,
-        @RequestPart(value = "banner", required = false) List<MultipartFile> banner
+        @RequestBody String categoryJson
     ) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Category categoryPayload = objectMapper.readValue(categoryJson, Category.class);
             categoryValidation.validateCategory(categoryPayload);
             categoryPayload.setSlug(generateSlug(categoryPayload.getTitle()));
-            List<String> bannerUrls = productHalper.uploadImages(banner, imageUploadService);
-           Category updatedCategory =  categoryService.updateCategory(categoryId, categoryPayload, bannerUrls);
+           Category updatedCategory =  categoryService.updateCategory(categoryId, categoryPayload);
             return ResponseUtil.buildResponse("Category updated successfully", true, updatedCategory, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error updating category", HttpStatus.INTERNAL_SERVER_ERROR,  e.getMessage());
@@ -95,7 +87,7 @@ public class CategoryControllers {
     // delete category
 
     
-    @DeleteMapping(value = CategoryRoutes.UPDATE_CATEGORY)
+    @DeleteMapping(value = CategoryRoutes.DELETE_CATEGORY)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteCategories(@RequestBody DeleteCategoryRequest request){
         try {
@@ -165,5 +157,6 @@ public class CategoryControllers {
                     .replaceAll("[^a-z0-9\\s-]", "") 
                     .replaceAll("\\s+", "-");  
     }
+
     
 }

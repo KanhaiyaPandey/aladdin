@@ -32,31 +32,30 @@ public class CreateProduct {
     private final ProductHelper productHelper;
     private final CategoryService categoryService;
 
-    
+
     @PostMapping(value = ProductRoutes.CREATE_PRODUCT, consumes = "application/json")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> createProduct(
-            @RequestBody String productJson) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Product product = objectMapper.readValue(productJson, Product.class);
-            productHelper.validateProduct(product);
-            for (Product.Variant variant : product.getVariants()) {
-                if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {
-                    variant.setVariantId(UUID.randomUUID().toString());
-                }
+    public ResponseEntity<Map<String, Object>> createProduct(@RequestBody Product product) {
+        productHelper.validateProduct(product);
+        for (Product.Variant variant : product.getVariants()) {
+            if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {
+                variant.setVariantId(UUID.randomUUID().toString());
             }
-            Product pro = productService.createProduct(product);
-            ObjectId objectId = new ObjectId(pro.getProductId());
-            Product proUp = productService.updateProductVariants(objectId, product);
-            return ResponseUtil.buildResponse("Product created successfully", true, proUp, HttpStatus.OK);
-            } catch (ValidationException ve) {
-                return ResponseUtil.buildErrorResponse("Validation error", HttpStatus.BAD_REQUEST, ve.getMessage());
-            } catch (IOException e) {
-                return ResponseUtil.buildErrorResponse("Error uploading images", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-            } catch (Exception e) {
-                return ResponseUtil.buildErrorResponse("Error", HttpStatus.BAD_REQUEST, e.getMessage());
-            }
+        }
+        product.setSlug(generateSlug(product.getTitle()));
+        Product createdProduct = productService.createProduct(product);
+        ObjectId objectId = new ObjectId(createdProduct.getProductId());
+        Product updatedProduct = productService.updateProductVariants(objectId, product);
+        return ResponseUtil.buildResponse("Product created successfully", true, updatedProduct, HttpStatus.OK
+        );
+    }
+
+
+    private String generateSlug(String title) {
+        return title.trim()
+                .toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-");
     }
 
     

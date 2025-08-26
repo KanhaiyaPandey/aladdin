@@ -45,7 +45,7 @@ public class CategoryService {
 
 
     // Find category by ID
-    public CategoryResponse getCategoryById(ObjectId id) {
+    public CategoryResponse getCategoryById(String id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty()) {
             return null;
@@ -53,12 +53,20 @@ public class CategoryService {
         Category category = categoryOptional.get();
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
-                .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
+                .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
         return CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
 
     }
 
+    public void updateCategoryPath(String categoryId, List<String> path) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        category.setPath(path);
+        categoryRepository.save(category);
+    }
+
     // Find category by title
+
     public Category getCategoryByTitle(String title) {
         return categoryRepository.findByTitle(title);
     }
@@ -66,7 +74,7 @@ public class CategoryService {
     public List<CategoryResponse> getAllCategoryResponses() {
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
-                .collect(Collectors.toMap(cat -> cat.getCategoryId().toString(), cat -> cat));
+                .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
         return allCategories.stream()
                 .filter(cat -> cat.getParentCategoryId() == null)
                 .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
@@ -77,29 +85,27 @@ public class CategoryService {
     // Save a new category
     public Category createCategory(Category category) {
         Category savedCategory = categoryRepository.save(category);
-        if (category.getParentCategoryId() != null) {
-            ObjectId parentId = new ObjectId(category.getParentCategoryId());
+        List<String> path = new ArrayList<>();
+        if (category.getParentCategoryId() != null && !category.getParentCategoryId().isEmpty()) {
+            Category parent = categoryRepository.findById(category.getParentCategoryId())
+                    .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("Parent category not found"));
+
+            path.addAll(parent.getPath());
             Update update = new Update().addToSet("childCategoryIds", savedCategory.getCategoryId());
-            mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(parentId)), update, Category.class);
+            mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(parent.getCategoryId())),
+                    update,
+                    Category.class
+            );
         }
+        path.add(savedCategory.getTitle());
+        savedCategory.setPath(path);
+        categoryRepository.save(savedCategory);
 
         return savedCategory;
     }
 
 
-    // Add a product to the specified categories
-    public void addProductToCategories(Product product, List<String> categoryIds) {
-        List<ObjectId> objectIds = categoryIds.stream()
-                .map(ObjectId::new)
-                .toList();
-        List<Category> categories = categoryRepository.findAllById(objectIds);
-        for (Category category : categories) {
-            if (!category.getCategoryProducts().contains(product)) {
-                category.getCategoryProducts().add(product);
-            }
-        }
-        categoryRepository.saveAll(categories);
-    }
+
 
 
     public void deleteCategoriesByIds(List<String> categoryIds) {
@@ -109,7 +115,7 @@ public class CategoryService {
             collectCategoryAndChildren(objectId.toString(), allToDelete);
         }
         for (String id : allToDelete) {
-            categoryRepository.deleteById(new ObjectId(id));
+            categoryRepository.deleteById(id);
         }
         removeCategoriesFromProducts(allToDelete);
     }
@@ -142,8 +148,8 @@ public class CategoryService {
     }
 
 
-    public Category updateCategory(String categoryId, Category payload, List<String> banners) throws IOException {
-        Optional<Category> optionalCategory = categoryRepository.findById(new ObjectId(categoryId));
+    public Category updateCategory(String categoryId, Category payload) throws IOException {
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
         if (optionalCategory.isEmpty()) {
             throw new CustomeRuntimeExceptionsHandler("Category not found");
         }
@@ -154,8 +160,8 @@ public class CategoryService {
         if (payload.getDescription() != null && !payload.getDescription().isBlank()) {
             category.setDescription(payload.getDescription());
         }
-        if (banners != null && !banners.isEmpty()) {
-            category.setBanner(banners);
+        if (payload.getBanner() != null && !payload.getBanner().isEmpty()) {
+            category.setBanner(payload.getBanner());
         }
         return categoryRepository.save(category);
     }

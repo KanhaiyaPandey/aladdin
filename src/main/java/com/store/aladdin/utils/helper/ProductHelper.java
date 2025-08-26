@@ -21,7 +21,7 @@ public class ProductHelper {
     private final ProductQueries productQueries;
 
  public void validateProduct(Product product) {
-        if (product.getTitle() == null || product.getTitle().isEmpty()) {
+        if (product.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Product name is required");
         }
 
