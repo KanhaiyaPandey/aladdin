@@ -159,7 +159,7 @@ public class AuthController {
             userInfo.put("createdAt", user.getCreatedAt());
             userInfo.put("updatedAt",user.getUpdatedAt());
             userInfo.put("profilePicture", user.getProfilePicture());
-            userInfo.put("_id", user.getId());
+            userInfo.put("userId", user.getId().toString());
 
             return ResponseUtil.buildResponse("Token is valid", true, userInfo, HttpStatus.OK);
             } catch (Exception e) {
