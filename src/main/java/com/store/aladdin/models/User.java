@@ -40,6 +40,10 @@ public class User {
     @Indexed(unique = true)
     private String phoneNumber;
 
+    private boolean isActive;
+
+    private String profilePicture;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

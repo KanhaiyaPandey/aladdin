@@ -51,6 +51,9 @@ public class UserService {
             throw new IllegalArgumentException("Phone number alrady in use! Enter different phone number");
         }
 
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+
         userRepository.save(user);
     }
 

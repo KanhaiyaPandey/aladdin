@@ -91,25 +91,16 @@ public class AuthController {
 
                 User user = objectMapper.readValue(userJson, User.class);
                 String validationMessage = ValidationUtils.validateUser(user);
-                
                 if (validationMessage != null) {
                     return ResponseUtil.buildResponse(validationMessage, HttpStatus.BAD_REQUEST);
                 }
-
                 if (user.getRoles() == null || user.getRoles().isEmpty()) {
                     user.setRoles(List.of("USER"));
                 }
-
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);
-
-                // Save user to the database
                 userService.createUser(user);
-
-                // Generate JWT token
                 String token = JwtUtil.generateToken(user);
-
-                // Set the token in an HTTP-only cookie
                 Cookie cookie = new Cookie(TYPE, token);
                 cookie.setHttpOnly(true);
                 cookie.setSecure(secure); 
@@ -165,6 +156,10 @@ public class AuthController {
             userInfo.put("username", user.getName());
             userInfo.put("email", user.getEmail());
             userInfo.put("roles", user.getRoles());
+            userInfo.put("createdAt", user.getCreatedAt());
+            userInfo.put("updatedAt",user.getUpdatedAt());
+            userInfo.put("profilePicture", user.getProfilePicture());
+            userInfo.put("_id", user.getId());
 
             return ResponseUtil.buildResponse("Token is valid", true, userInfo, HttpStatus.OK);
             } catch (Exception e) {

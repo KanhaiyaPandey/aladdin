@@ -36,6 +36,7 @@ public class CategoryMapperUtil {
         response.setDescription(category.getDescription());
         response.setBanner(category.getBanner());
         response.setPath(category.getPath());
+        response.setSlug(category.getSlug());
         response.setParentCategoryId(category.getParentCategoryId()); // ✅ fixed
 
         // Set subCategories

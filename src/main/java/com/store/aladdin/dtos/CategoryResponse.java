@@ -15,6 +15,7 @@ public class CategoryResponse {
     private String description;
     private String banner;
     private String parentCategoryId;
+    private String slug;
     private List<CategoryResponse> subCategories;
     private List<String>path;
     
