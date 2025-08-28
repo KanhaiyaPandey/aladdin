@@ -19,9 +19,11 @@ public class Store {
     private String storeId;
 
     private HomePage home;
-    private String globelBanner;
-    private String globelDescription;
+    private String globalBanner;
+    private String globalDescription;
     private String header;
+    private String logo;
+    private String storeName;
     
     @Data
     @NoArgsConstructor

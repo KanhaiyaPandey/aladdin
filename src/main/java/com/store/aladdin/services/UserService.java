@@ -35,32 +35,11 @@ public class UserService {
 
     // Create a new user
     public void createUser(User user) {
-        // Check for existing user by name or email
-        Optional<User> existingUserByName = userRepository.findByName(user.getName());
-        Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
-        Optional<User> existingUserByPhone = userRepository.findByEmail(user.getPhoneNumber());
-
-        if (existingUserByName.isPresent()) {
-            throw new IllegalArgumentException("A user with this name already exists.");
-        }
-        if (existingUserByEmail.isPresent()) {
-            throw new IllegalArgumentException("A user with this email already exists.");
-        }
-
-        if (existingUserByPhone.isPresent()) {
-            throw new IllegalArgumentException("Phone number alrady in use! Enter different phone number");
-        }
-
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-
         userRepository.save(user);
     }
 
-    // Get all users
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
 
     // Get a user by ID
     public User getUserById(ObjectId userId) {
@@ -82,137 +61,56 @@ public class UserService {
         }
     }
 
-    public List<String> getUserRoles(String email) {
-        User user = getUserByEmail(email);  
-        return user.getRoles();  
-    }
 
     public User authenticateUser(String email, String password) {
         User user = getUserByEmail(email);
         if (passwordEncoder.matches(password, user.getPassword())) {
-           return user;  
+            return user;
         }
         return null;
     }
 
-    // Update a user
-    public void updateUser(ObjectId userId, User updatedUser) {
-        User existingUser = getUserById(userId);
-    
-        if (updatedUser.getName() != null) {
-            existingUser.setName(updatedUser.getName());
-        }
-        if (updatedUser.getEmail() != null) {
-            existingUser.setEmail(updatedUser.getEmail());
-        }
-        if (updatedUser.getPhoneNumber() != null) {
-            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-        }
-
-        if (updatedUser.getPassword() != null) {
-            existingUser.setPassword(updatedUser.getPassword()); // Ensure hashing if necessary
-        }
-
-        if (updatedUser.getCart() != null && !updatedUser.getCart().isEmpty()) {
-            existingUser.getCart().clear();
-            existingUser.getCart().addAll(updatedUser.getCart());
-        }
-
-        if (updatedUser.getOrders() != null && !updatedUser.getOrders().isEmpty()) {
-            existingUser.getOrders().clear();
-            existingUser.getOrders().addAll(updatedUser.getOrders());
-        }
-            
-    
-        userRepository.save(existingUser);
-    }
-    
 
     // Delete a user
     public void deleteUser(ObjectId userId) {
         userRepository.deleteById(userId);
     }
 
-   // Add a product to the user's cart
-public void addToCart(ObjectId userId, CartItem item) {
-    User user = getUserById(userId);
-    
-    // Check if the product exists
-    if (!productExists(item.getProductId())) {
-        throw new CustomeRuntimeExceptionsHandler("Product does not exist");
-    }
-
-    // Find existing cart item for the product
-    CartItem existingItem = null;
-    for (CartItem cartItem : user.getCart()) {
-        if (cartItem.getProductId().equals(item.getProductId())) {
-            existingItem = cartItem;
-            break;
-        }
-    }
-
-    if (existingItem != null) {
-        // If the product is already in the cart, increase the quantity
-        existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
-    } else {
-        // Otherwise, create a new CartItem and add it to the cart
-        user.getCart().add(item); // item already contains the productId and quantity
-    }
-
-    // Save the updated user back to the repository
-    userRepository.save(user);
-}
-
-    
-    private boolean productExists(ObjectId productId) {
+    private boolean productExists(String productId) {
         // Logic to check if product exists in the database
         return productRepository.existsById(productId);
     }
-    
-
-    
-// Remove a product from the user's cart
-public void removeFromCart(ObjectId userId, ObjectId productId) {
-    User user = getUserById(userId);
-    
-    // Find and remove the CartItem with the matching productId
-    user.getCart().removeIf(cartItem -> cartItem.getProductId().equals(productId));
-    
-    userRepository.save(user);
-}
 
 
-
-// Get user's cart
-public List<CartResponseItem> getUserCart(ObjectId userId) {
-    User user = getUserById(userId);
-    List<CartResponseItem> cartResponse = new ArrayList<>();
-
-    for (CartItem item : user.getCart()) {
-        // Fetch product details for each productId
-        Product product = productRepository.findById(item.getProductId())
-                .orElseThrow(() ->  new CustomeRuntimeExceptionsHandler("product not found"));
-
-        // Create a CartResponseItem with both Product and CartItem details
-        CartResponseItem responseItem = new CartResponseItem(
-                item.getProductId(),
-                product.getTitle(),
-                product.getDescription(),
-                product.getSellPrice(),
-                item.getQuantity()
-        );
-
-        cartResponse.add(responseItem);
+    // Remove a product from the user's cart
+    public void removeFromCart(ObjectId userId, ObjectId productId) {
+        User user = getUserById(userId);
+        user.getCart().removeIf(cartItem -> cartItem.getProductId().equals(productId));
+        userRepository.save(user);
     }
 
-    return cartResponse;
-}
 
-   // create order
+    // Get user's cart
+    public List<CartResponseItem> getUserCart(ObjectId userId) {
+        User user = getUserById(userId);
+        List<CartResponseItem> cartResponse = new ArrayList<>();
 
-    public Order createOrder (Order order){
-        order.setCreatedAt(LocalDateTime.now());
-        return orderRepository.save(order);
+        for (CartItem item : user.getCart()) {
+            Product product = productRepository.findById(item.getProductId().toString())
+                    .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("product not found"));
+            CartResponseItem responseItem = new CartResponseItem(
+                    item.getProductId(),
+                    product.getTitle(),
+                    product.getDescription(),
+                    product.getSellPrice(),
+                    item.getQuantity()
+            );
+
+            cartResponse.add(responseItem);
+        }
+
+        return cartResponse;
     }
+
 
 }

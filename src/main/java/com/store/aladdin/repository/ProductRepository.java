@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.store.aladdin.models.Product;
 
-public interface ProductRepository extends MongoRepository<Product, ObjectId>, CustomProductRepository{
+public interface ProductRepository extends MongoRepository<Product, String>, CustomProductRepository{
 
     
     

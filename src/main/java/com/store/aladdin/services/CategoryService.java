@@ -58,18 +58,6 @@ public class CategoryService {
 
     }
 
-    public void updateCategoryPath(String categoryId, List<String> path) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-        category.setPath(path);
-        categoryRepository.save(category);
-    }
-
-    // Find category by title
-
-    public Category getCategoryByTitle(String title) {
-        return categoryRepository.findByTitle(title);
-    }
 
     public List<CategoryResponse> getAllCategoryResponses() {
         List<Category> allCategories = categoryRepository.findAll();
@@ -100,7 +88,6 @@ public class CategoryService {
         path.add(savedCategory.getTitle());
         savedCategory.setPath(path);
         categoryRepository.save(savedCategory);
-
         return savedCategory;
     }
 

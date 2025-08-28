@@ -54,7 +54,7 @@ public class PublicControllers {
     @GetMapping(PUBLIC_SINGLE_PRODUCT)
     public ResponseEntity<Map<String, Object>> getProductById(@PathVariable String productId) {
         try {
-            Product product = productService.getProductById(new ObjectId(productId));
+            Product product = productService.getProductById(productId);
             return ResponseUtil.buildResponse("product fetched successfully", true, product, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildResponse("Product not found", HttpStatus.NOT_FOUND);

@@ -36,7 +36,7 @@ public class ProductService {
     }
 
 
-    public Product updateProduct(ObjectId productId, Product updatedProduct) {
+    public Product updateProduct(String productId, Product updatedProduct) {
         return productRepository.findById(productId).map(existingProduct -> {
             BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "createdAt");
             existingProduct.setLastUpdatedAt(LocalDateTime.now());
@@ -45,11 +45,11 @@ public class ProductService {
     }
 
 
-    public Product updateProductVariants(ObjectId productId, Product updatedProduct) {
+    public Product updateProductVariants(String productId, Product updatedProduct) {
         return productRepository.findById(productId).map(product -> {
             List<Product.Variant> variants = updatedProduct.getVariants(); // Fully qualified name
             if (variants != null) {
-                variants.forEach(variant -> variant.setParentProductId(productId.toHexString())); // Convert ObjectId to String
+                variants.forEach(variant -> variant.setParentProductId(productId));
                 product.setVariants(variants);
             }
             return productRepository.save(product);
@@ -57,7 +57,7 @@ public class ProductService {
     }
 
 
-    public void deleteProduct(ObjectId productId) {
+    public void deleteProduct(String productId) {
         if (!productRepository.existsById(productId)) {
             throw new ResourceNotFoundException("Product not found with id: " + productId);
         }
@@ -65,7 +65,7 @@ public class ProductService {
     }
 
 
-    public Product getProductById(ObjectId productId) throws Exception {
+    public Product getProductById(String productId) throws Exception {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new Exception("Product not found"));
     }

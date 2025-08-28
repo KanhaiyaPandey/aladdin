@@ -28,7 +28,7 @@ public class DeleteProduct {
     @DeleteMapping(ProductRoutes.DELETE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable String productId) {
-        productService.deleteProduct(new ObjectId(productId)); 
+        productService.deleteProduct(productId);
         return ResponseUtil.buildResponse("Product deleted successfully", HttpStatus.OK);
     }
 

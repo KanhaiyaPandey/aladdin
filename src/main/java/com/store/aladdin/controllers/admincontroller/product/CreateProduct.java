@@ -44,8 +44,7 @@ public class CreateProduct {
         }
         product.setSlug(generateSlug(product.getTitle()));
         Product createdProduct = productService.createProduct(product);
-        ObjectId objectId = new ObjectId(createdProduct.getProductId());
-        Product updatedProduct = productService.updateProductVariants(objectId, product);
+        Product updatedProduct = productService.updateProductVariants(createdProduct.getProductId(), product);
         return ResponseUtil.buildResponse("Product created successfully", true, updatedProduct, HttpStatus.OK
         );
     }
