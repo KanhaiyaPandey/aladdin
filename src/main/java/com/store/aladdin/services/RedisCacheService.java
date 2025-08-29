@@ -15,7 +15,7 @@ public class RedisCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void set(String key, Object o, Long ttl) {
-        redisTemplate.opsForValue().set(key, o, ttl, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, o, ttl, TimeUnit.HOURS);
     }
 
     public <T> T get(String key, Class<T> entityClass) {

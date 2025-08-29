@@ -78,17 +78,10 @@ public class PublicControllers {
     @GetMapping(PUBLIC_SINGLE_CATEGORY)
     public ResponseEntity<Map<String, Object>> getCategoryById(@PathVariable String id) {
         try {
-
-            String cacheKey = "category:" + id;
-            CategoryResponse cached = redisCacheService.get(cacheKey, CategoryResponse.class);
-            if (cached != null) {
-                return ResponseUtil.buildResponse("Category fetched from Redis", true, cached, HttpStatus.OK);
-            }
             CategoryResponse category = categoryService.getCategoryById(id);
             if (category == null) {
                 return ResponseUtil.buildResponse("Category not found", false, null, HttpStatus.NOT_FOUND);
             }
-            redisCacheService.set(cacheKey, category, 300L);
             return ResponseUtil.buildResponse("Category fetched successfully", true, category, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseUtil.buildErrorResponse("Invalid category ID format", HttpStatus.BAD_REQUEST, e.getMessage());

@@ -3,8 +3,6 @@ package com.store.aladdin.utils.validation;
 import com.store.aladdin.models.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -30,27 +28,38 @@ public class UserValidation {
         if (user.getPhoneNumber() == null || !user.getPhoneNumber().matches("\\d{10}")) {
             return "Phone number must be exactly 10 digits";
         }
-        return null; // ✅ Passed format checks
+        return null;
     }
 
     // 🔹 Duplicate check in Mongo
     private String validateDuplicates(User user) {
-        MatchOperation match = Aggregation.match(
-                new Criteria().orOperator(
-                        Criteria.where("name").is(user.getName()),
-                        Criteria.where("email").is(user.getEmail()),
+
+        // Check name
+        if (mongoTemplate.exists(
+                org.springframework.data.mongodb.core.query.Query.query(
+                        Criteria.where("name").is(user.getName())
+                ), User.class)) {
+            return "User with the same name already exists";
+        }
+
+        // Check email
+        if (mongoTemplate.exists(
+                org.springframework.data.mongodb.core.query.Query.query(
+                        Criteria.where("email").is(user.getEmail())
+                ), User.class)) {
+            return "User with the same email already exists";
+        }
+
+        // Check phone number
+        if (mongoTemplate.exists(
+                org.springframework.data.mongodb.core.query.Query.query(
                         Criteria.where("phoneNumber").is(user.getPhoneNumber())
-                )
-        );
-
-        Aggregation aggregation = Aggregation.newAggregation(match);
-        var results = mongoTemplate.aggregate(aggregation, "users", User.class);
-
-        if (!results.getMappedResults().isEmpty()) {
-            return "User with same name, email or phone already exists";
+                ), User.class)) {
+            return "User with the same phone number already exists";
         }
         return null;
     }
+
 
     // 🔹 Combined validation
     public  String validateUser(User user) {

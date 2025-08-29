@@ -30,6 +30,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import static com.store.aladdin.keys.CacheKeys.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -41,11 +43,14 @@ public class CategoryService {
     private final AttributesRepository attributesRepository;
     private final MongoTemplate mongoTemplate;
     private final RedisCacheService redisCacheService;
-    private static final String ALL_ATTRIBUTES_CACHE_KEY = "all-attributes";
 
 
     // Find category by ID
     public CategoryResponse getCategoryById(String id) {
+        CategoryResponse cached = redisCacheService.get(SINGLE_CATEGORY_CACHE_KEY + id, CategoryResponse.class);
+        if(cached != null){
+            return cached;
+        }
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty()) {
             return null;
@@ -54,12 +59,16 @@ public class CategoryService {
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
+        redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + id, category, 300L);
         return CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
-
     }
 
 
     public List<CategoryResponse> getAllCategoryResponses() {
+        List<CategoryResponse> cached = redisCacheService.getList(ALL_CATEGORIES_CACHE_KEY, CategoryResponse.class);
+        if(cached != null && !cached.isEmpty()){
+           return  cached;
+        }
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
@@ -77,7 +86,6 @@ public class CategoryService {
         if (category.getParentCategoryId() != null && !category.getParentCategoryId().isEmpty()) {
             Category parent = categoryRepository.findById(category.getParentCategoryId())
                     .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("Parent category not found"));
-
             path.addAll(parent.getPath());
             Update update = new Update().addToSet("childCategoryIds", savedCategory.getCategoryId());
             mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(parent.getCategoryId())),
@@ -88,22 +96,24 @@ public class CategoryService {
         path.add(savedCategory.getTitle());
         savedCategory.setPath(path);
         categoryRepository.save(savedCategory);
+        redisCacheService.delete(ALL_CATEGORIES_CACHE_KEY);
+        redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + savedCategory.getCategoryId(), savedCategory, 500L);
         return savedCategory;
     }
 
 
-
-
+//    Delete Categories
 
     public void deleteCategoriesByIds(List<String> categoryIds) {
         Set<String> allToDelete = new HashSet<>();
         for (String id : categoryIds) {
-            ObjectId objectId = new ObjectId(id);
-            collectCategoryAndChildren(objectId.toString(), allToDelete);
+            collectCategoryAndChildren(id , allToDelete);
         }
         for (String id : allToDelete) {
             categoryRepository.deleteById(id);
+            redisCacheService.delete(SINGLE_CATEGORY_CACHE_KEY + id);
         }
+        redisCacheService.delete(ALL_CATEGORIES_CACHE_KEY);
         removeCategoriesFromProducts(allToDelete);
     }
 
@@ -116,6 +126,8 @@ public class CategoryService {
         }
     }
 
+
+//    remove category from products
 
     private void removeCategoriesFromProducts(Set<String> deletedCategoryIds) {
         List<Product> allProducts = productRepository.findAll();
@@ -131,9 +143,13 @@ public class CategoryService {
             if (modified) {
                 productRepository.save(product);
             }
+            redisCacheService.delete(SINGLE_PRODUCT_CACHE_KEY + product.getProductId());
         }
     }
 
+
+
+//    update category
 
     public Category updateCategory(String categoryId, Category payload) throws IOException {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
@@ -150,6 +166,7 @@ public class CategoryService {
         if (payload.getBanner() != null && !payload.getBanner().isEmpty()) {
             category.setBanner(payload.getBanner());
         }
+        redisCacheService.delete(SINGLE_CATEGORY_CACHE_KEY + categoryId);
         return categoryRepository.save(category);
     }
 
@@ -178,8 +195,6 @@ public class CategoryService {
     }
 
 //    update attribute
-
-
     public Attribute updateAttribute(String attributeId, Attribute updatedData) {
         Attribute existing = attributesRepository.findById(attributeId)
                 .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("Attribute not found with id: " + attributeId));
@@ -194,7 +209,6 @@ public class CategoryService {
     }
 
 //   delete attributes
-
     public void deleteAttributes(List<String> attributeIds) {
         try{
             attributesRepository.deleteAllById(attributeIds);
@@ -202,7 +216,6 @@ public class CategoryService {
         } catch (Exception e) {
             throw new CustomeRuntimeExceptionsHandler("error deleting attributes", e);
         }
-
     }
 
 
