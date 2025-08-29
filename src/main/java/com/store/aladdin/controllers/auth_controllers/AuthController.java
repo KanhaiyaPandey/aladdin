@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static com.store.aladdin.routes.AuthRoutes.*;
 
+import com.store.aladdin.services.MailService;
 import com.store.aladdin.utils.validation.UserValidation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ public class AuthController {
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserValidation userValidation;
+    private final MailService mailService;
 
     private static final String TYPE = "JWT_TOKEN";
     private static final String SET = "Set-Cookie";
@@ -51,7 +53,6 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
 
         // Fetch user by email
-
         User user = userService.getUserByEmail(loginUser.getEmail());
         if (user == null) {
             return ResponseUtil.buildResponse("User not found", HttpStatus.BAD_REQUEST);
@@ -72,6 +73,7 @@ public class AuthController {
             userInfo.put("username", logedinUser.getName());
             userInfo.put("email", logedinUser.getEmail());
             userInfo.put("roles", logedinUser.getRoles());
+            mailService.sendEmail(logedinUser.getEmail(), "testing mail", "mail working fine");
             return ResponseUtil.buildResponse("Login successful", true ,userInfo , HttpStatus.OK);
         } else {
             return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);

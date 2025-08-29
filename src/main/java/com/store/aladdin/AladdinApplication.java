@@ -1,7 +1,6 @@
 package com.store.aladdin;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,21 +10,22 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableMongoRepositories(basePackages = "com.store.aladdin.repository")
+@Slf4j
 public class AladdinApplication {
 
-	private static final Logger logger = LoggerFactory.getLogger(AladdinApplication.class);
+
 	public static void main(String[] args) {
 	try {
 		SpringApplication.run(AladdinApplication.class, args);
-		logger.info("✅ Server is running on port 8080. No compilation errors!");
+		log.info("✅ Server is running on port 8080. No compilation errors!");
 		} catch (Exception e) {
-			logger.error("Error during startup: ", e);
+			log.error("Error during startup: ", e);
 		}
 	}
 	@Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
-            logger.info("Server has started successfully!");
+            log.info("Server has started successfully!");
         };
     }
 
