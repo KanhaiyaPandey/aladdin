@@ -15,7 +15,6 @@ public class AladdinApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(AladdinApplication.class);
 	public static void main(String[] args) {
-
 	try {
 		SpringApplication.run(AladdinApplication.class, args);
 		logger.info("✅ Server is running on port 8080. No compilation errors!");

@@ -31,7 +31,6 @@ public class RedisCacheService {
         if (o instanceof List<?>) {
             return (List<T>) o;
         }
-
         throw new IllegalStateException("Cached object is not a List");
     }
 

@@ -9,9 +9,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 import com.store.aladdin.models.Attribute;
 import com.store.aladdin.repository.AttributesRepository;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +80,7 @@ public class CategoryService {
 
 
     // Save a new category
+
     public Category createCategory(Category category) {
         Category savedCategory = categoryRepository.save(category);
         List<String> path = new ArrayList<>();
