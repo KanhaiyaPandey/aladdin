@@ -1,8 +1,6 @@
 package com.store.aladdin.routes;
 
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class AuthRoutes {
 
     public static final String AUTH_BASE = "/api/auth/user";
@@ -16,5 +14,7 @@ public class AuthRoutes {
     public static final String USER_BASE = "/api/aladdin/user";
     public static final String PUBLIC_BASE = "/api/aladdin/public";
 
-
+    private AuthRoutes() {
+        throw new UnsupportedOperationException("Utility class - cannot be instantiated");
+    }
 }

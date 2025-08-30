@@ -1,8 +1,6 @@
 package com.store.aladdin.keys;
 
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class CacheKeys {
 
 //    category
@@ -23,5 +21,9 @@ public class CacheKeys {
 //    orders
 
 //    ...
+
+    private CacheKeys() {
+        throw new UnsupportedOperationException("Utility class - cannot be instantiated");
+    }
 
 }

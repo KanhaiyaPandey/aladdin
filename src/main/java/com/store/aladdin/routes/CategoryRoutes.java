@@ -1,10 +1,8 @@
 package com.store.aladdin.routes;
 
-import lombok.RequiredArgsConstructor;
-
 import static com.store.aladdin.routes.AuthRoutes.ADMIN_BASE;
 
-@RequiredArgsConstructor
+
 public class CategoryRoutes {
 
     public static final String CATEGORY_BASE = ADMIN_BASE + "/category";
@@ -15,5 +13,8 @@ public class CategoryRoutes {
     public static final String CREATE_ATTRIBUTE =  "/create-attribute";
     public static final String DELETE_ATTRIBUTES =  "/delete-attributes";
 
+    private CategoryRoutes() {
+        throw new UnsupportedOperationException("Utility class - cannot be instantiated");
+    }
 
 }
