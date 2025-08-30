@@ -10,6 +10,7 @@ import java.util.List;
 
 import static com.store.aladdin.routes.AuthRoutes.*;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,14 +25,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
-
-    // Inject CustomAccessDeniedHandler into the configuration
-    public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler) {
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

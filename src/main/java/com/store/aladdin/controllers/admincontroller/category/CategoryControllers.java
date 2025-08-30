@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Attribute;
-import com.store.aladdin.routes.CategoryRoutes;
+import com.store.aladdin.routes.admin_routes.AdminCategoryRoutes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +26,7 @@ import com.store.aladdin.validations.CategoryValidation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(CategoryRoutes.CATEGORY_BASE)
+@RequestMapping(AdminCategoryRoutes.CATEGORY_BASE)
 @RequiredArgsConstructor
 public class CategoryControllers {
 
@@ -42,7 +42,7 @@ public class CategoryControllers {
     // create category
 
     
-    @PostMapping(value = CategoryRoutes.CREATE_CATEGORY)
+    @PostMapping(value = AdminCategoryRoutes.CREATE_CATEGORY)
     public ResponseEntity<Map<String, Object>> createCategory( @RequestBody String categoryJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -63,7 +63,7 @@ public class CategoryControllers {
 
     // update category
 
-    @PutMapping(value = CategoryRoutes.UPDATE_CATEGORY, consumes = "multipart/form-data")
+    @PutMapping(value = AdminCategoryRoutes.UPDATE_CATEGORY, consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateCategory(
         @PathVariable String categoryId,
@@ -87,7 +87,7 @@ public class CategoryControllers {
     // delete category
 
     
-    @DeleteMapping(value = CategoryRoutes.DELETE_CATEGORY)
+    @DeleteMapping(value = AdminCategoryRoutes.DELETE_CATEGORY)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteCategories(@RequestBody DeleteCategoryRequest request){
         try {
@@ -106,7 +106,7 @@ public class CategoryControllers {
 
 //    attributes
 
-    @PostMapping(value = CategoryRoutes.CREATE_ATTRIBUTE)
+    @PostMapping(value = AdminCategoryRoutes.CREATE_ATTRIBUTE)
     public ResponseEntity<Map<String, Object>> createAttributes(@RequestBody Attribute attributes){
         try{
            Attribute savedAttribute = categoryService.saveAttribute(attributes);
@@ -126,7 +126,7 @@ public class CategoryControllers {
         }
     }
 
-    @PutMapping(value = CategoryRoutes.UPDATE_ATTRIBUTE)
+    @PutMapping(value = AdminCategoryRoutes.UPDATE_ATTRIBUTE)
     public ResponseEntity<Map<String,Object>> updateAttribute( @PathVariable String attributeId, @RequestBody Attribute attribute){
        try{
            Attribute updated = categoryService.updateAttribute(attributeId, attribute);
@@ -138,7 +138,7 @@ public class CategoryControllers {
 
     }
 
-    @DeleteMapping(value = CategoryRoutes.DELETE_ATTRIBUTES)
+    @DeleteMapping(value = AdminCategoryRoutes.DELETE_ATTRIBUTES)
     public  ResponseEntity<Map<String,Object>> deleteAttributes(@RequestBody DeleteAttributesRequest request){
         try{
              categoryService.deleteAttributes(request.getAttributeIds());

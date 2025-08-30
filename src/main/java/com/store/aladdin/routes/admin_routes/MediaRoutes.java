@@ -1,4 +1,4 @@
-package com.store.aladdin.routes;
+package com.store.aladdin.routes.admin_routes;
 
 import static com.store.aladdin.routes.AuthRoutes.*;
 

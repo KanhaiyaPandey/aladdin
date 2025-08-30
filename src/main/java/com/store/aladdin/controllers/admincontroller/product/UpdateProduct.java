@@ -2,7 +2,7 @@ package com.store.aladdin.controllers.admincontroller.product;
 
 import java.util.Map;
 
-import com.store.aladdin.routes.ProductRoutes;
+import com.store.aladdin.routes.admin_routes.AdminProductRoutes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,14 +22,14 @@ import com.store.aladdin.utils.response.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(ProductRoutes.PRODUCT_BASE)
+@RequestMapping(AdminProductRoutes.PRODUCT_BASE)
 @RequiredArgsConstructor
 public class UpdateProduct {
     
     private final ProductService productService;
 
     
-    @PutMapping(ProductRoutes.UPDATE_PRODUCT)
+    @PutMapping(AdminProductRoutes.UPDATE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable String productId, @RequestBody String productJson) {
         try {
