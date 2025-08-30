@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.UUID;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
+import com.store.aladdin.models.Attribute;
 import com.store.aladdin.routes.ProductRoutes;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -33,9 +36,16 @@ public class CreateProduct {
     private final CategoryService categoryService;
 
 
-    @PostMapping(value = ProductRoutes.CREATE_PRODUCT, consumes = "application/json")
+    @PostMapping(value = ProductRoutes.CREATE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Map<String, Object>> createProduct(@RequestBody String reqJson) {
+        Product product;
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+             product = objectMapper.readValue(reqJson, Product.class);
+        } catch (JsonProcessingException e) {
+            throw new CustomeRuntimeExceptionsHandler("Something went wrong",e);
+        }
         productHelper.validateProduct(product);
         for (Product.Variant variant : product.getVariants()) {
             if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {

@@ -63,12 +63,8 @@ public class CategoryControllers {
 
     // update category
 
-    @PutMapping(value = CategoryRoutes.UPDATE_CATEGORY, consumes = "multipart/form-data")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> updateCategory(
-        @PathVariable String categoryId,
-        @RequestBody String categoryJson
-    ) {
+    @PutMapping(value = CategoryRoutes.UPDATE_CATEGORY)
+    public ResponseEntity<Map<String, Object>> updateCategory(@PathVariable String categoryId, @RequestBody String categoryJson) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Category categoryPayload = objectMapper.readValue(categoryJson, Category.class);
@@ -107,9 +103,11 @@ public class CategoryControllers {
 //    attributes
 
     @PostMapping(value = CategoryRoutes.CREATE_ATTRIBUTE)
-    public ResponseEntity<Map<String, Object>> createAttributes(@RequestBody Attribute attributes){
+    public ResponseEntity<Map<String, Object>> createAttributes(@RequestBody String reqJson){
         try{
-           Attribute savedAttribute = categoryService.saveAttribute(attributes);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Attribute attribute = objectMapper.readValue(reqJson, Attribute.class);
+           Attribute savedAttribute = categoryService.saveAttribute(attribute);
            return ResponseUtil.buildResponse("Attribute added", true, savedAttribute, HttpStatus.OK);
         }catch (Exception e){
             return ResponseUtil.buildErrorResponse("Error creating attribute", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -127,8 +125,10 @@ public class CategoryControllers {
     }
 
     @PutMapping(value = CategoryRoutes.UPDATE_ATTRIBUTE)
-    public ResponseEntity<Map<String,Object>> updateAttribute( @PathVariable String attributeId, @RequestBody Attribute attribute){
+    public ResponseEntity<Map<String,Object>> updateAttribute( @PathVariable String attributeId, @RequestBody String reqJson){
        try{
+           ObjectMapper objectMapper = new ObjectMapper();
+           Attribute attribute = objectMapper.readValue(reqJson, Attribute.class);
            Attribute updated = categoryService.updateAttribute(attributeId, attribute);
            return  ResponseUtil.buildResponse("attribute updated successfully", true, updated, HttpStatus.OK);
        } catch (Exception e) {
