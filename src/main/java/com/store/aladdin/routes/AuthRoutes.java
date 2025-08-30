@@ -1,5 +1,8 @@
 package com.store.aladdin.routes;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class AuthRoutes {
 
     public static final String AUTH_BASE = "/api/auth/user";

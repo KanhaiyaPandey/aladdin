@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,16 +25,15 @@ public class RedisCacheService {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> List<T> getList(String key, Class<T> elementClass) {
+    public <T> List<T> getList(String key) {
         Object o = redisTemplate.opsForValue().get(key);
-        if (o == null) return null;
+        if (o == null) return Collections.emptyList();
 
         if (o instanceof List<?>) {
             return (List<T>) o;
         }
         throw new IllegalStateException("Cached object is not a List");
     }
-
     public void delete(String key) {
         redisTemplate.delete(key);
     }

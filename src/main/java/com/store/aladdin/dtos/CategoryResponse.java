@@ -1,9 +1,8 @@
 package com.store.aladdin.dtos;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
-import com.store.aladdin.models.Product;
 
 import lombok.Data;
 

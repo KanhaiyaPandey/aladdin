@@ -1,5 +1,8 @@
 package com.store.aladdin.routes;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class PublicRoutes {
     public static final String PUBLIC_BASE = "/api/aladdin/public";
 

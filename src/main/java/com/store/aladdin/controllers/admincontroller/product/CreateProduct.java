@@ -1,6 +1,5 @@
 package com.store.aladdin.controllers.admincontroller.product;
 
-import java.io.IOException;
 
 import java.util.Map;
 import java.util.UUID;
@@ -8,9 +7,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
-import com.store.aladdin.models.Attribute;
 import com.store.aladdin.routes.ProductRoutes;
-import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +19,6 @@ import com.store.aladdin.services.CategoryService;
 import com.store.aladdin.services.ProductService;
 import com.store.aladdin.utils.helper.ProductHelper;
 import com.store.aladdin.utils.response.ResponseUtil;
-import com.store.aladdin.utils.validation.ValidationException;
 
 import lombok.RequiredArgsConstructor;
 

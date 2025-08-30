@@ -1,5 +1,8 @@
 package com.store.aladdin.keys;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class CacheKeys {
 
 //    category

@@ -65,7 +65,7 @@ public class CategoryService {
 
 
     public List<CategoryResponse> getAllCategoryResponses() {
-        List<CategoryResponse> cached = redisCacheService.getList(ALL_CATEGORIES_CACHE_KEY, CategoryResponse.class);
+        List<CategoryResponse> cached = redisCacheService.getList(ALL_CATEGORIES_CACHE_KEY);
         if(cached != null && !cached.isEmpty()){
            return  cached;
         }
@@ -186,8 +186,8 @@ public class CategoryService {
 //    get all attributes
 
     public List<Attribute> gettAllAttributes() {
-        List<Attribute> cached = redisCacheService.getList(ALL_ATTRIBUTES_CACHE_KEY, Attribute.class);
-        if (cached != null) {
+        List<Attribute> cached = redisCacheService.getList(ALL_ATTRIBUTES_CACHE_KEY);
+        if (cached != null && !cached.isEmpty()) {
             return cached;
         }
         List<Attribute> attributes = attributesRepository.findAll();

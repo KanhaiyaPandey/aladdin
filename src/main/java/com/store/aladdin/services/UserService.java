@@ -76,11 +76,6 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    private boolean productExists(String productId) {
-        // Logic to check if product exists in the database
-        return productRepository.existsById(productId);
-    }
-
 
     // Remove a product from the user's cart
     public void removeFromCart(ObjectId userId, ObjectId productId) {

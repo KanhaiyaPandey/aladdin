@@ -1,7 +1,10 @@
 package com.store.aladdin.routes;
 
+import lombok.RequiredArgsConstructor;
+
 import static com.store.aladdin.routes.AuthRoutes.ADMIN_BASE;
 
+@RequiredArgsConstructor
 public class CategoryRoutes {
 
     public static final String CATEGORY_BASE = ADMIN_BASE + "/category";
