@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static com.store.aladdin.routes.AuthRoutes.*;
 
+import com.store.aladdin.services.AuthService;
 import com.store.aladdin.services.MailService;
 import com.store.aladdin.utils.validation.UserValidation;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,7 @@ public class AuthController {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserValidation userValidation;
     private final MailService mailService;
+    private final AuthService authService;
 
     private static final String TYPE = "JWT_TOKEN";
     private static final String SET = "Set-Cookie";
@@ -59,21 +61,11 @@ public class AuthController {
         }
         User logedinUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
         if (logedinUser != null) {
-            String token = JwtUtil.generateToken(logedinUser);
-            Cookie cookie = new Cookie(SET, token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(secure);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60 * 24); 
-            response.setHeader(SET, "JWT_TOKEN=" + token +
-                "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400"); 
-            response.addCookie(cookie);
-
+            authService.handle_login(logedinUser, response);
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", logedinUser.getName());
             userInfo.put("email", logedinUser.getEmail());
             userInfo.put("roles", logedinUser.getRoles());
-            mailService.sendEmail(logedinUser.getEmail(), "testing mail", "mail working fine");
             return ResponseUtil.buildResponse("Login successful", true ,userInfo , HttpStatus.OK);
         } else {
             return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
@@ -98,14 +90,7 @@ public class AuthController {
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);
                 userService.createUser(user);
-                String token = JwtUtil.generateToken(user);
-                Cookie cookie = new Cookie(TYPE, token);
-                cookie.setHttpOnly(true);
-                cookie.setSecure(secure); 
-                cookie.setPath("/");
-                cookie.setMaxAge(60 * 60 * 24); 
-                response.addCookie(cookie);
-                response.setHeader(SET, "JWT_TOKEN=" + token + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=86400");
+                authService.handle_login(user, response);
                 return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);
             } catch (IllegalArgumentException e) {
                 return ResponseUtil.buildResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -134,13 +119,7 @@ public class AuthController {
             return ResponseUtil.buildResponse("Token not found", HttpStatus.UNAUTHORIZED);
         }
             String email = JwtUtil.validateToken(token);
-            if (email == null) {
-                return ResponseUtil.buildResponse("Invalid or expired token", HttpStatus.UNAUTHORIZED);
-            }
             User user = userService.getUserByEmail(email);
-            if (user == null) {
-                return ResponseUtil.buildResponse("User not found", HttpStatus.UNAUTHORIZED);
-            }
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("username", user.getName());
             userInfo.put("email", user.getEmail());
@@ -160,14 +139,9 @@ public class AuthController {
 
         @PostMapping(LOGOUT_ROUTE)
         public ResponseEntity<Map<String, Object>> logout(HttpServletResponse response) {
-            Cookie cookie = new Cookie(TYPE, null);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true); 
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
+            authService.handle_logout(response);
             response.setHeader(SET, "JWT_TOKEN=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0");
-            return ResponseUtil.buildResponse("Logged out successfully", true, null , HttpStatus.OK);
+            return ResponseUtil.buildResponse("Logged out successfully", HttpStatus.OK);
         }
 
 }

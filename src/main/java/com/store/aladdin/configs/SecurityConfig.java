@@ -50,6 +50,7 @@ public class SecurityConfig {
                     .requestMatchers(AUTH_BASE + LOGIN_ROUTE).permitAll()
                     .requestMatchers(AUTH_BASE + REGISTER_ROUTE).permitAll()
                     .requestMatchers(AUTH_BASE + VALIDATION_ROUTE).permitAll()
+                    .requestMatchers(AUTH_BASE + LOGOUT_ROUTE).permitAll()
 
                     // Public API is open
                     .requestMatchers(PUBLIC_BASE + "/**").permitAll()
