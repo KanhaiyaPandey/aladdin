@@ -14,9 +14,6 @@ public class ProductValidation {
     private final ProductQueries productQueries;
     
     public void validateProduct(Product product) {
-        if (product.getTitle() == null) {
-            throw new IllegalArgumentException("Product name is required.");
-        }
 
         if (isNullOrEmpty(product.getSku())) {
             throw new IllegalArgumentException("Product SKU is required.");

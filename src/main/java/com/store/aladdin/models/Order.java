@@ -26,7 +26,7 @@ public class Order {
 
     @Id
     private String orderId;
-    private String userId;
+    private String customerId;
     private Address shippingAddress;
     private List<OrderItem> items;
     private OrderStatus status;

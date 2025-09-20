@@ -51,9 +51,12 @@ public class JwtUtil {
             }
         }
 
-    
 
-    // Extract roles from the JWT token (no "ROLE_" prefix)
+    //   ========================================================
+    //   Extract roles from the JWT token (no "ROLE_" prefix)
+    //   ========================================================
+
+
     public static String[] extractRoles(String token) {
         try {
             DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(secretKey))
@@ -65,6 +68,10 @@ public class JwtUtil {
             throw new CustomeRuntimeExceptionsHandler("Unable to extract roles from token", e);
         }
     }
+
+    // ======================
+    //    extract userId
+    // ======================
 
     public static String extractUserId(String token) {
     return JWT.require(Algorithm.HMAC256(secretKey))

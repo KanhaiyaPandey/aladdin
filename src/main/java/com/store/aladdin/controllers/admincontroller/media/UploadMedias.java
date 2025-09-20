@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import com.store.aladdin.routes.MediaRoutes;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -35,27 +36,35 @@ public class UploadMedias {
     @PostMapping(value = MediaRoutes.UPLOAD_MEDIA, consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestParam("media") MultipartFile[] files) {
-    try {
-        List<Medias> uploadedMedias = new ArrayList<>();
+        try {
+            List<CompletableFuture<Medias>> futures = new ArrayList<>();
 
-        for (MultipartFile file : files) {
-            String imageUrl = imageUploadService.uploadImage(file);
-            Medias media = Medias.builder()
-                .url(imageUrl)
-                .title(file.getOriginalFilename())
-                .fileType(file.getContentType())
-                .fileSize(file.getSize())
-                .createdAt(LocalDateTime.now())
-                .build();
+            for (MultipartFile file : files) {
+                CompletableFuture<Medias> future = imageUploadService.uploadImageAsync(file)
+                        .thenApply(imageUrl -> {
+                            Medias media = Medias.builder()
+                                    .url(imageUrl)
+                                    .title(file.getOriginalFilename())
+                                    .fileType(file.getContentType())
+                                    .fileSize(file.getSize())
+                                    .createdAt(LocalDateTime.now())
+                                    .build();
 
-            mongoTemplate.save(media);
-            uploadedMedias.add(media);
-        }
-            return ResponseUtil.buildResponse("image uploaded", true, uploadedMedias, HttpStatus.OK);
+                            mongoTemplate.save(media);
+                            return media;
+                        });
+                futures.add(future);
+            }
+
+            List<Medias> uploadedMedias = futures.stream()
+                    .map(CompletableFuture::join)  // join waits for each future
+                    .toList();
+
+            return ResponseUtil.buildResponse("images uploaded", true, uploadedMedias, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error uploading images:", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-}
+    }
 
 
         
