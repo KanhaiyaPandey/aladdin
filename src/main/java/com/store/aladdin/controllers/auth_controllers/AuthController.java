@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.store.aladdin.routes.AuthRoutes.*;
+import static com.store.aladdin.utils.helper.Enums.RiskStatus.LOW;
 
 import com.store.aladdin.services.AuthService;
 import com.store.aladdin.services.MailService;
@@ -53,8 +54,6 @@ public class AuthController {
     // login
     @PostMapping(LOGIN_ROUTE)
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthPojo loginUser, HttpServletResponse response) {
-
-        // Fetch user by email
         User user = userService.getUserByEmail(loginUser.getEmail());
         if (user == null) {
             return ResponseUtil.buildResponse("User not found", HttpStatus.BAD_REQUEST);
@@ -68,7 +67,6 @@ public class AuthController {
           return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
     }
     
-
 
     // register
         @PostMapping(REGISTER_ROUTE)
@@ -85,6 +83,7 @@ public class AuthController {
                 }
                 String hashedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(hashedPassword);
+                user.setRiskStatus(LOW);
                 userService.createUser(user);
                 authService.set_cookie(user, response);
                 return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);

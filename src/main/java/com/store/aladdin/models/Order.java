@@ -6,10 +6,8 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import static com.store.aladdin.utils.helper.Enums.*;
 
-import com.store.aladdin.utils.helper.Enums.OrderStatus;
-import com.store.aladdin.utils.helper.Enums.PaymentMode;
-import com.store.aladdin.utils.helper.Enums.PaymentStatus;
 
 
 import lombok.Data;

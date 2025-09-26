@@ -1,5 +1,6 @@
 package com.store.aladdin.filters;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,21 +25,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws IOException, ServletException {
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws IOException, ServletException {
         // Extract JWT token from a custom cookie
         String token = Arrays.stream(request.getCookies() == null ? new Cookie[0] : request.getCookies())
-                .filter(cookie -> "JWT_TOKEN".equals(cookie.getName())) 
+                .filter(cookie -> "JWT_TOKEN".equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
 
         if (token != null) {
             try {
-                String username = JwtUtil.validateToken(token); 
+                String username = JwtUtil.validateToken(token);
 
                 // Extract roles without adding "ROLE_"
-                String[] roles = JwtUtil.extractRoles(token); 
+                String[] roles = JwtUtil.extractRoles(token);
 
                 List<SimpleGrantedAuthority> authorities = Arrays.stream(roles)
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
@@ -54,11 +55,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-      
+
             } catch (RuntimeException e) {
                 SecurityContextHolder.clearContext();
             }
-        } 
+        }
 
         filterChain.doFilter(request, response);
     }

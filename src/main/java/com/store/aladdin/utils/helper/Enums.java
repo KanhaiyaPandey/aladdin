@@ -27,6 +27,10 @@ public class Enums {
         PAID, PENDING
     }
 
+    public enum RiskStatus {
+        LOW, MEDIUM, HIGH, BANNED
+    }
+
 
     public enum PaymentMode {
         RAZORPAY, CASH_ON_DELIVERY

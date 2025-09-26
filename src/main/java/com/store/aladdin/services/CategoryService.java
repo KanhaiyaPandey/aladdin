@@ -48,20 +48,27 @@ public class CategoryService {
     // Find category by ID
     public CategoryResponse getCategoryById(String id) {
         CategoryResponse cached = redisCacheService.get(SINGLE_CATEGORY_CACHE_KEY + id, CategoryResponse.class);
-        if(cached != null){
+        if (cached != null) {
             return cached;
         }
+
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty()) {
             return null;
         }
+
         Category category = categoryOptional.get();
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
-        redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + id, category, 300L);
-        return CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
+
+        // ✅ map first, then cache
+        CategoryResponse response = CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
+        redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + id, response, 300L);
+
+        return response;
     }
+
 
 
     public List<CategoryResponse> getAllCategoryResponses() {
@@ -98,7 +105,6 @@ public class CategoryService {
         savedCategory.setPath(path);
         categoryRepository.save(savedCategory);
         redisCacheService.delete(ALL_CATEGORIES_CACHE_KEY);
-        redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + savedCategory.getCategoryId(), savedCategory, 500L);
         return savedCategory;
     }
 

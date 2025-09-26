@@ -1,5 +1,6 @@
 package com.store.aladdin.models;
 
+import static com.store.aladdin.utils.helper.Enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,8 @@ public class User {
     private String phoneNumber;
 
     private boolean isActive;
-
     private String profilePicture;
+    private RiskStatus riskStatus;
 
     @CreatedDate
     private LocalDateTime createdAt;
