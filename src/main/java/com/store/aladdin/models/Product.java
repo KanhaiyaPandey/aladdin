@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Data
 @Document(collection = "products")
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
 
 
@@ -111,9 +113,9 @@ public class Product {
 
     @Data
     @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ProductMedia {
         private String mediaId;
-
         private String url; 
         private String title; 
         private String fileType; 

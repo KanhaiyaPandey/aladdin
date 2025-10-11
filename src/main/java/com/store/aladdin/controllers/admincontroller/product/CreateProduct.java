@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.routes.ProductRoutes;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ import com.store.aladdin.utils.response.ResponseUtil;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequestMapping(ProductRoutes.PRODUCT_BASE)
 @RequiredArgsConstructor
@@ -34,14 +36,8 @@ public class CreateProduct {
 
     @PostMapping(value = ProductRoutes.CREATE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> createProduct(@RequestBody String reqJson) {
-        Product product;
-        try{
-            ObjectMapper objectMapper = new ObjectMapper();
-             product = objectMapper.readValue(reqJson, Product.class);
-        } catch (JsonProcessingException e) {
-            throw new CustomeRuntimeExceptionsHandler("Something went wrong",e);
-        }
+    public ResponseEntity<Map<String, Object>> createProduct(@RequestBody Product product) {
+
         productHelper.validateProduct(product);
         for (Product.Variant variant : product.getVariants()) {
             if (variant.getVariantId() == null || variant.getVariantId().isEmpty()) {

@@ -10,7 +10,6 @@ import java.util.List;
 
 import static com.store.aladdin.routes.AuthRoutes.*;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
