@@ -10,7 +10,6 @@ import static com.store.aladdin.routes.AuthRoutes.*;
 import static com.store.aladdin.utils.helper.Enums.RiskStatus.LOW;
 
 import com.store.aladdin.services.AuthService;
-import com.store.aladdin.services.MailService;
 import com.store.aladdin.utils.validation.UserValidation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -128,7 +127,7 @@ public class AuthController {
 
         @PostMapping(LOGOUT_ROUTE)
         public ResponseEntity<Map<String, Object>> logout(HttpServletResponse response) {
-            authService.remove_cookie(response);
+            authService.removeCookie(response);
             return ResponseUtil.buildResponse("Logged out successfully", HttpStatus.OK);
         }
 

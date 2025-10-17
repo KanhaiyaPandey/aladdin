@@ -39,7 +39,7 @@ public class AuthService {
         response.addCookie(cookie);
     }
 
-    public void remove_cookie(HttpServletResponse response){
+    public void removeCookie(HttpServletResponse response){
         Cookie cookie = new Cookie(TYPE, null);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
