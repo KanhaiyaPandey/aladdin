@@ -16,11 +16,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final UserValidation userValidation;
-    private final MailService mailService;
-
     private static final String TYPE = "JWT_TOKEN";
     private static final String SET = "Set-Cookie";
 
