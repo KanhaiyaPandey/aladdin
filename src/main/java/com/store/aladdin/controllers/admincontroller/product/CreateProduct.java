@@ -3,11 +3,13 @@ package com.store.aladdin.controllers.admincontroller.product;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.routes.ProductRoutes;
+import com.store.aladdin.services.WarehouseServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,7 @@ public class CreateProduct {
 
     private final ProductService productService;
     private final ProductHelper productHelper;
-    private final CategoryService categoryService;
+   private final WarehouseServices warehouseServices;
 
 
     @PostMapping(value = ProductRoutes.CREATE_PRODUCT)
@@ -44,6 +46,7 @@ public class CreateProduct {
                 variant.setVariantId(UUID.randomUUID().toString());
             }
         }
+        CompletableFuture.runAsync(() -> warehouseServices.createStockAsync(product));
         product.setSlug(generateSlug(product.getTitle()));
         Product createdProduct = productService.createProduct(product);
         Product updatedProduct = productService.updateProductVariants(createdProduct.getProductId(), product);

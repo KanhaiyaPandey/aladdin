@@ -21,14 +21,16 @@ import com.store.aladdin.utils.response.ResponseUtil;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.store.aladdin.routes.WarehouseRoutes.*;
+
 @RestController
-@RequestMapping("/api/admin/warehouses")
+@RequestMapping(WAREHOUSE_BASE)
 @RequiredArgsConstructor
 public class CreateWarehouse {
 
     private final WarehouseServices warehouseServices;
 
-    @PostMapping("/create")
+    @PostMapping(CREATE_WAREHOUSE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createWarehouse(@Valid @RequestBody WarehouseDTO warehouseDTO, BindingResult result) {
         if (result.hasErrors()) {

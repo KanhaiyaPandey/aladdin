@@ -49,9 +49,7 @@ public class Product {
     private List<String> attributes = new ArrayList<>();
     private List<ProductCategories> productCategories = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
-
-    @Field("images")
-    private List<String> images = new ArrayList<>(); 
+    private List<String> crossSellProducts = new ArrayList<>();
 
     private List<ProductMedia> productMedias = new ArrayList<>(); 
 
@@ -76,9 +74,11 @@ public class Product {
         private String variantId;   
         private String parentProductId;
         private List<String> options = new ArrayList<>();
+        private String variantSku;
         private List<ProductMedia> variantMedias = new ArrayList<>();
         private Double costPrice;
         private Double sellPrice;
+        private String barcode;
         private Double compareAtPrice;
         private Double margin;
         private List<Warehouse> variantWarehouseData = new ArrayList<>();

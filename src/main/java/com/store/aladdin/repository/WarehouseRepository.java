@@ -9,6 +9,6 @@ import com.store.aladdin.models.Warehouse;
 
 
 @Repository
-public interface WarehouseRepository extends MongoRepository <Warehouse, ObjectId>  {
+public interface WarehouseRepository extends MongoRepository <Warehouse, String>  {
      boolean existsByNameIgnoreCase(String name);
 }

@@ -16,14 +16,16 @@ import com.store.aladdin.utils.response.ResponseUtil;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.store.aladdin.routes.WarehouseRoutes.*;
+
 @RestController
-@RequestMapping("/api/admin/warehouses")
+@RequestMapping(WAREHOUSE_BASE)
 @RequiredArgsConstructor
 public class GetWarehouses {
 
     private final WarehouseServices warehouseServices;
  
-    @GetMapping("/get-all")
+    @GetMapping(GER_ALL_WAREHOUSE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> getAllWarehouses() {
         try {
