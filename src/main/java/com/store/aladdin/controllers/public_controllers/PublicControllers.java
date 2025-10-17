@@ -32,7 +32,6 @@ public class PublicControllers {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final RedisCacheService redisCacheService;
 
 
     @GetMapping(PUBLIC_ALL_PRODUCTS)
