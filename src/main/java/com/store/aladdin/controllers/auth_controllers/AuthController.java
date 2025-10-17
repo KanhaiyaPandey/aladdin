@@ -29,7 +29,6 @@ import com.store.aladdin.services.UserService;
 import com.store.aladdin.utils.JwtUtil;
 import com.store.aladdin.utils.response.ResponseUtil;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,6 @@ public class AuthController {
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserValidation userValidation;
-    private final MailService mailService;
     private final AuthService authService;
 
     private static final String TYPE = "JWT_TOKEN";
@@ -60,8 +58,7 @@ public class AuthController {
         }
         User logedinUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
         if (logedinUser != null) {
-            authService.set_cookie(logedinUser, response);
-//            mailService.sendEmail(logedinUser.getEmail(), "testing mail", "mail working fine");
+            authService.setCookie(logedinUser, response);
             return ResponseUtil.buildResponse("Login successful", HttpStatus.OK);
         }
           return ResponseUtil.buildResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
@@ -85,7 +82,7 @@ public class AuthController {
                 user.setPassword(hashedPassword);
                 user.setRiskStatus(LOW);
                 userService.createUser(user);
-                authService.set_cookie(user, response);
+                authService.setCookie(user, response);
                 return ResponseUtil.buildResponse("User registered and logged in successfully", HttpStatus.CREATED);
             } catch (IllegalArgumentException e) {
                 return ResponseUtil.buildResponse(e.getMessage(), HttpStatus.BAD_REQUEST);

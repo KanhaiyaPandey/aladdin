@@ -36,8 +36,8 @@ public class OrderControllers {
             String token = authService.getToken(request);
             String userId = JwtUtil.extractUserId(token);
             order.setCustomerId(userId);
-            Order saved_order = orderService.create_order(order);
-            return ResponseUtil.buildResponse("order created successfully", true, saved_order, HttpStatus.CREATED);
+            Order savesOrder = orderService.createOrder(order);
+            return ResponseUtil.buildResponse("order created successfully", true, savesOrder, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new CustomeRuntimeExceptionsHandler("oops! " + e.getMessage());
         }

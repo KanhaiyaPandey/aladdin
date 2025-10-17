@@ -1,6 +1,5 @@
 package com.store.aladdin.services;
 
-import com.store.aladdin.exceptions.CustomAccessDeniedHandler;
 import com.store.aladdin.models.User;
 import com.store.aladdin.utils.JwtUtil;
 import com.store.aladdin.utils.validation.UserValidation;
@@ -28,7 +27,7 @@ public class AuthService {
     @Value("${app.cookie.secure}")
     private boolean secure;
 
-    public void set_cookie(User logedinUser, HttpServletResponse response){
+    public void setCookie(User logedinUser, HttpServletResponse response){
         String token = JwtUtil.generateToken(logedinUser);
         Cookie cookie = new Cookie(TYPE, token);
         cookie.setHttpOnly(true);

@@ -19,7 +19,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MongoTemplate mongoTemplate;
 
-    public Order create_order(Order order){
+    public Order createOrder(Order order){
         order.setCreatedAt(LocalDateTime.now());
          return orderRepository.save(order);
     }
