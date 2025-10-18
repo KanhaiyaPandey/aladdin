@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import static com.store.aladdin.keys.CacheKeys.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -28,7 +30,14 @@ public class ProductService {
     public Product createProduct(Product product) {
         product.setCreatedAt(LocalDateTime.now());
         product.setLastUpdatedAt(LocalDateTime.now());
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        try {
+            redisCacheService.set(SINGLE_PRODUCT_CACHE_KEY + savedProduct.getProductId(), savedProduct, 500L);
+            log.info("💾 Cached product with key: {}", SINGLE_PRODUCT_CACHE_KEY + savedProduct.getProductId());
+        } catch (Exception e) {
+            log.error("❌ Failed to cache product in Redis: {}", e.getMessage());
+        }
+        return savedProduct;
     }
 
     public List<Product> getAllProducts() {
@@ -70,15 +79,11 @@ public class ProductService {
 
 
     public Product getProductById(String productId) throws Exception {
-        Product cached = redisCacheService.get(SINGLE_PRODUCT_CACHE_KEY + productId, Product.class);
-        if (cached != null) {
-            return cached;
-        }
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new Exception("Product not found with ID: " + productId));
-        redisCacheService.set(SINGLE_PRODUCT_CACHE_KEY + productId, product, 1L);
-        return product;
-    }
+           return productRepository.findById(productId)
+                    .orElseThrow(() -> new Exception("Product not found with ID: " + productId));
+
+       }
+
 
 
 }

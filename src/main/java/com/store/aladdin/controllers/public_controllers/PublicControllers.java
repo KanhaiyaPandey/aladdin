@@ -56,7 +56,7 @@ public class PublicControllers {
 
             return ResponseUtil.buildResponse("product fetched successfully", true, product, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseUtil.buildResponse("Product not found", HttpStatus.NOT_FOUND);
+            return ResponseUtil.buildResponse("Product not found sorry", HttpStatus.NOT_FOUND);
         }
     }
 
