@@ -53,6 +53,7 @@ public class ProductService {
         return productRepository.findById(productId).map(existingProduct -> {
             BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "createdAt");
             existingProduct.setLastUpdatedAt(LocalDateTime.now());
+            redisCacheService.delete(SINGLE_PRODUCT_CACHE_KEY + productId);
             return productRepository.save(existingProduct);
         }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
     }
@@ -79,10 +80,22 @@ public class ProductService {
 
 
     public Product getProductById(String productId) throws Exception {
-           return productRepository.findById(productId)
+        try {
+            Product cached = redisCacheService.get(SINGLE_PRODUCT_CACHE_KEY + productId, Product.class);
+            if (cached != null) {
+                log.info("✅ Fetched product from Redis cache: {}", productId);
+                return cached;
+            }
+            Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new Exception("Product not found with ID: " + productId));
-
-       }
+            redisCacheService.set(SINGLE_PRODUCT_CACHE_KEY + productId, product, 500L);
+            log.info("💾 Cached product in Redis: {}", productId);
+            return product;
+        } catch (Exception e) {
+            log.error("❌ Error while fetching product {}: {}", productId, e.getMessage());
+            throw e;
+        }
+    }
 
 
 

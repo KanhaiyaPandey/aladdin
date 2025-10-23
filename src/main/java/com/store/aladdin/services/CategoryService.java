@@ -63,10 +63,9 @@ public class CategoryService {
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
 
         // ✅ map first, then cache
-        CategoryResponse response = CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
+        CategoryResponse response =  CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
         redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + id, response, 300L);
-
-        return response;
+        return  response;
     }
 
 

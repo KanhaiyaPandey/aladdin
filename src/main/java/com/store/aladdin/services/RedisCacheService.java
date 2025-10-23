@@ -1,6 +1,8 @@
 package com.store.aladdin.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +13,29 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RedisCacheService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public void set(String key, Object o, Long ttl) {
-        redisTemplate.opsForValue().set(key, o, ttl, TimeUnit.HOURS);
+    public void set(String key, Object value, long ttlSeconds) {
+        try {
+            redisTemplate.opsForValue().set(key, value, ttlSeconds, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("❌ Failed to set Redis key {}: {}", key, e.getMessage());
+        }
     }
 
     public <T> T get(String key, Class<T> entityClass) {
-        Object o = redisTemplate.opsForValue().get(key);
-        return entityClass.cast(o);
+        try {
+            Object obj = redisTemplate.opsForValue().get(key);
+            if (obj == null) return null;
+            return objectMapper.convertValue(obj, entityClass);
+        } catch (Exception e) {
+            log.error("❌ Failed to fetch Redis key {}: {}", key, e.getMessage());
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
