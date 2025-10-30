@@ -63,6 +63,7 @@ public class PublicControllers {
     @GetMapping(PUBLIC_ALL_CATEGORIES)
     public ResponseEntity<Map<String, Object>> getAllCategories() {
         try {
+
             List<CategoryResponse> categories = categoryService.getAllCategoryResponses();
             if (categories.isEmpty()) {
                 return ResponseUtil.buildResponse("No categories found", false, categories, HttpStatus.OK);

@@ -78,10 +78,12 @@ public class CategoryService {
         List<Category> allCategories = categoryRepository.findAll();
         Map<String, Category> categoryMap = allCategories.stream()
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
-        return allCategories.stream()
+        List <CategoryResponse> categories = allCategories.stream()
                 .filter(cat -> cat.getParentCategoryId() == null)
                 .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
                 .toList();
+        redisCacheService.set(ALL_CATEGORIES_CACHE_KEY, categories, 500L);
+        return categories;
     }
 
 

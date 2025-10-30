@@ -21,7 +21,6 @@ public class RedisCacheService {
     public void set(String key, Object value, long ttlSeconds) {
         try {
             redisTemplate.opsForValue().set(key, value, ttlSeconds, TimeUnit.SECONDS);
-            log.info("💾 Cached key '{}' in Redis (TTL {}s)", key, ttlSeconds);
         } catch (Exception e) {
             log.error("❌ Failed to set Redis key '{}': {}", key, e.getMessage());
         }
@@ -44,7 +43,6 @@ public class RedisCacheService {
             Object o = redisTemplate.opsForValue().get(key);
 
             if (o == null) {
-                log.warn("⚠️ Redis: No data found for key '{}'", key);
                 return Collections.emptyList();
             }
 

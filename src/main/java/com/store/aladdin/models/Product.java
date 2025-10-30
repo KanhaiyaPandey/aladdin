@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.store.aladdin.utils.helper.Enums.Status;
 import com.store.aladdin.utils.helper.Enums.StockStatus;
@@ -46,6 +45,8 @@ public class Product {
     private boolean allowBackorder;
     private StockStatus stockStatus;
     private String barcode;
+    private String gstNumber;
+    private String sizeGuide;
     private List<String> attributes = new ArrayList<>();
     private List<ProductCategories> productCategories = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
@@ -81,6 +82,7 @@ public class Product {
         private String barcode;
         private Double compareAtPrice;
         private Double margin;
+        private Dimension dimensions;
         private List<Warehouse> variantWarehouseData = new ArrayList<>();
   
     }
