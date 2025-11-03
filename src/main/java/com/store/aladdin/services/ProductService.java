@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.store.aladdin.dtos.responseDTOs.ProductResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +28,12 @@ public class ProductService {
     private final ProductQueries productQueries;
     private final RedisCacheService redisCacheService;
 
+
+
+    /// //////////////////////
+    /// // create product
+    /// /////////////////////
+
     public Product createProduct(Product product) {
         product.setCreatedAt(LocalDateTime.now());
         product.setLastUpdatedAt(LocalDateTime.now());
@@ -49,6 +56,11 @@ public class ProductService {
     }
 
 
+
+    /// //////////////////////
+    /// // update product
+    /// /////////////////////
+
     public Product updateProduct(String productId, Product updatedProduct) {
         return productRepository.findById(productId).map(existingProduct -> {
             BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "createdAt");
@@ -58,6 +70,12 @@ public class ProductService {
         }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
     }
 
+
+
+
+    /// //////////////////////////////
+    /// // update product variants
+    /// /////////////////////////////
 
     public Product updateProductVariants(String productId, Product updatedProduct) {
         return productRepository.findById(productId).map(product -> {
@@ -71,6 +89,13 @@ public class ProductService {
     }
 
 
+
+
+
+/// //////////////////////
+// delete product
+/// /////////////////////
+
     public void deleteProduct(String productId) {
         if (!productRepository.existsById(productId)) {
             throw new ResourceNotFoundException("Product not found with id: " + productId);
@@ -79,23 +104,31 @@ public class ProductService {
     }
 
 
-    public Product getProductById(String productId) throws Exception {
+
+
+    /// //////////////////////
+    /// // get product by id
+    /// /////////////////////
+
+    public ProductResponse getProductById(String productId, Boolean isAdmin) throws Exception {
         try {
-            Product cached = redisCacheService.get(SINGLE_PRODUCT_CACHE_KEY + productId, Product.class);
-            if (cached != null) {
-                log.info("✅ Fetched product from Redis cache: {}", productId);
-                return cached;
+            String cacheKey = SINGLE_PRODUCT_CACHE_KEY + productId;
+            Product cachedProduct = redisCacheService.get(cacheKey, Product.class);
+            if (cachedProduct != null) {
+                log.info("✅ Fetched full product from Redis cache: {}", productId);
+                return new ProductResponse(cachedProduct, isAdmin);
             }
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new Exception("Product not found with ID: " + productId));
-            redisCacheService.set(SINGLE_PRODUCT_CACHE_KEY + productId, product, 500L);
-            log.info("💾 Cached product in Redis: {}", productId);
-            return product;
+            redisCacheService.set(cacheKey, product, 500L);
+            log.info("💾 Cached full product in Redis: {}", productId);
+            return new ProductResponse(product, isAdmin);
         } catch (Exception e) {
             log.error("❌ Error while fetching product {}: {}", productId, e.getMessage());
             throw e;
         }
     }
+
 
 
 

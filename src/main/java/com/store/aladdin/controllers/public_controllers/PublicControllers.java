@@ -1,10 +1,16 @@
 package com.store.aladdin.controllers.public_controllers;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 
+import com.store.aladdin.dtos.responseDTOs.ProductResponse;
+import com.store.aladdin.services.AuthService;
 import com.store.aladdin.services.RedisCacheService;
+import com.store.aladdin.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +34,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(PUBLIC_BASE)
 @RequiredArgsConstructor
+@Slf4j
 public class PublicControllers {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final AuthService authService;
 
 
     @GetMapping(PUBLIC_ALL_PRODUCTS)
@@ -50,15 +58,40 @@ public class PublicControllers {
 
 
     @GetMapping(PUBLIC_SINGLE_PRODUCT)
-    public ResponseEntity<Map<String, Object>> getProductById(@PathVariable String productId) {
-        try {
-            Product product = productService.getProductById(productId);
+    public ResponseEntity<Map<String, Object>> getProductById(
+            @PathVariable String productId,
+            HttpServletRequest request) {
 
-            return ResponseUtil.buildResponse("product fetched successfully", true, product, HttpStatus.OK);
+        try {
+            String token = null;
+            boolean isAdmin = false;
+
+            try {
+                token = authService.getToken(request);
+                isAdmin = Arrays.stream(JwtUtil.extractRoles(token))
+                        .anyMatch(role -> role.equalsIgnoreCase("ADMIN"));
+            } catch (Exception ex) {
+                log.warn("⚠️ No valid token found — treating as public user");
+            }
+            ProductResponse product = productService.getProductById(productId, isAdmin);
+
+            return ResponseUtil.buildResponse(
+                    "Product fetched successfully",
+                    true,
+                    product,
+                    HttpStatus.OK
+            );
+
         } catch (Exception e) {
-            return ResponseUtil.buildResponse("Product not found sorry", HttpStatus.NOT_FOUND);
+            log.error("❌ Error fetching product {}: {}", productId, e.getMessage());
+            return ResponseUtil.buildResponse(
+                    "Product not found or error occurred",
+                    HttpStatus.NOT_FOUND
+            );
         }
     }
+
+
 
     @GetMapping(PUBLIC_ALL_CATEGORIES)
     public ResponseEntity<Map<String, Object>> getAllCategories() {

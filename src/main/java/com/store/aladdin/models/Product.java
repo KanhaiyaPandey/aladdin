@@ -51,6 +51,7 @@ public class Product {
     private List<ProductCategories> productCategories = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
     private List<String> crossSellProducts = new ArrayList<>();
+    private List<String> upSellProducts = new ArrayList<>();
 
     private List<ProductMedia> productMedias = new ArrayList<>(); 
 
