@@ -1,12 +1,15 @@
 package com.store.aladdin.services;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+import com.store.aladdin.dtos.responseDTOs.CrossSellProductResponse;
 import com.store.aladdin.dtos.responseDTOs.ProductResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,10 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductQueries productQueries;
     private final RedisCacheService redisCacheService;
+
+    private final ExecutorService executor = Executors.newFixedThreadPool(
+            Math.max(4, Runtime.getRuntime().availableProcessors())
+    );
 
 
 
@@ -113,23 +120,97 @@ public class ProductService {
     public ProductResponse getProductById(String productId, Boolean isAdmin) throws Exception {
         try {
             String cacheKey = SINGLE_PRODUCT_CACHE_KEY + productId;
-            Product cachedProduct = redisCacheService.get(cacheKey, Product.class);
-            if (cachedProduct != null) {
+
+            // 🔹 Try Redis first
+            Product product = redisCacheService.get(cacheKey, Product.class);
+            if (product == null) {
+                product = productRepository.findById(productId)
+                        .orElseThrow(() -> new Exception("Product not found with ID: " + productId));
+                redisCacheService.set(cacheKey, product, 500L);
+                log.info("💾 Cached full product in Redis: {}", productId);
+            } else {
                 log.info("✅ Fetched full product from Redis cache: {}", productId);
-                return new ProductResponse(cachedProduct, isAdmin);
             }
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new Exception("Product not found with ID: " + productId));
-            redisCacheService.set(cacheKey, product, 500L);
-            log.info("💾 Cached full product in Redis: {}", productId);
-            return new ProductResponse(product, isAdmin);
+
+            // 🔹 Build initial response
+            ProductResponse response = new ProductResponse(product, isAdmin);
+
+            // ⚡ Populate related products (in parallel)
+            populateRelatedProductsAsync(response);
+
+            return response;
         } catch (Exception e) {
             log.error("❌ Error while fetching product {}: {}", productId, e.getMessage());
             throw e;
         }
     }
 
+    /**
+     * ⚡ Populate both cross-sell and up-sell products concurrently
+     */
+    private void populateRelatedProductsAsync(ProductResponse response) {
+        Product mainProduct = productRepository.findById(response.getProductId()).orElse(null);
+        if (mainProduct == null) return;
 
+        List<String> crossIds = mainProduct.getCrossSellProducts();
+        List<String> upIds = mainProduct.getUpSellProducts();
 
+        CompletableFuture<List<CrossSellProductResponse>> crossSellFuture =
+                CompletableFuture.supplyAsync(() -> fetchRelatedProducts(crossIds, "cross-sell"), executor);
+
+        CompletableFuture<List<CrossSellProductResponse>> upSellFuture =
+                CompletableFuture.supplyAsync(() -> fetchRelatedProducts(upIds, "up-sell"), executor);
+
+        // Wait for both in parallel
+        CompletableFuture.allOf(crossSellFuture, upSellFuture).join();
+
+        try {
+            response.setCrossSellProducts(crossSellFuture.get());
+            response.setUpSellProducts(upSellFuture.get());
+        } catch (Exception e) {
+            log.error("❌ Error completing related product futures: {}", e.getMessage());
+        }
+
+        log.info("✅ Populated related products for {}", response.getProductId());
+    }
+
+    /**
+     * ♻️ Fetch a list of related products (multi-threaded internally too)
+     */
+    private List<CrossSellProductResponse> fetchRelatedProducts(List<String> productIds, String type) {
+        if (productIds == null || productIds.isEmpty()) return Collections.emptyList();
+
+        List<CompletableFuture<CrossSellProductResponse>> futures = productIds.stream()
+                .map(id -> CompletableFuture.supplyAsync(() -> {
+                    try {
+                        String cacheKey = SINGLE_PRODUCT_CACHE_KEY + id;
+                        Product related = redisCacheService.get(cacheKey, Product.class);
+                        if (related == null) {
+                            related = productRepository.findById(id).orElse(null);
+                            if (related != null) {
+                                redisCacheService.set(cacheKey, related, 500L);
+                                log.info("💾 Cached {} product: {}", type, id);
+                            }
+                        }
+                        return related != null ? new CrossSellProductResponse(related) : null;
+                    } catch (Exception e) {
+                        log.warn("⚠️ Failed to fetch {} product {}: {}", type, id, e.getMessage());
+                        return null;
+                    }
+                }, executor))
+                .toList();
+
+        // Gather results
+        return futures.stream()
+                .map(f -> {
+                    try {
+                        return f.get();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 
 }

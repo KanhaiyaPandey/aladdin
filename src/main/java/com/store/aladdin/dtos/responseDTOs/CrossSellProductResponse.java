@@ -14,7 +14,7 @@ public class CrossSellProductResponse {
     private String title;
     private String description;
     private Double sellPrice;
-    private Double compareAtPrice;
+    private Double mrp;
     private String sku;
     private boolean allowBackorder;
     private Enums.StockStatus stockStatus;
@@ -23,7 +23,27 @@ public class CrossSellProductResponse {
     private List<String> tags = new ArrayList<>();
     private List<Product.Variant> variants = new ArrayList<>();
     private List<Product.ProductMedia> productMedias = new ArrayList<>();
-    private List<Product.Dimension> dimensions = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
+
+
+    public CrossSellProductResponse(Product product) {
+        this.productId = product.getProductId();
+        this.title = product.getTitle();
+        this.description = product.getDescription();
+        this.sellPrice = product.getSellPrice();
+        this.mrp = product.getCompareAtPrice();
+        this.sku = product.getSku();
+        this.allowBackorder = product.isAllowBackorder();
+        this.stockStatus = product.getStockStatus();
+        this.barcode = product.getBarcode();
+        this.tags = product.getTags();
+        this.attributes = product.getAttributes();
+        this.variants = product.getVariants();
+        this.productMedias = product.getProductMedias();
+        this.createdAt = product.getCreatedAt();
+        this.lastUpdatedAt = product.getLastUpdatedAt();
+    }
 }
+
+

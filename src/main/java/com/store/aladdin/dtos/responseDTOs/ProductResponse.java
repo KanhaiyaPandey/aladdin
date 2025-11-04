@@ -27,6 +27,7 @@ public class ProductResponse {
     private List<String> attributes = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
     private List<Product.Variant> variants = new ArrayList<>();
+    private List<Product.Warehouse>warehouseData = new ArrayList<>();
     private List<Product.ProductMedia> productMedias = new ArrayList<>();
     private List<Product.Dimension> dimensions = new ArrayList<>();
     private LocalDateTime createdAt;
@@ -57,6 +58,7 @@ public class ProductResponse {
         if (isAdmin){
             this.costPrice = product.getCostPrice();
             this.compareAtPrice = product.getCompareAtPrice();
+            this.warehouseData = product.getWarehouseData() != null ? product.getWarehouseData() : new ArrayList<>();
         }
     }
 }
