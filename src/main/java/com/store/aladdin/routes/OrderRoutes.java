@@ -27,4 +27,6 @@ public final class OrderRoutes {
     public static final String USER_GET_MY_ORDERS     = "/my";
     public static final String USER_GET_ORDER_BY_ID   = "/{orderId}";
     public static final String USER_CANCEL_ORDER      = "/{orderId}/cancel";  // optional
+
+    public static final String ADD_TO_CART            = "/add-to-cart";
 }

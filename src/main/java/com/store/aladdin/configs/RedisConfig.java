@@ -19,9 +19,29 @@ import java.time.Duration;
 @Slf4j
 public class RedisConfig {
 
+
+    @Value("${spring.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.redis.port}")
+    private int redisPort;
+
+    @Value("${spring.redis.password}")
+    private String redisPassword;
+
+    @Value("${spring.redis.ssl.enabled:false}")
+    private boolean sslEnabled;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-            return new LettuceConnectionFactory();
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
+        redisConfig.setHostName(redisHost);
+        redisConfig.setPort(redisPort);
+        redisConfig.setPassword(redisPassword);
+
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig);
+        factory.setUseSsl(sslEnabled);
+        return factory;
     }
 
     @Bean
