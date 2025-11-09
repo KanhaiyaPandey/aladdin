@@ -31,12 +31,8 @@ public class UpdateProduct {
     
     @PutMapping(ProductRoutes.UPDATE_PRODUCT)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable String productId, @RequestBody String productJson) {
+    public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable String productId, @RequestBody Product product) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            Product product = objectMapper.readValue(productJson, Product.class);
             Product updatedProduct = productService.updateProduct(productId, product);
             return ResponseUtil.buildResponse("Product updated successfully", true ,updatedProduct,HttpStatus.OK);
         } catch (Exception e) {

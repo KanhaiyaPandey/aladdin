@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import com.store.aladdin.dtos.CategoryResponse;
 import com.store.aladdin.dtos.responseDTOs.CrossSellProductResponse;
 import com.store.aladdin.dtos.responseDTOs.ProductResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductQueries productQueries;
     private final RedisCacheService redisCacheService;
+    private final CategoryService categoryService;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(
             Math.max(4, Runtime.getRuntime().availableProcessors())
@@ -58,8 +60,8 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> getFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
-        return productQueries.filteredProducts(name, minPrice, maxPrice, stockStatus);
+    public List<Product> getFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus, String category, String collection) {
+        return productQueries.filteredProducts(name, minPrice, maxPrice, stockStatus, category, collection);
     }
 
 
@@ -120,8 +122,6 @@ public class ProductService {
     public ProductResponse getProductById(String productId, Boolean isAdmin) throws Exception {
         try {
             String cacheKey = SINGLE_PRODUCT_CACHE_KEY + productId;
-
-            // 🔹 Try Redis first
             Product product = redisCacheService.get(cacheKey, Product.class);
             if (product == null) {
                 product = productRepository.findById(productId)
@@ -131,13 +131,15 @@ public class ProductService {
             } else {
                 log.info("✅ Fetched full product from Redis cache: {}", productId);
             }
-
-            // 🔹 Build initial response
             ProductResponse response = new ProductResponse(product, isAdmin);
-
-            // ⚡ Populate related products (in parallel)
+            if (product.getProductCategories() != null && !product.getProductCategories().isEmpty()) {
+                List<CategoryResponse> categoryResponses = product.getProductCategories().stream()
+                        .map(cat -> categoryService.getCategoryById(cat.getCategoryId())) // call the method you provided
+                        .filter(Objects::nonNull) // avoid nulls if category not found
+                        .toList();
+                response.setProductCategories(categoryResponses);
+            }
             populateRelatedProductsAsync(response);
-
             return response;
         } catch (Exception e) {
             log.error("❌ Error while fetching product {}: {}", productId, e.getMessage());

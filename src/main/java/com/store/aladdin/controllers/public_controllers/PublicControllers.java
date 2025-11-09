@@ -47,9 +47,11 @@ public class PublicControllers {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String collection,
             @RequestParam(required = false) String stockStatus) {
         try {
-            List<Product> products = productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus);
+            List<Product> products = productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus,category, collection );
             return ResponseUtil.buildResponse("products fetched successfully", true, products, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error fetching products", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

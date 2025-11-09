@@ -11,6 +11,7 @@ import com.store.aladdin.utils.CartItem;
 import com.store.aladdin.utils.CartResponseItem;
 import com.store.aladdin.utils.ResourceNotFoundException;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.bson.types.ObjectId;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -31,6 +33,7 @@ public class UserService {
     private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
     private final OrderRepository orderRepository;
+    private final AuthService authService;
 
 
     // Create a new user
@@ -38,6 +41,16 @@ public class UserService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+
+    public void saveUserByOauth(String email, String name, HttpServletResponse response){
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        user.setName(name);
+        User registeredUser = userRepository.save(user);
+        authService.setCookie(registeredUser, response);
     }
 
 

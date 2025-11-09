@@ -1,19 +1,24 @@
 package com.store.aladdin.services;
 
 import com.store.aladdin.models.User;
+import com.store.aladdin.repository.UserRepository;
 import com.store.aladdin.utils.JwtUtil;
 import com.store.aladdin.utils.validation.UserValidation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private static final String TYPE = "JWT_TOKEN";
@@ -43,6 +48,8 @@ public class AuthService {
         response.addCookie(cookie);
         response.setHeader(SET, "JWT_TOKEN=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0");
     }
+
+
 
     public String getToken(HttpServletRequest request) {
         String token = null;

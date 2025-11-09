@@ -1,5 +1,6 @@
 package com.store.aladdin.dtos.responseDTOs;
 
+import com.store.aladdin.dtos.CategoryResponse;
 import com.store.aladdin.models.Product;
 import com.store.aladdin.utils.helper.Enums;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class ProductResponse {
     private boolean allowBackorder;
     private Enums.StockStatus stockStatus;
     private String barcode;
+    private String sizeGuide;
     private List<String> attributes = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
     private List<Product.Variant> variants = new ArrayList<>();
@@ -32,6 +34,7 @@ public class ProductResponse {
     private List<Product.Dimension> dimensions = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
+    private List<CategoryResponse>productCategories;
     private List<CrossSellProductResponse> upSellProducts;
     private List<CrossSellProductResponse> crossSellProducts;
 
@@ -54,6 +57,7 @@ public class ProductResponse {
         this.lastUpdatedAt = product.getLastUpdatedAt();
         this.upSellProducts = new ArrayList<>();
         this.crossSellProducts = new ArrayList<>();
+        this.sizeGuide = product.getSizeGuide();
 
         if (isAdmin){
             this.costPrice = product.getCostPrice();

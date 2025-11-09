@@ -2,6 +2,7 @@
 package com.store.aladdin.configs;
 
 
+import com.store.aladdin.exceptions.CustomOAuth2SuccessHandler;
 import com.store.aladdin.filters.JwtAuthFilter;
 import com.store.aladdin.exceptions.CustomAccessDeniedHandler;
 
@@ -26,10 +27,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomOAuth2SuccessHandler successHandler;
 
     // Inject CustomAccessDeniedHandler into the configuration
-    public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler) {
+    public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler, CustomOAuth2SuccessHandler successHandler) {
         this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.successHandler = successHandler;
     }
 
     @Bean
@@ -57,6 +60,10 @@ public class SecurityConfig {
                     .requestMatchers(ADMIN_BASE + "/**").hasRole("ADMIN")
                     .requestMatchers(USER_BASE + "/**").authenticated()
                     .anyRequest().denyAll()
+            )
+
+            .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler)
             )
             .exceptionHandling()
                 .accessDeniedHandler(customAccessDeniedHandler) // Use custom handler for 403 Forbidden

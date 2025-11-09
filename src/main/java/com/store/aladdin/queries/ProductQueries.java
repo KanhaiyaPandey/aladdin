@@ -18,19 +18,26 @@ public class ProductQueries {
 
     private final MongoTemplate mongoTemplate;
 
-    public List<Product> filteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus) {
+    public List<Product> filteredProducts(
+            String name,
+            Double minPrice,
+            Double maxPrice,
+            String stockStatus,
+            String category,
+            String collectionSlug
+    ) {
         Query query = new Query();
         List<Criteria> criteriaList = new java.util.ArrayList<>();
 
+        // 🔹 Filter by product name (title or tags)
         if (name != null && !name.isEmpty()) {
             String escaped = Pattern.quote(name);
             Criteria tagsCriteria = Criteria.where("tags").regex(".*" + escaped + ".*", "i");
             Criteria titleCriteria = Criteria.where("title").regex(".*" + escaped + ".*", "i");
             criteriaList.add(new Criteria().orOperator(tagsCriteria, titleCriteria));
         }
-        
 
-    
+        // 🔹 Filter by price range
         if (minPrice != null || maxPrice != null) {
             Criteria priceCriteria = Criteria.where("sellPrice");
             if (minPrice != null) {
@@ -41,23 +48,34 @@ public class ProductQueries {
             }
             criteriaList.add(priceCriteria);
         }
-    
+
+        // 🔹 Filter by stock status
         if (stockStatus != null && !stockStatus.isEmpty()) {
-            
-            criteriaList.add(Criteria.where("stockStatus").is("IN_STOCK"));
+            criteriaList.add(Criteria.where("stockStatus").is(stockStatus));
         }
-    
+
+        // 🔹 Filter by category slug (inside productCategories array)
+        if (category != null && !category.isEmpty()) {
+            criteriaList.add(Criteria.where("productCategories.slug").is(category));
+        }
+
+        // 🔹 Filter by collection slug (assuming `collections` array exists in Product model)
+//        if (collectionSlug != null && !collectionSlug.isEmpty()) {
+//            criteriaList.add(Criteria.where("collections.slug").is(collectionSlug));
+//        }
+
+        // Combine all filters
         if (!criteriaList.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         }
-    
+
         return mongoTemplate.find(query, Product.class);
     }
 
+    // 🔹 Check if a SKU exists
     public boolean doesSkuExist(String sku) {
         Query query = new Query();
         query.addCriteria(Criteria.where("sku").is(sku));
         return mongoTemplate.exists(query, Product.class);
     }
-    
 }
