@@ -27,12 +27,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
-    private final CustomOAuth2SuccessHandler successHandler;
+//    private final CustomOAuth2SuccessHandler successHandler;
 
     // Inject CustomAccessDeniedHandler into the configuration
-    public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler, CustomOAuth2SuccessHandler successHandler) {
+    public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.customAccessDeniedHandler = customAccessDeniedHandler;
-        this.successHandler = successHandler;
+//        this.successHandler = successHandler;
     }
 
     @Bean
@@ -62,9 +62,9 @@ public class SecurityConfig {
                     .anyRequest().denyAll()
             )
 
-            .oauth2Login(oauth2 -> oauth2
-                        .successHandler(successHandler)
-            )
+//            .oauth2Login(oauth2 -> oauth2
+//                        .successHandler(successHandler)
+//            )
             .exceptionHandling()
                 .accessDeniedHandler(customAccessDeniedHandler) // Use custom handler for 403 Forbidden
             .and()
