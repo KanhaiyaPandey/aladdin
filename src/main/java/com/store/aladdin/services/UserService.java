@@ -44,11 +44,13 @@ public class UserService {
     }
 
 
-    public void saveUserByOauth(String email, String name, HttpServletResponse response){
+    public void saveUserByOauth(String email, String name, HttpServletResponse response, String picture){
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         user.setName(name);
+        user.setProfilePicture(picture);
+        user.setRoles(List.of("USER"));
         User registeredUser = userRepository.save(user);
         authService.setCookie(registeredUser, response);
     }

@@ -11,6 +11,7 @@ import static com.store.aladdin.utils.helper.Enums.RiskStatus.LOW;
 
 import com.store.aladdin.services.AuthService;
 import com.store.aladdin.utils.validation.UserValidation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequestMapping(AUTH_BASE)
 @RequiredArgsConstructor
@@ -41,12 +43,6 @@ public class AuthController {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserValidation userValidation;
     private final AuthService authService;
-
-    private static final String TYPE = "JWT_TOKEN";
-    private static final String SET = "Set-Cookie";
-
-    @Value("${app.cookie.secure}")
-    private boolean secure;
 
     // login
     @PostMapping(LOGIN_ROUTE)
