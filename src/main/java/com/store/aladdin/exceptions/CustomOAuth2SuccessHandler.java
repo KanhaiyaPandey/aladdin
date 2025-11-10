@@ -23,7 +23,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
        private final AuthService authService;
        private final UserRepository userRepository;
 
-    @Value("${frontend.url:http://localhost:3000}")
+    @Value("${frontend.url}")
     private String frontendUrl;
 
     public CustomOAuth2SuccessHandler(@Lazy UserService userService, @Lazy AuthService authService, @Lazy UserRepository userRepository) {
@@ -44,7 +44,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 //        user.setEmail(email);
 //        user.setName(name);
 //        user.setProfilePicture(picture);
-//        log.info("OAuth2 login success: name={}, email={}, picture={}", name, email, picture);
+//        log.info("🥹OAuth2 login success: url={}", frontendUrl);
         try {
             user = userService.getUserByEmail(email);
             if(user.getProfilePicture() == null || user.getProfilePicture().isEmpty()){
