@@ -27,16 +27,14 @@ public class AuthService {
     @Value("${app.cookie.secure}")
     private boolean secure;
 
-    public void setCookie(User logedinUser, HttpServletResponse response){
-        String token = JwtUtil.generateToken(logedinUser);
-        Cookie cookie = new Cookie(TYPE, token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(secure);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24);
-        response.setHeader(SET, "JWT_TOKEN=" + token +
-                "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400");
-        response.addCookie(cookie);
+    public void setCookie(User user, HttpServletResponse response) {
+        String token = JwtUtil.generateToken(user);
+        int maxAge = 60 * 60 * 24;
+        String cookie = String.format(
+                "JWT_TOKEN=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=%d",
+                token, maxAge
+        );
+        response.setHeader("Set-Cookie", cookie);
     }
 
     public void removeCookie(HttpServletResponse response){
