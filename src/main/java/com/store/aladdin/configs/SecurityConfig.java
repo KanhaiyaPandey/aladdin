@@ -51,7 +51,7 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_BASE + "/**").permitAll()
                         .requestMatchers(ADMIN_BASE + "/**").hasRole("ADMIN")
                         .requestMatchers(USER_BASE + "/**").authenticated()
-                        .anyRequest().denyAll()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/oauth2/authorization/google")
@@ -82,7 +82,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
-
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

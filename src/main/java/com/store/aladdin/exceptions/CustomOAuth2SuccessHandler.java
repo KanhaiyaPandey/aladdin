@@ -41,10 +41,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
         User user;
-//        user.setEmail(email);
-//        user.setName(name);
-//        user.setProfilePicture(picture);
-//        log.info("🥹OAuth2 login success: url={}", frontendUrl);
+        log.info("🥹OAuth2 login success: url={}", frontendUrl);
         try {
             user = userService.getUserByEmail(email);
             if(user.getProfilePicture() == null || user.getProfilePicture().isEmpty()){
@@ -55,5 +52,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         } catch (RuntimeException e) {
             userService.saveUserByOauth(email, name, response, picture);
         }
-        response.sendRedirect(frontendUrl);    }
+//        String token = JwtUtil.generateToken(user);
+//        String redirectUrl = String.format("%s/auth/success?token=%s", frontendUrl, token);
+        response.sendRedirect(frontendUrl);
+     }
 }
