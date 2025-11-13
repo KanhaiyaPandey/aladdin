@@ -52,8 +52,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         } catch (RuntimeException e) {
             userService.saveUserByOauth(email, name, response, picture);
         }
-//        String token = JwtUtil.generateToken(user);
-//        String redirectUrl = String.format("%s/auth/success?token=%s", frontendUrl, token);
         response.sendRedirect(frontendUrl);
      }
 }
