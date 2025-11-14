@@ -1,20 +1,15 @@
 package com.store.aladdin.services;
 
 import com.store.aladdin.models.User;
-import com.store.aladdin.repository.UserRepository;
 import com.store.aladdin.utils.JwtUtil;
-import com.store.aladdin.utils.validation.UserValidation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -48,20 +43,17 @@ public class AuthService {
     }
 
 
-
     public String getToken(HttpServletRequest request) {
-        String token = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (TYPE.equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
+    if (request.getCookies() == null) return null;
+
+    for (Cookie cookie : request.getCookies()) {
+        if (cookie.getName().equals(TYPE)) {
+            return cookie.getValue();
         }
-        if (token == null || token.isBlank()) {
-            throw new AccessDeniedException("Token missing or invalid");
-        }
-        return token;
     }
+    return null;  // don't throw here
+}
+
+    
+   
 }

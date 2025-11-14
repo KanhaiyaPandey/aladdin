@@ -2,7 +2,6 @@ package com.store.aladdin.controllers.auth_controllers;
 
 
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import static com.store.aladdin.utils.helper.Enums.RiskStatus.LOW;
 import com.store.aladdin.services.AuthService;
 import com.store.aladdin.utils.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -91,30 +89,23 @@ public class AuthController {
 
         @GetMapping(VALIDATION_ROUTE)
         public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
+
         try {
-        String token = authService.getToken(request);
-        if (token == null) {
-            return ResponseUtil.buildResponse("Token not found", HttpStatus.UNAUTHORIZED);
-        }
-            String email = JwtUtil.validateToken(token);
-            if (email == null) {
-                return ResponseUtil.buildResponse("Invalid or expired token", HttpStatus.UNAUTHORIZED);
-            }
-            User user = userService.getUserByEmail(email);
-            if (user == null) {
-                return ResponseUtil.buildResponse("User not found", HttpStatus.UNAUTHORIZED);
-            }
-            Map<String, Object> userInfo = new HashMap<>();
-            userInfo.put("username", user.getName());
-            userInfo.put("email", user.getEmail());
-            userInfo.put("roles", user.getRoles());
-            userInfo.put("createdAt", user.getCreatedAt());
-            userInfo.put("updatedAt",user.getUpdatedAt());
-            userInfo.put("profilePicture", user.getProfilePicture());
-            userInfo.put("userId", user.getId().toString());
-            return ResponseUtil.buildResponse("Token is valid", true, userInfo, HttpStatus.OK);
-            } catch (Exception e) {
-                return ResponseUtil.buildResponse("Invalid token", HttpStatus.UNAUTHORIZED);
+                String token = authService.getToken(request);
+                if (token == null) {
+                    return ResponseUtil.buildResponse("Token not found", HttpStatus.UNAUTHORIZED);
+                }
+                    String id = JwtUtil.extractUserId(token);
+                    if (id == null) {
+                        return ResponseUtil.buildResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                    User user = userService.getUserById(id);
+                    if (user == null) {
+                        return ResponseUtil.buildResponse("User not found", HttpStatus.NOT_FOUND);
+                    }
+                    return ResponseUtil.buildResponse("Token is valid", true, user , HttpStatus.OK);
+                } catch (Exception e) {
+                    return ResponseUtil.buildResponse("Invalid token", HttpStatus.UNAUTHORIZED);
             }
 
         }

@@ -1,25 +1,18 @@
 package com.store.aladdin.services;
 
-import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
-import com.store.aladdin.models.Order;
-import com.store.aladdin.models.Product;
+
 import com.store.aladdin.models.User;
-import com.store.aladdin.repository.OrderRepository;
-import com.store.aladdin.repository.ProductRepository;
 import com.store.aladdin.repository.UserRepository;
-import com.store.aladdin.utils.CartItem;
-import com.store.aladdin.utils.CartResponseItem;
+
 import com.store.aladdin.utils.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-import org.bson.types.ObjectId;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,9 +23,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
-    private final OrderRepository orderRepository;
     private final AuthService authService;
 
 
@@ -57,7 +48,7 @@ public class UserService {
 
 
     // Get a user by ID
-    public User getUserById(ObjectId userId) {
+    public User getUserById(String userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             return user.get();
@@ -87,40 +78,40 @@ public class UserService {
 
 
     // Delete a user
-    public void deleteUser(ObjectId userId) {
+    public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
 
 
     // Remove a product from the user's cart
-    public void removeFromCart(ObjectId userId, ObjectId productId) {
-        User user = getUserById(userId);
-        user.getCart().removeIf(cartItem -> cartItem.getProductId().equals(productId));
-        userRepository.save(user);
-    }
+    // public void removeFromCart(String userId, String productId) {
+    //     User user = getUserById(userId);
+    //     user.getCart().removeIf(cartItem -> cartItem.getProductId().equals(productId));
+    //     userRepository.save(user);
+    // }
 
 
     // Get user's cart
-    public List<CartResponseItem> getUserCart(ObjectId userId) {
-        User user = getUserById(userId);
-        List<CartResponseItem> cartResponse = new ArrayList<>();
+    // public List<CartResponseItem> getUserCart(ObjectId userId) {
+    //     User user = getUserById(userId);
+    //     List<CartResponseItem> cartResponse = new ArrayList<>();
 
-        for (CartItem item : user.getCart()) {
-            Product product = productRepository.findById(item.getProductId().toString())
-                    .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("product not found"));
-            CartResponseItem responseItem = new CartResponseItem(
-                    item.getProductId(),
-                    product.getTitle(),
-                    product.getDescription(),
-                    product.getSellPrice(),
-                    item.getQuantity()
-            );
+    //     for (CartItem item : user.getCart()) {
+    //         Product product = productRepository.findById(item.getProductId().toString())
+    //                 .orElseThrow(() -> new CustomeRuntimeExceptionsHandler("product not found"));
+    //         CartResponseItem responseItem = new CartResponseItem(
+    //                 item.getProductId(),
+    //                 product.getTitle(),
+    //                 product.getDescription(),
+    //                 product.getSellPrice(),
+    //                 item.getQuantity()
+    //         );
 
-            cartResponse.add(responseItem);
-        }
+    //         cartResponse.add(responseItem);
+    //     }
 
-        return cartResponse;
-    }
+    //     return cartResponse;
+    // }
 
 
 }

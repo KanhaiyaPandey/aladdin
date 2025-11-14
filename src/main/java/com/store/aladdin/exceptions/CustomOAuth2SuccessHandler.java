@@ -41,7 +41,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
         User user;
-        log.info("🥹OAuth2 login success: url={}", frontendUrl);
+        // log.info("🥹OAuth2 login success: url={}", frontendUrl);
         try {
             user = userService.getUserByEmail(email);
             if(user.getProfilePicture() == null || user.getProfilePicture().isEmpty()){

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.store.aladdin.models.Product;
-import org.apache.logging.log4j.util.Strings;
-import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

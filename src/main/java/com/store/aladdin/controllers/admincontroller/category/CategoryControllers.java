@@ -18,8 +18,7 @@ import com.store.aladdin.dtos.DeleteCategoryRequest;
 import com.store.aladdin.dtos.DeleteAttributesRequest;
 import com.store.aladdin.models.Category;
 import com.store.aladdin.services.CategoryService;
-import com.store.aladdin.services.ImageUploadService;
-import com.store.aladdin.utils.helper.ProductHelper;
+
 import com.store.aladdin.utils.response.ResponseUtil;
 import com.store.aladdin.validations.CategoryValidation;
 
@@ -31,9 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryControllers {
 
 
-    private final ImageUploadService imageUploadService;
     private final CategoryService categoryService;
-    private final ProductHelper productHalper;
     private final CategoryValidation categoryValidation;
 
 
