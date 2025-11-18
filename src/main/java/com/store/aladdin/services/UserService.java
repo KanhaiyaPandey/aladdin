@@ -74,7 +74,7 @@ public class UserService {
     public UserResponseDTO updateUser(User user){
         User existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        BeanUtils.copyProperties(user, existingUser, "id");
+        BeanUtils.copyProperties(user, existingUser);
         User saved = userRepository.save(existingUser);
         return new UserResponseDTO(saved);
     }
