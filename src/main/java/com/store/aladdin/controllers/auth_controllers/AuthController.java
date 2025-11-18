@@ -8,6 +8,7 @@ import java.util.Map;
 import static com.store.aladdin.routes.AuthRoutes.*;
 import static com.store.aladdin.utils.helper.Enums.RiskStatus.LOW;
 
+import com.store.aladdin.dtos.UserResponseDTO;
 import com.store.aladdin.services.AuthService;
 import com.store.aladdin.utils.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +104,8 @@ public class AuthController {
                     if (user == null) {
                         return ResponseUtil.buildResponse("User not found", HttpStatus.NOT_FOUND);
                     }
-                    return ResponseUtil.buildResponse("Token is valid", true, user , HttpStatus.OK);
+                    UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+                    return ResponseUtil.buildResponse("Token is valid", true, userResponseDTO , HttpStatus.OK);
                 } catch (Exception e) {
                     return ResponseUtil.buildResponse("Invalid token", HttpStatus.UNAUTHORIZED);
             }

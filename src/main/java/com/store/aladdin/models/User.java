@@ -11,8 +11,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.store.aladdin.utils.CartItem;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,7 @@ import lombok.Setter;
 public class User {
 
     @Id
-    private ObjectId id;
+    private String id;
     
     @Indexed(unique = true)
     private String name;
@@ -51,14 +49,10 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
     
-     private List<CartItem> cart = new ArrayList<>();
-
+    private Cart cart = new Cart();
     private List<Order> orders = new ArrayList<>();
-
     private List<String> roles = new ArrayList<>();
-
     private List<Address> addresses = new ArrayList<>();
-
 
     @Data
     @NoArgsConstructor
@@ -72,6 +66,26 @@ public class User {
         private String country;
         private boolean active; 
         
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Cart {
+        private String cartId;
+        private Address address;
+        private List<CartItems> items = new ArrayList<>();
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class CartItems{
+        private String productId;
+        private String variantId;
+        private String title;
+        private List<String> attributes;
+        private List<String> options;
+        private Integer quantity;
+        private Double price;
     }
 
 }

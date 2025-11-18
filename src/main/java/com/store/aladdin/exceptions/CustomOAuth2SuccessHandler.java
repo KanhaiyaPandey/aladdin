@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 
@@ -44,10 +45,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         // log.info("🥹OAuth2 login success: url={}", frontendUrl);
         try {
             user = userService.getUserByEmail(email);
-            if(user.getProfilePicture() == null || user.getProfilePicture().isEmpty()){
-                user.setProfilePicture(picture);
-                userRepository.save(user);
-            }
             authService.setCookie(user, response);
         } catch (RuntimeException e) {
             userService.saveUserByOauth(email, name, response, picture);

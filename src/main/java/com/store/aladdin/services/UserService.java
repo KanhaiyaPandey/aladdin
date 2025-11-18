@@ -1,6 +1,7 @@
 package com.store.aladdin.services;
 
 
+import com.store.aladdin.dtos.UserResponseDTO;
 import com.store.aladdin.models.User;
 import com.store.aladdin.repository.UserRepository;
 
@@ -9,6 +10,7 @@ import com.store.aladdin.utils.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,8 @@ public class UserService {
         user.setName(name);
         user.setProfilePicture(picture);
         user.setRoles(List.of("USER"));
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
         User registeredUser = userRepository.save(user);
         authService.setCookie(registeredUser, response);
     }
@@ -65,6 +69,14 @@ public class UserService {
         } else {
             throw new ResourceNotFoundException("User not found with email: " + email);
         }
+    }
+
+    public UserResponseDTO updateUser(User user){
+        User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        BeanUtils.copyProperties(user, existingUser, "id");
+        User saved = userRepository.save(existingUser);
+        return new UserResponseDTO(saved);
     }
 
 
