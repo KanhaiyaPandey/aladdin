@@ -20,8 +20,8 @@ public class UserResponseDTO {
     private String phoneNumber;
     private boolean isActive;
     private String profilePicture;
-    private User.Cart cart = new User.Cart();
-    private List<User.Address> addresses = new ArrayList<>();
+    private List<User.CartItems> cartItems;
+    private List<User.Address> addresses;
 
 
     public UserResponseDTO(User user) {
@@ -31,7 +31,7 @@ public class UserResponseDTO {
         this.phoneNumber = user.getPhoneNumber();
         this.isActive = user.isActive();
         this.profilePicture = user.getProfilePicture();
-        this.cart = user.getCart();
+        this.cartItems = user.getCartItems();
         this.addresses = user.getAddresses();
     }
 

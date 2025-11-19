@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static com.store.aladdin.routes.AuthRoutes.USER_BASE;
@@ -52,6 +53,21 @@ public class UserControllers {
         UserResponseDTO updatedUser = userService.updateUser(user);
         return ResponseUtil.buildResponse("profile image updated", true, updatedUser, HttpStatus.OK);
     }
+
+    @PutMapping(UPDATE_CART)
+    public ResponseEntity<Map<String, Object>>updateCart(@RequestBody List<User.CartItems> items, HttpServletRequest request){
+        String token  = authService.getToken(request);
+        String userId = JwtUtil.extractUserId(token);
+        User user     = userService.getUserById(userId);
+        user.setCartItems(items);
+        UserResponseDTO updatedUser = userService.updateUser(user);
+        return ResponseUtil.buildResponse("profile image updated",true, updatedUser, HttpStatus.OK);
+    }
+
+
+
+
+
 
 
 

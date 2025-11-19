@@ -80,6 +80,8 @@ public class UserService {
     }
 
 
+
+
     public User authenticateUser(String email, String password) {
         User user = getUserByEmail(email);
         if (passwordEncoder.matches(password, user.getPassword())) {

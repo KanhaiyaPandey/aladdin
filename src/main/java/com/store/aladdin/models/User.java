@@ -49,7 +49,7 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
     
-    private Cart cart = new Cart();
+    private List<CartItems> cartItems = new ArrayList<>();
     private List<Order> orders = new ArrayList<>();
     private List<String> roles = new ArrayList<>();
     private List<Address> addresses = new ArrayList<>();
@@ -57,7 +57,6 @@ public class User {
     @Data
     @NoArgsConstructor
     public static class Address {
-    
         private String street;
         private String city;
         private String state;
@@ -68,13 +67,7 @@ public class User {
         
     }
 
-    @Data
-    @NoArgsConstructor
-    public static class Cart {
-        private String cartId;
-        private Address address;
-        private List<CartItems> items = new ArrayList<>();
-    }
+
 
     @Data
     @NoArgsConstructor
@@ -82,6 +75,7 @@ public class User {
         private String productId;
         private String variantId;
         private String title;
+        private String image;
         private List<String> attributes;
         private List<String> options;
         private Integer quantity;
