@@ -104,7 +104,8 @@ public class AuthController {
                     if (user == null) {
                         return ResponseUtil.buildResponse("User not found", HttpStatus.NOT_FOUND);
                     }
-                    UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+                    boolean isAdmin = user.getRoles().contains("ADMIN");
+                    UserResponseDTO userResponseDTO = new UserResponseDTO(user, isAdmin);
                     return ResponseUtil.buildResponse("Token is valid", true, userResponseDTO , HttpStatus.OK);
                 } catch (Exception e) {
                     return ResponseUtil.buildResponse("Invalid token", HttpStatus.UNAUTHORIZED);

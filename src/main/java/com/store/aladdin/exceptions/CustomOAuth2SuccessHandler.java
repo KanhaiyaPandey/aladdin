@@ -41,6 +41,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
+        String redirectTo = request.getParameter("redirectTo");
         User user;
         // log.info("🥹OAuth2 login success: url={}", frontendUrl);
         try {
@@ -48,6 +49,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             authService.setCookie(user, response);
         } catch (RuntimeException e) {
             userService.saveUserByOauth(email, name, response, picture);
+        }
+        log.info("redirect to url = {}", redirectTo);
+        if(redirectTo != null){
+            response.sendRedirect(frontendUrl + redirectTo);
         }
         response.sendRedirect(frontendUrl);
      }
