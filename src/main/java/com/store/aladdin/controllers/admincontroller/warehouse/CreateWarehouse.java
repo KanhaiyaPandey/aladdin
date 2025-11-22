@@ -3,8 +3,9 @@ package com.store.aladdin.controllers.admincontroller.warehouse;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
 
+import jakarta.validation.Valid;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class CreateWarehouse {
     public ResponseEntity<Map<String, Object>> createWarehouse(@Valid @RequestBody WarehouseDTO warehouseDTO, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage())
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.joining(", "));
             return ResponseUtil.buildErrorResponse("Validation failed", HttpStatus.BAD_REQUEST, errors);
         }
