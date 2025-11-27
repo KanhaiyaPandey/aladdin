@@ -54,7 +54,6 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/oauth2/authorization/google")
                         .successHandler(successHandler)
                 )
                 .exceptionHandling()

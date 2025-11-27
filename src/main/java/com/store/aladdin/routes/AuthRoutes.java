@@ -9,6 +9,8 @@ public class AuthRoutes {
     public static final String REGISTER_ROUTE = "/register";
     public static final String VALIDATION_ROUTE = "/validate-token";
 
+    public static final String GOOGLEAUTH_ROUTE = "/google/login";
+
 
     public static final String ADMIN_BASE = "/api/aladdin/admin";
     public static final String USER_BASE = "/api/aladdin/user";

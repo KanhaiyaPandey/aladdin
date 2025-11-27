@@ -2,6 +2,7 @@ package com.store.aladdin.controllers.auth_controllers;
 
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +85,19 @@ public class AuthController {
                 return ResponseUtil.buildResponse("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+
+
+
+            @GetMapping(GOOGLEAUTH_ROUTE)
+            public void googleLoginRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+                String redirectTo = request.getParameter("redirectTo");
+                if (redirectTo != null) {
+                    request.getSession().setAttribute("redirect_uri", redirectTo);
+                }
+                log.info("here done {}", request.getSession().getAttribute("redirect_uri"));
+                response.sendRedirect("/oauth2/authorization/google");
+            }
+
 
 
         // validate token

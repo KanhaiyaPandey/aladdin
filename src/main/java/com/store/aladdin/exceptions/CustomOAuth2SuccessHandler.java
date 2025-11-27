@@ -41,18 +41,19 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
-        String redirectTo = request.getParameter("redirectTo");
         User user;
-        // log.info("🥹OAuth2 login success: url={}", frontendUrl);
         try {
             user = userService.getUserByEmail(email);
             authService.setCookie(user, response);
         } catch (RuntimeException e) {
             userService.saveUserByOauth(email, name, response, picture);
         }
-        log.info("redirect to url = {}", redirectTo);
-        if(redirectTo != null){
+        String redirectTo = (String) request.getSession().getAttribute("redirect_uri");
+        log.info("Session redirectTo = {}", redirectTo);
+        if (redirectTo != null) {
+            request.getSession().removeAttribute("redirect_uri"); // cleanup
             response.sendRedirect(frontendUrl + redirectTo);
+            return;
         }
         response.sendRedirect(frontendUrl);
      }
