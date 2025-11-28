@@ -15,15 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.store.aladdin.utils.response.ResponseUtil;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/health")
 public class TestingControllers {
 
 
-@PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<Map<String, Object>> testEndpoint(
-    @RequestPart("product") String product,
-    @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-    return ResponseUtil.buildResponse("Test successfull", HttpStatus.OK);
-}
+    @PostMapping(value = "/test")
+    public ResponseEntity<Map<String, Object>> testEndpoint() {
+        return ResponseUtil.buildResponse("✅ everything is healthy", HttpStatus.OK);
+    }
     
 }
