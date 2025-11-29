@@ -32,6 +32,9 @@ build/
 src/main/resources/application.properties
 **/application.properties
 
+src/main/resources/production.properties
+**/production.properties
+
 # Ignore Spring Boot config
 # application.properties
 
