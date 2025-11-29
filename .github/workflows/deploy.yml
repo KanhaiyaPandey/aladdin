@@ -1,0 +1,42 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      # Login to ECR
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build, tag, push Docker image
+      - name: Build, tag, and push docker image
+        run: |
+          IMAGE_URI=472625317223.dkr.ecr.eu-north-1.amazonaws.com/aladdin-backend:latest
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+
+      # Update ECS Service
+      - name: Deploy to ECS Service
+        run: |
+          aws ecs update-service \
+            --cluster aladdin-cluster \
+            --service aladdin-service \
+            --force-new-deployment
