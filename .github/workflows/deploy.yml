@@ -37,6 +37,6 @@ jobs:
       - name: Deploy to ECS Service
         run: |
           aws ecs update-service \
-            --cluster aladdin-cluster \
-            --service aladdin-service \
+            --cluster aladdin-dev-server-cluster \
+            --service aladdin-server-task-service \
             --force-new-deployment
