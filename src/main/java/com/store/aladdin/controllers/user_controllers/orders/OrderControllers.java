@@ -1,6 +1,7 @@
 package com.store.aladdin.controllers.user_controllers.orders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.store.aladdin.dtos.orderDTOs.OrderRequestDTO;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.services.AuthService;
@@ -28,19 +29,20 @@ public class OrderControllers {
     private final OrderService orderService;
     private final AuthService authService;
 
-    @PostMapping(USER_CREATE_ORDER)
-    public ResponseEntity<Map<String, Object>> createOrder (@RequestBody String reqJson, HttpServletRequest request) {
-        try{
-            ObjectMapper objectMapper = new ObjectMapper();
-            Order order = objectMapper.readValue(reqJson, Order.class);
-            String token = authService.getToken(request);
-            String userId = JwtUtil.extractUserId(token);
-            order.setCustomerId(userId);
-            Order savesOrder = orderService.createOrder(order);
-            return ResponseUtil.buildResponse("order created successfully", true, savesOrder, HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new CustomeRuntimeExceptionsHandler("oops! " + e.getMessage());
-        }
-    }
+        @PostMapping(USER_CREATE_ORDER)
+        public ResponseEntity<Map<String, Object>> createOrder (
+                @RequestBody OrderRequestDTO orderRequestDTO,
+                HttpServletRequest request) {
 
-}
+            try {
+                String token = authService.getToken(request);
+                String userId = JwtUtil.extractUserId(token);
+                Order createdOrder = orderService.createOrder(orderRequestDTO, userId);
+                return ResponseUtil.buildResponse("order created",true, createdOrder, HttpStatus.CREATED);
+
+            } catch (Exception e) {
+                throw new CustomeRuntimeExceptionsHandler("oops! " + e.getMessage());
+            }
+        }
+
+    }

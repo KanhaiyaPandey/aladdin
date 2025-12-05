@@ -11,7 +11,7 @@ import static com.store.aladdin.utils.helper.Enums.RiskStatus.LOW;
 
 import com.store.aladdin.dtos.UserResponseDTO;
 import com.store.aladdin.services.AuthService;
-import com.store.aladdin.utils.validation.UserValidation;
+import com.store.aladdin.validations.UserValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

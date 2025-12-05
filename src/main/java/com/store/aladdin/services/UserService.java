@@ -79,6 +79,65 @@ public class UserService {
         return new UserResponseDTO(saved, false);
     }
 
+    public User addAddress(User user, User.Address incomingAddress) {
+        if (incomingAddress.getAddressId() == null || incomingAddress.getAddressId().isEmpty()) {
+            incomingAddress.setAddressId(UUID.randomUUID().toString());
+        }
+        user.getAddresses().add(incomingAddress);
+        return userRepository.save(user);
+    }
+
+    public User updateAddress(User user, User.Address incomingAddress) {
+        if (incomingAddress.getAddressId() == null || incomingAddress.getAddressId().isEmpty()) {
+            incomingAddress.setAddressId(UUID.randomUUID().toString());
+        }
+        String addressId = incomingAddress.getAddressId();
+        boolean updated = false;
+        List<User.Address> addresses = user.getAddresses();
+        for (int i = 0; i < addresses.size(); i++) {
+            if (addresses.get(i).getAddressId().equals(addressId)) {
+                addresses.set(i, incomingAddress);
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) {
+            addresses.add(incomingAddress);
+        }
+        user.setAddresses(addresses);
+        return userRepository.save(user);
+    }
+
+    public User deleteAddress(String userId, String addressId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        boolean removed = user.getAddresses()
+                .removeIf(addr -> addr.getAddressId().equals(addressId));
+        if (!removed) {
+            throw new RuntimeException("Address not found");
+        }
+        return userRepository.save(user);
+    }
+
+    public User setDefaultAddress(String userId, String addressId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        boolean exists = false;
+        for (User.Address addr : user.getAddresses()) {
+            if (addr.getAddressId().equals(addressId)) {
+                addr.setDefault(true);     // default address
+                exists = true;
+            } else {
+                addr.setDefault(false);    // others become inactive
+            }
+        }
+        if (!exists) {
+            throw new RuntimeException("Address not found");
+        }
+
+        return userRepository.save(user);
+    }
+
 
 
 

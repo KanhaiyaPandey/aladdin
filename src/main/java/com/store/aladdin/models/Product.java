@@ -6,23 +6,17 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.store.aladdin.utils.helper.Enums.Status;
 import com.store.aladdin.utils.helper.Enums.StockStatus;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 @Data
 @Document(collection = "products")
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
 
@@ -121,7 +115,7 @@ public class Product {
         private String mediaId;
         private String url; 
         private String title; 
-        private String fileType; 
+        private String fileType;
         private long fileSize; 
         private String createdAt;
     }

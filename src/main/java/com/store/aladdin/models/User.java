@@ -1,6 +1,10 @@
 package com.store.aladdin.models;
 
 import static com.store.aladdin.utils.helper.Enums.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -56,14 +60,37 @@ public class User {
 
     @Data
     @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Address {
-        private String street;
+        private String addressId;
+        private String firstName;
+        private String lastName;
+
+        @NotBlank(message = "houseNumber / street is required")
+        private String houseNumber;
+
+        @NotBlank(message = "area is required")
+        private String area;
+
+        @NotBlank(message = "city is required")
         private String city;
+
+        @NotBlank(message = "state is required")
         private String state;
-        private String postalCode;
-        private String alternateNumber;
-        private String country;
-        private boolean active; 
+
+        @NotBlank(message = "pincode is required")
+        @Pattern(regexp = "\\d{6}", message = "pincode must be 6 digits")
+        private String pincode;
+
+        @NotBlank(message = "email is required")
+        @Pattern(regexp = "^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,6}$", message = "invalid email")
+        private String email;
+
+        @NotBlank(message = "phoneNumber is required")
+        @Pattern(regexp = "\\d{10}", message = "phoneNumber must be 10 digits")
+        private String phoneNumber;
+
+        private boolean isDefault = false;
         
     }
 

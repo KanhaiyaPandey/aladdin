@@ -1,4 +1,4 @@
-package com.store.aladdin.utils.validation;
+package com.store.aladdin.validations;
 
 import com.store.aladdin.models.User;
 import lombok.RequiredArgsConstructor;
