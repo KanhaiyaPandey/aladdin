@@ -11,4 +11,7 @@ public class UserRoutes {
     public static final String MY_ORDERS   = "/orders/my-orders";
     public static final String UPDATE_CART = "/update-cart";
 
+    public static final String RAZORPAY_CREATE_ORDER = "/payment/create-order";
+    public static final String VARIFY_PAYMENT        = "/payment/verify";
+
 }

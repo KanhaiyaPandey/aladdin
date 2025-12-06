@@ -1,8 +1,8 @@
 package com.store.aladdin.controllers.user_controllers.orders;
 
 import com.razorpay.RazorpayException;
-import com.store.aladdin.dtos.PaymentVerificationDTO;
 import com.store.aladdin.dtos.orderDTOs.OrderRequestDTO;
+import com.store.aladdin.dtos.paymentDTOs.PaymentVerificationDTO;
 import com.store.aladdin.exceptions.CustomeRuntimeExceptionsHandler;
 import com.store.aladdin.models.Order;
 import com.store.aladdin.models.Payment;
@@ -24,8 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.store.aladdin.routes.UserRoutes.*;
+import static com.store.aladdin.routes.AuthRoutes.*;
+
+
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping(USER_BASE)
 @RequiredArgsConstructor
 public class PaymentController {
 
@@ -39,7 +43,7 @@ public class PaymentController {
      * This endpoint creates a payment order in Razorpay and returns the order details
      * to the frontend for initiating the payment.
      */
-    @PostMapping("/create-order")
+    @PostMapping(RAZORPAY_CREATE_ORDER)
     public ResponseEntity<Map<String, Object>> createOrder(
             @RequestParam double amount,
             HttpServletRequest request) {
@@ -99,7 +103,7 @@ public class PaymentController {
      *   "orderRequest": { ... OrderRequestDTO ... }
      * }
      */
-    @PostMapping("/verify")
+    @PostMapping(VARIFY_PAYMENT)
     public ResponseEntity<Map<String, Object>> verifyPayment(
             @Valid @RequestBody PaymentVerificationDTO verificationDTO,
             HttpServletRequest request) {

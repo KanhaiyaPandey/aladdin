@@ -35,7 +35,8 @@ public class PaymentService {
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", finalAmount);
         orderRequest.put("currency", "INR");
-        orderRequest.put("receipt", "order_rcpt_" + UUID.randomUUID().toString());
+        String shortReceipt = "rcpt_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+        orderRequest.put("receipt", shortReceipt);
 
         Order razorOrder = razorpayClient.orders.create(orderRequest);
 
@@ -63,14 +64,21 @@ public class PaymentService {
             String data = orderId + "|" + paymentId;
             Mac sha256 = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(
-                    razorpaySecret.getBytes(StandardCharsets.UTF_8), 
+                    razorpaySecret.getBytes(StandardCharsets.UTF_8),
                     "HmacSHA256"
             );
             sha256.init(secretKey);
 
             byte[] hash = sha256.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            String generatedSignature = Base64.getEncoder().encodeToString(hash);
-            
+
+            // Convert byte[] to HEX string (Razorpay uses HEX)
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                hexString.append(String.format("%02x", b));
+            }
+
+            String generatedSignature = hexString.toString();
+
             return generatedSignature.equals(signature);
         } catch (Exception e) {
             throw new RuntimeException("Error verifying payment signature: " + e.getMessage(), e);
