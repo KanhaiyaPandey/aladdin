@@ -13,5 +13,7 @@ public class UserRoutes {
 
     public static final String RAZORPAY_CREATE_ORDER = "/payment/create-order";
     public static final String VARIFY_PAYMENT        = "/payment/verify";
+    public static final String PAYMENT_WEBHOOK       = "/payment/webhook";
+    public static final String PAYMENT_STATUS        = "/payment/status/{razorpayOrderId}";
 
 }

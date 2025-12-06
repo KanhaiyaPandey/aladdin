@@ -31,6 +31,14 @@ public class Payment {
 
     private String userId;
 
+    // Idempotency and fraud prevention
+    private String idempotencyKey;
+    private String orderId; // Link to actual order after creation
+    private Integer verificationAttempts;
+    private LocalDateTime lastVerificationAttempt;
+    private String clientIp;
+    private String userAgent;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

@@ -14,5 +14,11 @@ public class PaymentVerificationDTO {
     private String razorpay_payment_id;
     private String razorpay_signature;
     private OrderRequestDTO orderRequest;
+    
+    // Idempotency key to prevent duplicate processing
+    private String idempotencyKey;
+    
+    // Amount validation (should match stored payment)
+    private Double amount;
 
 }
