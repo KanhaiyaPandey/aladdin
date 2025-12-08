@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.store.aladdin.dtos.productDTOs.RelatedProductsDTO;
 import com.store.aladdin.dtos.responseDTOs.ProductResponse;
 import com.store.aladdin.services.AuthService;
 import com.store.aladdin.services.RedisCacheService;
@@ -98,7 +99,6 @@ public class PublicControllers {
     @GetMapping(PUBLIC_ALL_CATEGORIES)
     public ResponseEntity<Map<String, Object>> getAllCategories() {
         try {
-
             List<CategoryResponse> categories = categoryService.getAllCategoryResponses();
             if (categories.isEmpty()) {
                 return ResponseUtil.buildResponse("No categories found", false, categories, HttpStatus.OK);
@@ -125,5 +125,22 @@ public class PublicControllers {
 
         }
     }
+
+
+    /// //////////////////////
+    /// // get related products
+    /// /////////////////////
+
+    @GetMapping(RELATED_PRODUCTS)
+    public ResponseEntity<Map<String, Object>>getRelatedProducts(@PathVariable String productId){
+        try {
+            RelatedProductsDTO dto = productService.getRelatedProducts(productId);
+            return ResponseUtil.buildResponse("related product fetched", true, dto, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseUtil.buildErrorResponse("Error fetching related products", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+
 
 }

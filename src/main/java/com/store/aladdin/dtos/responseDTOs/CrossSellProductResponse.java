@@ -27,7 +27,7 @@ public class CrossSellProductResponse {
     private LocalDateTime lastUpdatedAt;
 
 
-    public CrossSellProductResponse(Product product) {
+    public CrossSellProductResponse(ProductResponse product) {
         this.productId = product.getProductId();
         this.title = product.getTitle();
         this.description = product.getDescription();

@@ -35,8 +35,8 @@ public class ProductResponse {
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     private List<CategoryResponse>productCategories;
-    private List<CrossSellProductResponse> upSellProducts;
-    private List<CrossSellProductResponse> crossSellProducts;
+    private List<String> upSellProducts;
+    private List<String> crossSellProducts;
 
     public ProductResponse(Product product, Boolean isAdmin) {
         this.productId = product.getProductId();
@@ -55,8 +55,8 @@ public class ProductResponse {
         this.dimensions = product.getDimensions() != null ? product.getDimensions() : new ArrayList<>();
         this.createdAt = product.getCreatedAt();
         this.lastUpdatedAt = product.getLastUpdatedAt();
-        this.upSellProducts = new ArrayList<>();
-        this.crossSellProducts = new ArrayList<>();
+        this.upSellProducts = product.getUpSellProducts();
+        this.crossSellProducts = product.getCrossSellProducts();
         this.sizeGuide = product.getSizeGuide();
 
         if (isAdmin){
