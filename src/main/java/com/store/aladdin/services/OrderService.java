@@ -105,6 +105,8 @@ public class OrderService {
 
         Order.OrderItem item = new Order.OrderItem();
         item.setProductId(dto.getProductId());
+        item.setMedia(dto.getMedia());
+        item.setTitle(dto.getTitle());
         item.setVariantId(dto.getVariantId());
         item.setQuantity(dto.getQuantity());
         item.setPriceSnapshot(basePrice);
@@ -124,5 +126,10 @@ public class OrderService {
         a.setEmail(addressDTO.getEmail());
         a.setPhoneNumber(addressDTO.getPhoneNumber());
         return a;
+    }
+
+
+    public List<Order> getAllOrders(){
+        return orderRepository.findAll();
     }
 }

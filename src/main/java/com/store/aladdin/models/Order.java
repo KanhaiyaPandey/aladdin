@@ -83,6 +83,7 @@ public class Order {
     public static class OrderItem {
         private String productId;
         private String variantId;
+        private String title;
         private List<String> attributes;
         private List<String> options;
         private String media;

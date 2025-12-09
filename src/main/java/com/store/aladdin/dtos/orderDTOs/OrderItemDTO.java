@@ -16,6 +16,8 @@ public class OrderItemDTO {
     @NotBlank(message = "Product ID is required")
     private String productId;
 
+    private String title;
+
     private String variantId;
 
     private String media;
