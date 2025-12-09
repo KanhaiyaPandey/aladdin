@@ -102,30 +102,30 @@ public class AuthController {
 
         // validate token
 
-        @GetMapping(VALIDATION_ROUTE)
-        public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
-
-        try {
-                String token = authService.getToken(request);
-                if (token == null) {
-                    return ResponseUtil.buildResponse("Token not found", HttpStatus.UNAUTHORIZED);
-                }
-                    String id = JwtUtil.extractUserId(token);
-                    if (id == null) {
-                        return ResponseUtil.buildResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                    User user = userService.getUserById(id);
-                    if (user == null) {
-                        return ResponseUtil.buildResponse("User not found", HttpStatus.NOT_FOUND);
-                    }
-                    boolean isAdmin = user.getRoles().contains("ADMIN");
-                    UserResponseDTO userResponseDTO = new UserResponseDTO(user, isAdmin);
-                    return ResponseUtil.buildResponse("Token is valid", true, userResponseDTO , HttpStatus.OK);
-                } catch (Exception e) {
-                    return ResponseUtil.buildResponse("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-
-        }
+//        @GetMapping(VALIDATION_ROUTE)
+//        public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
+//
+//        try {
+//                String token = authService.getToken(request);
+//                if (token == null) {
+//                    return ResponseUtil.buildResponse("Token not found", HttpStatus.UNAUTHORIZED);
+//                }
+//                    String id = JwtUtil.extractUserId(token);
+//                    if (id == null) {
+//                        return ResponseUtil.buildResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+//                    }
+//                    User user = userService.getUserById(id);
+//                    if (user == null) {
+//                        return ResponseUtil.buildResponse("User not found", HttpStatus.NOT_FOUND);
+//                    }
+//                    boolean isAdmin = user.getRoles().contains("ADMIN");
+//                    UserResponseDTO userResponseDTO = new UserResponseDTO(user, isAdmin);
+//                    return ResponseUtil.buildResponse("Token is valid", true, userResponseDTO , HttpStatus.OK);
+//                } catch (Exception e) {
+//                    return ResponseUtil.buildResponse("Invalid token", HttpStatus.UNAUTHORIZED);
+//            }
+//
+//        }
 
         // Logout
 

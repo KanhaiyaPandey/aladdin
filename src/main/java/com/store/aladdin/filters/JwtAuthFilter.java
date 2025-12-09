@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.store.aladdin.routes.AuthRoutes.ADMIN_BASE;
+
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @SuppressWarnings("null")
@@ -27,36 +29,47 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws IOException, ServletException {
-        // Extract JWT token from a custom cookie
-        String token = Arrays.stream(request.getCookies() == null ? new Cookie[0] : request.getCookies())
-                .filter(cookie -> "JWT_TOKEN".equals(cookie.getName()))
-                .findFirst()
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String path = request.getRequestURI();
+
+        // Decide which cookie to read based on the route
+        String cookieName = path.startsWith(ADMIN_BASE)
+                ? "ADMIN_JWT"
+                : "USER_JWT";
+
+        String token = Arrays.stream(cookies)
+                .filter(c -> cookieName.equals(c.getName()))
                 .map(Cookie::getValue)
+                .findFirst()
                 .orElse(null);
 
         if (token != null) {
             try {
                 String username = JwtUtil.validateToken(token);
-
-                // Extract roles without adding "ROLE_"
                 String[] roles = JwtUtil.extractRoles(token);
 
                 List<SimpleGrantedAuthority> authorities = Arrays.stream(roles)
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .toList();
+                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+                        .toList();
 
-                    UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                            username,
-                            "",
-                            authorities
-                    );
+                UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                        username,
+                        "",
+                        authorities
+                );
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                Authentication auth = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, authorities);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(auth);
 
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 SecurityContextHolder.clearContext();
             }
         }

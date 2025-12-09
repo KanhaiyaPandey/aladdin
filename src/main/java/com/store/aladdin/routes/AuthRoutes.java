@@ -13,7 +13,9 @@ public class AuthRoutes {
 
 
     public static final String ADMIN_BASE = "/api/aladdin/admin";
+    public static final String ADMIN_VALIDATION_ROUTE = "/validate-token";
     public static final String USER_BASE = "/api/aladdin/user";
+    public static final String USER_VALIDATION_ROUTE = "/validate-token";
     public static final String PUBLIC_BASE = "/api/aladdin/public";
 
     private AuthRoutes() {
