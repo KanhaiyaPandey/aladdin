@@ -120,7 +120,7 @@ public class ProductService {
     /// // get product by id
     /// /////////////////////
 
-    public ProductResponse getProductById(String productId, Boolean isAdmin) throws Exception {
+    public ProductResponse getProductById(String productId) throws Exception {
         try {
             String cacheKey = SINGLE_PRODUCT_CACHE_KEY + productId;
             Product product = redisCacheService.get(cacheKey, Product.class);
@@ -132,7 +132,7 @@ public class ProductService {
             } else {
                 log.info("✅ Fetched full product from Redis cache: {}", productId);
             }
-            ProductResponse response = new ProductResponse(product, isAdmin);
+            ProductResponse response = new ProductResponse(product);
             if (product.getProductCategories() != null && !product.getProductCategories().isEmpty()) {
                 List<CategoryResponse> categoryResponses = product.getProductCategories().stream()
                         .map(cat -> categoryService.getCategoryById(cat.getCategoryId())) // call the method you provided
@@ -166,7 +166,7 @@ public class ProductService {
         List<CrossSellProductResponse> result = new ArrayList<>();
         for (String id : productIds) {
             try {
-                ProductResponse product = getProductById(id, false);
+                ProductResponse product = getProductById(id);
                 result.add(new CrossSellProductResponse(product));
             } catch (Exception ignored) {
                 // Skip missing IDs

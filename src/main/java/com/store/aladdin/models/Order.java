@@ -26,6 +26,8 @@ public class Order {
 
     private String customerId;
 
+    private String orderNumber;
+
     private Address shippingAddress;
 
     private List<OrderItem> items;

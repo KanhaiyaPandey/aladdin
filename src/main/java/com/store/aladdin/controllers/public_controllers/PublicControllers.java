@@ -66,18 +66,7 @@ public class PublicControllers {
             HttpServletRequest request) {
 
         try {
-            String token = null;
-            boolean isAdmin = false;
-
-            try {
-                token = authService.getToken(request);
-                isAdmin = Arrays.stream(JwtUtil.extractRoles(token))
-                        .anyMatch(role -> role.equalsIgnoreCase("ADMIN"));
-            } catch (Exception ex) {
-                log.warn("⚠️ No valid token found — treating as public user");
-            }
-            ProductResponse product = productService.getProductById(productId, isAdmin);
-
+            ProductResponse product = productService.getProductById(productId);
             return ResponseUtil.buildResponse(
                     "Product fetched successfully",
                     true,

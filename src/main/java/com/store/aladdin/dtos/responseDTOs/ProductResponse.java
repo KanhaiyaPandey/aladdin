@@ -38,7 +38,7 @@ public class ProductResponse {
     private List<String> upSellProducts;
     private List<String> crossSellProducts;
 
-    public ProductResponse(Product product, Boolean isAdmin) {
+    public ProductResponse(Product product) {
         this.productId = product.getProductId();
         this.title = product.getTitle();
         this.description = product.getDescription();
@@ -58,11 +58,5 @@ public class ProductResponse {
         this.upSellProducts = product.getUpSellProducts();
         this.crossSellProducts = product.getCrossSellProducts();
         this.sizeGuide = product.getSizeGuide();
-
-        if (isAdmin){
-            this.costPrice = product.getCostPrice();
-            this.compareAtPrice = product.getCompareAtPrice();
-            this.warehouseData = product.getWarehouseData() != null ? product.getWarehouseData() : new ArrayList<>();
-        }
     }
 }

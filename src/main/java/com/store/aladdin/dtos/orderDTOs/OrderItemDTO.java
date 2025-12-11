@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,11 +17,10 @@ public class OrderItemDTO {
 
     @NotBlank(message = "Product ID is required")
     private String productId;
-
     private String title;
-
     private String variantId;
-
+    private List<String> attributes;
+    private List<String> options;
     private String media;
 
     @Positive(message = "Quantity must be greater than 0")

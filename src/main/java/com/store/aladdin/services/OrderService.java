@@ -34,6 +34,8 @@ public class OrderService {
         // 2) Build order shell
         Order order = new Order();
         order.setCustomerId(userId);
+        String generatedNumber = "aladdin_" + UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+        order.setOrderNumber(generatedNumber);
         order.setCreatedAt(LocalDateTime.now());
         order.setStatus(Enums.OrderStatus.PROCESSING);
         order.setPaymentStatus(Enums.PaymentStatus.PENDING);
@@ -107,6 +109,8 @@ public class OrderService {
         item.setProductId(dto.getProductId());
         item.setMedia(dto.getMedia());
         item.setTitle(dto.getTitle());
+        item.setAttributes(dto.getAttributes());
+        item.setOptions(dto.getOptions());
         item.setVariantId(dto.getVariantId());
         item.setQuantity(dto.getQuantity());
         item.setPriceSnapshot(basePrice);
