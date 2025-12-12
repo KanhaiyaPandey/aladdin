@@ -76,7 +76,8 @@ public class SecurityConfig {
                 "https://aladdin01.netlify.app",
                 "https://aladdin-store.netlify.app",
                 "http://localhost:3000",
-                "https://aladdin-frontend.vercel.app"
+                "https://aladdin-frontend.vercel.app",
+                "https://main.d2yeltukw7i8qn.amplifyapp.com"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

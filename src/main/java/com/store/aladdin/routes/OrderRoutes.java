@@ -17,7 +17,9 @@ public final class OrderRoutes {
     public static final String ADMIN_GET_ALL_ORDERS   = "/all";
     public static final String ADMIN_GET_ORDER_BY_ID  = "/{orderId}";
     public static final String ADMIN_UPDATE_ORDER     = "/{orderId}/update";
-    public static final String ADMIN_DELETE_ORDER     = "/{orderId}/delete";  // optional
+    public static final String ADMIN_DELETE_ORDER     = "/{orderId}/delete";
+
+    public static final String ADMIN_UPDATE_ORDERS_STATUS = "/update-orders-status";// optional
 
     // =========================
     // User Order Routes
