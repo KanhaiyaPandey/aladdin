@@ -6,6 +6,7 @@ import com.store.aladdin.filters.JwtAuthFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -48,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_BASE + LOGIN_ROUTE).permitAll()
                         .requestMatchers(AUTH_BASE + REGISTER_ROUTE).permitAll()
                         .requestMatchers(AUTH_BASE + VALIDATION_ROUTE).permitAll()
-                        .requestMatchers(PUBLIC_BASE + "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS,PUBLIC_BASE + "/**").permitAll()
                         .requestMatchers(ADMIN_BASE + "/**").hasRole("ADMIN")
                         .requestMatchers(USER_BASE + "/**").authenticated()
                         .anyRequest().permitAll()
