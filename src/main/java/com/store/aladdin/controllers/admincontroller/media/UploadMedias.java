@@ -20,10 +20,12 @@ import com.store.aladdin.utils.response.ResponseUtil;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.store.aladdin.routes.MediaRoutes.MEDIA_BASE;
+import static com.store.aladdin.routes.MediaRoutes.UPLOAD_MEDIA;
 import static com.store.aladdin.routes.PublicRoutes.PUBLIC_BASE;
 
 @RestController
-@RequestMapping(PUBLIC_BASE)
+@RequestMapping(MEDIA_BASE)
 @RequiredArgsConstructor
 public class UploadMedias {
 
@@ -32,7 +34,7 @@ public class UploadMedias {
 
     private final MongoTemplate mongoTemplate;
 
-    @PostMapping(value = "/media/upload-media", consumes = "multipart/form-data")
+    @PostMapping(value = UPLOAD_MEDIA, consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> uploadMultipleMedia(@RequestPart("media") MultipartFile[] files) {
         try {
             List<CompletableFuture<Medias>> futures = new ArrayList<>();
