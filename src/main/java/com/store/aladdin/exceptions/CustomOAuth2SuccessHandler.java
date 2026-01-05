@@ -48,13 +48,13 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         } catch (RuntimeException e) {
             userService.saveUserByOauth(email, name, response, picture);
         }
-        String redirectTo = (String) request.getSession().getAttribute("redirect_uri");
-        log.info("Session redirectTo = {}", redirectTo);
-        if (redirectTo != null) {
-            request.getSession().removeAttribute("redirect_uri"); // cleanup
-            response.sendRedirect(frontendUrl + redirectTo);
-            return;
-        }
+//        String redirectTo = (String) request.getSession().getAttribute("redirect_uri");
+//        log.info("Session redirectTo = {}", redirectTo);
+//        if (redirectTo != null) {
+//            request.getSession().removeAttribute("redirect_uri"); // cleanup
+//            response.sendRedirect(frontendUrl + redirectTo);
+//            return;
+//        }
         response.sendRedirect(frontendUrl);
      }
 }
