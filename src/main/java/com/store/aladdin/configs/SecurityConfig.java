@@ -46,9 +46,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AUTH_BASE + LOGIN_ROUTE).permitAll()
-                        .requestMatchers(AUTH_BASE + REGISTER_ROUTE).permitAll()
-                        .requestMatchers(AUTH_BASE + VALIDATION_ROUTE).permitAll()
+                        // Every /api/auth/** endpoint (login/register/me/refresh/logout/
+                        // google) either has to be reachable before the caller is
+                        // authenticated, or authenticates itself by reading a cookie
+                        // manually (see AuthController) - none of them rely on this
+                        // filter chain's gate, so the whole tree is permitAll here.
+                        .requestMatchers(AUTH_BASE + "/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS,PUBLIC_BASE + "/**").permitAll()
                         .requestMatchers(ADMIN_BASE + "/**").hasRole("ADMIN")
                         .requestMatchers(USER_BASE + "/**").authenticated()

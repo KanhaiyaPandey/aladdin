@@ -1,8 +1,7 @@
 package com.store.aladdin.exceptions;
 
 import com.store.aladdin.models.User;
-import com.store.aladdin.repository.UserRepository;
-import com.store.aladdin.services.AuthService;
+import com.store.aladdin.security.TokenService;
 import com.store.aladdin.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,15 +24,15 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
        private final UserService userService;
-       private final AuthService authService;
+       private final TokenService tokenService;
 
 
     @Value("${frontend.url}")
     private String frontendUrl;
 
-    public CustomOAuth2SuccessHandler(@Lazy UserService userService, @Lazy AuthService authService) {
+    public CustomOAuth2SuccessHandler(@Lazy UserService userService, @Lazy TokenService tokenService) {
         this.userService = userService;
-        this.authService = authService;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -44,13 +43,15 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String picture = oAuth2User.getAttribute("picture");
+
         User user;
         try {
             user = userService.getUserByEmail(email);
-            authService.setCookie(user, response);
         } catch (RuntimeException e) {
-            userService.saveUserByOauth(email, name, response, picture);
+            user = userService.saveUserByOauth(email, name, picture);
         }
+        // Issued once, uniformly, whether this was an existing or brand new user.
+        tokenService.issueTokens(user, response);
 
         // Land on the dedicated callback page instead of the homepage directly:
         // it's the one place that hydrates the shared auth context from the

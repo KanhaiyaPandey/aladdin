@@ -7,7 +7,6 @@ import com.store.aladdin.repository.UserRepository;
 
 import com.store.aladdin.utils.ResourceNotFoundException;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.BeanUtils;
@@ -26,7 +25,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthService authService;
 
 
     // Create a new user
@@ -37,7 +35,11 @@ public class UserService {
     }
 
 
-    public void saveUserByOauth(String email, String name, HttpServletResponse response, String picture){
+    // Persists a new user from a Google OAuth profile. Deliberately does not
+    // issue tokens/cookies itself (single responsibility) - the caller
+    // (CustomOAuth2SuccessHandler) issues tokens once, uniformly, for both
+    // the "existing user" and "brand new user" branches.
+    public User saveUserByOauth(String email, String name, String picture){
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
@@ -46,8 +48,7 @@ public class UserService {
         user.setRoles(List.of("USER"));
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-        User registeredUser = userRepository.save(user);
-        authService.setCookie(registeredUser, response);
+        return userRepository.save(user);
     }
 
 

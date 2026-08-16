@@ -17,16 +17,22 @@ import java.util.List;
 public class JwtUtil {
 
     private static String secretKey;
+    private static long accessTtlMillis;
 
     @Value("${spring.data.secretkey}")
     private String secret;
 
+    // This is now the ACCESS token TTL specifically (see TokenService for the
+    // separate, much longer-lived, Redis-backed refresh token). Configurable
+    // via app.jwt.access-ttl-minutes instead of a hardcoded constant.
+    @Value("${app.jwt.access-ttl-minutes:15}")
+    private long accessTtlMinutes;
+
     @Bean
     public void configureJwtUtil() {
         JwtUtil.secretKey = secret;
+        JwtUtil.accessTtlMillis = accessTtlMinutes * 60_000L;
     }
-
-    private static final long EXPIRATION_TIME = 86400000;
 
     // Generate JWT token with roles stored as JSON array
     public static String generateToken(User user) {
@@ -34,7 +40,7 @@ public class JwtUtil {
                 .withSubject(user.getEmail())
                 .withClaim("userId", user.getId().toString())
                 .withClaim("roles", user.getRoles())  // <-- FIXED: store as array
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + accessTtlMillis))
                 .sign(Algorithm.HMAC256(secretKey));
     }
 

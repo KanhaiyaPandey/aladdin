@@ -20,8 +20,20 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.store.aladdin.routes.AuthRoutes.ADMIN_BASE;
+import static com.store.aladdin.security.CookieService.ACCESS_COOKIE;
 
+/**
+ * Authenticates each request off the single ACCESS_TOKEN cookie (Path=/,
+ * see CookieService). There's no separate admin-vs-user cookie anymore -
+ * roles live inside the token itself, and admin-only routes are enforced by
+ * SecurityConfig's hasRole("ADMIN") on /api/aladdin/admin/**, the same as
+ * any other Spring Security role check.
+ *
+ * On a missing/invalid/expired token this filter just leaves the request
+ * unauthenticated and moves on - it does NOT attempt to refresh. Refreshing
+ * is the frontend's job (see utils/authRefresh.js): it calls
+ * POST /api/auth/refresh on a 401 and retries.
+ */
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @SuppressWarnings("null")
@@ -36,15 +48,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String path = request.getRequestURI();
-
-        // Decide which cookie to read based on the route
-        String cookieName = path.startsWith(ADMIN_BASE)
-                ? "ADMIN_JWT"
-                : "USER_JWT";
-
         String token = Arrays.stream(cookies)
-                .filter(c -> cookieName.equals(c.getName()))
+                .filter(c -> ACCESS_COOKIE.equals(c.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
