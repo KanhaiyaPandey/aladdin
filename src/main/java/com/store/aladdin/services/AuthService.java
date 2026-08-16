@@ -36,13 +36,22 @@ public class AuthService {
         boolean isAdmin = user.getRoles().contains("ADMIN");
 
         String cookieName = isAdmin ? ADMIN_COOKIE : USER_COOKIE;
-        String cookiePath = isAdmin ? ADMIN_BASE : USER_BASE;
 
+        // Path is deliberately "/" for both cookies, NOT scoped to ADMIN_BASE/
+        // USER_BASE: which cookie (by name) is trusted for a given request is
+        // already decided in application code by JwtAuthFilter/getToken() below
+        // based on the request path, so a narrower browser-side Path here does
+        // no extra security work - it only risks the browser withholding the
+        // cookie on a legitimate same-app request that lives under a different
+        // path prefix (e.g. AUTH_BASE's /validate-token, which isn't under
+        // USER_BASE). It also has to match clearCookie()'s Path exactly, or
+        // logout silently fails to remove it.
         String cookie = String.format(
-                "%s=%s; Path=%s; HttpOnly; Secure; SameSite=None; Max-Age=%d",
+                "%s=%s; Path=/; HttpOnly; %sSameSite=%s; Max-Age=%d",
                 cookieName,
                 token,
-                cookiePath,
+                secure ? "Secure; " : "",
+                secure ? "None" : "Lax",
                 ONE_DAY
         );
 
@@ -64,7 +73,7 @@ public class AuthService {
         Cookie cookie = new Cookie(name, null);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(secure);
         cookie.setMaxAge(0); // delete cookie
         response.addCookie(cookie);
     }
