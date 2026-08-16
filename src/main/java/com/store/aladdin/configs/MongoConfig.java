@@ -18,7 +18,9 @@ public class MongoConfig {
 
         @Bean
         public MongoTemplate mongoTemplate() {
-        log.info("✅ MongoDB Connected");
+        // NOTE: this only builds the client/template; it doesn't verify connectivity.
+        // See StartupHealthLogger for the real "MongoDB connected" confirmation.
+        log.debug("MongoTemplate bean configured");
         return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoUri));
 
     }

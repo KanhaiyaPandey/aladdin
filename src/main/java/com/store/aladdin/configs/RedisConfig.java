@@ -54,10 +54,12 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(serializer);
         redisTemplate.setHashValueSerializer(serializer);
 
-        // ✅ Ensure initialization happens at startup
+        // Ensure initialization happens at startup
         redisTemplate.afterPropertiesSet();
 
-        log.info("✅ RedisTemplate configured and initialized with SSL connection factory");
+        // NOTE: this only builds the template; it doesn't verify connectivity.
+        // See StartupHealthLogger for the real "Redis connected" confirmation.
+        log.debug("RedisTemplate bean configured");
         return redisTemplate;
     }
 }
