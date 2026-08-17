@@ -41,6 +41,7 @@ public class PublicControllers {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final AuthService authService;
+    private final com.store.aladdin.services.CollectionService collectionService;
 
 
     @GetMapping(PUBLIC_ALL_PRODUCTS)
@@ -89,6 +90,16 @@ public class PublicControllers {
             return ResponseUtil.buildResponse("categories fetched successfully", true, categories, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error fetching categories", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @GetMapping("/collection/featured")
+    public ResponseEntity<Map<String, Object>> getFeaturedCollections() {
+        try {
+            java.util.List<com.store.aladdin.models.Collection> collections = collectionService.getFeaturedCollections();
+            return ResponseUtil.buildResponse("Featured collections fetched", true, collections, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseUtil.buildErrorResponse("Error fetching", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

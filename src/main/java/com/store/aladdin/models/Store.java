@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-@Document(collation = "store")
+@Document(collection = "store")
 @NoArgsConstructor
 public class Store {
 
@@ -24,6 +24,10 @@ public class Store {
     private String header;
     private String logo;
     private String storeName;
+    private String email;
+    private String phone;
+    private String privacyPolicy;
+    private String returnExchangePolicy;
     
     @Data
     @NoArgsConstructor
