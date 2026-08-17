@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.store.aladdin.utils.helper.Enums.Status;
@@ -55,6 +56,18 @@ public class Product {
 
     private List<Dimension> dimensions = new ArrayList<>();
 
+    // 🔹 Derived stock info - never persisted, always recomputed from
+    // warehouseData/variantWarehouseData at read time (see StockHelper) so the
+    // frontend can trust it instead of a manually-set, easily-stale field.
+    @Transient
+    private Integer totalStock = 0;
+
+    @Transient
+    private boolean inStock;
+
+    @Transient
+    private boolean purchasable;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createdAt;
 
@@ -79,7 +92,23 @@ public class Product {
         private Double margin;
         private Dimension dimensions;
         private List<Warehouse> variantWarehouseData = new ArrayList<>();
-  
+
+        // 🔹 Derived stock info - never persisted, always recomputed from
+        // variantWarehouseData at read time (see StockHelper). Lets the
+        // frontend grey out/hide an individual out-of-stock variant without
+        // guessing from raw warehouse rows itself.
+        @Transient
+        private Integer totalStock = 0;
+
+        @Transient
+        private StockStatus stockStatus;
+
+        @Transient
+        private boolean inStock;
+
+        @Transient
+        private boolean purchasable;
+
     }
 
 

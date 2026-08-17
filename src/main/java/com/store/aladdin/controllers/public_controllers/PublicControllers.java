@@ -1,24 +1,24 @@
 package com.store.aladdin.controllers.public_controllers;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 
+import com.store.aladdin.dtos.PagedResponse;
+import com.store.aladdin.dtos.productDTOs.ProductFilterRequest;
 import com.store.aladdin.dtos.productDTOs.RelatedProductsDTO;
 import com.store.aladdin.dtos.responseDTOs.ProductResponse;
 import com.store.aladdin.services.AuthService;
-import com.store.aladdin.services.RedisCacheService;
 import com.store.aladdin.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.aladdin.dtos.CategoryResponse;
@@ -44,15 +44,9 @@ public class PublicControllers {
 
 
     @GetMapping(PUBLIC_ALL_PRODUCTS)
-    public ResponseEntity<Map<String, Object>> getAllProducts(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String collection,
-            @RequestParam(required = false) String stockStatus) {
+    public ResponseEntity<Map<String, Object>> getAllProducts(@ModelAttribute ProductFilterRequest filter) {
         try {
-            List<Product> products = productService.getFilteredProducts(name, minPrice, maxPrice, stockStatus,category, collection );
+            PagedResponse<Product> products = productService.getFilteredProducts(filter, true);
             return ResponseUtil.buildResponse("products fetched successfully", true, products, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseUtil.buildErrorResponse("Error fetching products", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

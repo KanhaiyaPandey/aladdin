@@ -8,9 +8,12 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.store.aladdin.dtos.CategoryResponse;
+import com.store.aladdin.dtos.PagedResponse;
+import com.store.aladdin.dtos.productDTOs.ProductFilterRequest;
 import com.store.aladdin.dtos.productDTOs.RelatedProductsDTO;
 import com.store.aladdin.dtos.responseDTOs.CrossSellProductResponse;
 import com.store.aladdin.dtos.responseDTOs.ProductResponse;
+import com.store.aladdin.utils.helper.StockHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,7 @@ public class ProductService {
         } catch (Exception e) {
             log.error("❌ Failed to cache product in Redis: {}", e.getMessage());
         }
+        StockHelper.enrich(savedProduct);
         return savedProduct;
     }
 
@@ -61,8 +65,14 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> getFilteredProducts(String name, Double minPrice, Double maxPrice, String stockStatus, String category, String collection) {
-        return productQueries.filteredProducts(name, minPrice, maxPrice, stockStatus, category, collection);
+    /**
+     * @param activeOnly true for the public catalogue (DRAFT products are never shown to shoppers),
+     *                    false for the admin product list (sees everything, any status).
+     */
+    public PagedResponse<Product> getFilteredProducts(ProductFilterRequest filter, boolean activeOnly) {
+        PagedResponse<Product> page = productQueries.filteredProducts(filter, activeOnly);
+        StockHelper.enrichVariantsOnly(page.getItems());
+        return page;
     }
 
 
@@ -72,12 +82,14 @@ public class ProductService {
     /// /////////////////////
 
     public Product updateProduct(String productId, Product updatedProduct) {
-        return productRepository.findById(productId).map(existingProduct -> {
+        Product saved = productRepository.findById(productId).map(existingProduct -> {
             BeanUtils.copyProperties(updatedProduct, existingProduct, "id", "createdAt");
             existingProduct.setLastUpdatedAt(LocalDateTime.now());
             redisCacheService.delete(SINGLE_PRODUCT_CACHE_KEY + productId);
             return productRepository.save(existingProduct);
         }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+        StockHelper.enrich(saved);
+        return saved;
     }
 
 
@@ -88,7 +100,7 @@ public class ProductService {
     /// /////////////////////////////
 
     public Product updateProductVariants(String productId, Product updatedProduct) {
-        return productRepository.findById(productId).map(product -> {
+        Product saved = productRepository.findById(productId).map(product -> {
             List<Product.Variant> variants = updatedProduct.getVariants(); // Fully qualified name
             if (variants != null) {
                 variants.forEach(variant -> variant.setParentProductId(productId));
@@ -96,6 +108,8 @@ public class ProductService {
             }
             return productRepository.save(product);
         }).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+        StockHelper.enrich(saved);
+        return saved;
     }
 
 
@@ -132,6 +146,10 @@ public class ProductService {
             } else {
                 log.info("✅ Fetched full product from Redis cache: {}", productId);
             }
+            // Recompute stock even for a cache hit - warehouse stock can change
+            // well within the cache TTL and the frontend must never show a
+            // stale "in stock" for something that just sold out.
+            StockHelper.enrich(product);
             ProductResponse response = new ProductResponse(product);
             if (product.getProductCategories() != null && !product.getProductCategories().isEmpty()) {
                 List<CategoryResponse> categoryResponses = product.getProductCategories().stream()

@@ -9,6 +9,10 @@ public class ProductRoutes {
     public static final String CREATE_PRODUCT =  "/create-product";
     public static final String UPDATE_PRODUCT =  "/update-product/{productId}";
     public static final String DELETE_PRODUCT =  "/delete-product/{productId}";
+    public static final String ALL_PRODUCTS   =  "/all-products";
+    // Kept as "/{productId}" (relative to PRODUCT_BASE) so the full URL stays
+    // ADMIN_BASE + "/product/{productId}", unchanged for existing callers.
+    public static final String SINGLE_PRODUCT =  "/{productId}";
 
     private ProductRoutes() {
         throw new UnsupportedOperationException("Utility class - cannot be instantiated");

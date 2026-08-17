@@ -2,12 +2,14 @@ package com.store.aladdin.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 import com.store.aladdin.models.Attribute;
@@ -52,20 +54,25 @@ public class CategoryService {
             return cached;
         }
 
-        Optional<Category> categoryOptional = categoryRepository.findById(id);
-        if (categoryOptional.isEmpty()) {
+        // Only pull this category's own subtree, not the whole collection -
+        // getAllCategoryResponses() below is the one place that legitimately
+        // needs every category.
+        List<Category> subtree = fetchCategorySubtree(id);
+        if (subtree.isEmpty()) {
             return null;
         }
 
-        Category category = categoryOptional.get();
-        List<Category> allCategories = categoryRepository.findAll();
-        Map<String, Category> categoryMap = allCategories.stream()
+        Map<String, Category> categoryMap = subtree.stream()
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
+        Category category = categoryMap.get(id);
+        if (category == null) {
+            return null;
+        }
 
         // ✅ map first, then cache
-        CategoryResponse response =  CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
+        CategoryResponse response = CategoryMapperUtil.mapToCategoryResponse(category, categoryMap);
         redisCacheService.set(SINGLE_CATEGORY_CACHE_KEY + id, response, 300L);
-        return  response;
+        return response;
     }
 
 
@@ -79,11 +86,98 @@ public class CategoryService {
         Map<String, Category> categoryMap = allCategories.stream()
                 .collect(Collectors.toMap(Category::getCategoryId, cat -> cat));
         List <CategoryResponse> categories = allCategories.stream()
-                .filter(cat -> cat.getParentCategoryId() == null)
+                .filter(this::isRoot)
                 .map(cat -> CategoryMapperUtil.mapToCategoryResponse(cat, categoryMap))
                 .toList();
         redisCacheService.set(ALL_CATEGORIES_CACHE_KEY, categories, 500L);
         return categories;
+    }
+
+    private boolean isRoot(Category category) {
+        // Some clients send parentCategoryId as "" rather than omitting it,
+        // which used to silently drop the category out of the nav tree.
+        return category.getParentCategoryId() == null || category.getParentCategoryId().isBlank();
+    }
+
+    /**
+     * Breadth-first walk down `childCategoryIds`, starting at `categoryId`,
+     * fetching only the nodes actually in this subtree (one query per
+     * depth level) instead of loading the entire categories collection.
+     */
+    private List<Category> fetchCategorySubtree(String categoryId) {
+        Optional<Category> rootOptional = categoryRepository.findById(categoryId);
+        if (rootOptional.isEmpty()) {
+            return List.of();
+        }
+
+        List<Category> subtree = new ArrayList<>();
+        Set<String> visited = new HashSet<>();
+        visited.add(categoryId);
+        List<Category> frontier = new ArrayList<>(List.of(rootOptional.get()));
+
+        while (!frontier.isEmpty()) {
+            subtree.addAll(frontier);
+            List<String> childIds = frontier.stream()
+                    .flatMap(cat -> cat.getChildCategoryIds() == null ? Stream.<String>empty()
+                            : cat.getChildCategoryIds().stream())
+                    .filter(visited::add) // dedupe + guards against a corrupt cycle
+                    .toList();
+            frontier = childIds.isEmpty() ? List.of() : categoryRepository.findAllById(childIds);
+        }
+
+        return subtree;
+    }
+
+    /**
+     * Resolves a category slug or id, coming from a product filter/search
+     * request, to the set of category ids that should match - the category
+     * itself plus (when requested) every descendant, so filtering by a
+     * parent category ("Men") correctly includes products only tagged with
+     * its subcategories ("Men > Shirts").
+     */
+    public Set<String> resolveCategoryIdsForFilter(String categorySlugOrId, boolean includeSubcategories) {
+        if (categorySlugOrId == null || categorySlugOrId.isBlank()) {
+            return Collections.emptySet();
+        }
+
+        Category root = categoryRepository.findBySlug(categorySlugOrId).orElse(null);
+        if (root == null) {
+            root = categoryRepository.findById(categorySlugOrId).orElse(null);
+        }
+        if (root == null) {
+            return Collections.emptySet();
+        }
+
+        return includeSubcategories
+                ? getCategoryIdsWithDescendants(root.getCategoryId())
+                : Set.of(root.getCategoryId());
+    }
+
+    /**
+     * All descendant category ids (inclusive of `categoryId` itself),
+     * resolved via the same bounded breadth-first walk as
+     * {@link #fetchCategorySubtree}, and cached since it sits on the hot
+     * path for every catalogue filter-by-category request.
+     */
+    public Set<String> getCategoryIdsWithDescendants(String categoryId) {
+        if (categoryId == null || categoryId.isBlank()) {
+            return Collections.emptySet();
+        }
+
+        String cacheKey = CATEGORY_DESCENDANTS_CACHE_KEY + categoryId;
+        List<String> cached = redisCacheService.getList(cacheKey);
+        if (cached != null && !cached.isEmpty()) {
+            return new HashSet<>(cached);
+        }
+
+        Set<String> ids = fetchCategorySubtree(categoryId).stream()
+                .map(Category::getCategoryId)
+                .collect(Collectors.toSet());
+
+        if (!ids.isEmpty()) {
+            redisCacheService.set(cacheKey, new ArrayList<>(ids), 300L);
+        }
+        return ids;
     }
 
 
@@ -106,6 +200,10 @@ public class CategoryService {
         savedCategory.setPath(path);
         categoryRepository.save(savedCategory);
         redisCacheService.delete(ALL_CATEGORIES_CACHE_KEY);
+        // A new child changes its parent's (and every ancestor's) subtree.
+        if (category.getParentCategoryId() != null && !category.getParentCategoryId().isBlank()) {
+            redisCacheService.deleteByPrefix(CATEGORY_DESCENDANTS_CACHE_KEY);
+        }
         return savedCategory;
     }
 
@@ -122,6 +220,7 @@ public class CategoryService {
             redisCacheService.delete(SINGLE_CATEGORY_CACHE_KEY + id);
         }
         redisCacheService.delete(ALL_CATEGORIES_CACHE_KEY);
+        redisCacheService.deleteByPrefix(CATEGORY_DESCENDANTS_CACHE_KEY);
         removeCategoriesFromProducts(allToDelete);
     }
 
@@ -138,19 +237,19 @@ public class CategoryService {
 //    remove category from products
 
     private void removeCategoriesFromProducts(Set<String> deletedCategoryIds) {
-        List<Product> allProducts = productRepository.findAll();
-        for (Product product : allProducts) {
-            boolean modified = false;
+        if (deletedCategoryIds.isEmpty()) {
+            return;
+        }
+        // Only load/save products that actually reference one of the
+        // deleted categories, instead of scanning the entire catalogue.
+        Query query = Query.query(Criteria.where("productCategories.categoryId").in(deletedCategoryIds));
+        List<Product> affectedProducts = mongoTemplate.find(query, Product.class);
+        for (Product product : affectedProducts) {
             List<ProductCategories> filtered = product.getProductCategories().stream()
                     .filter(cat -> !deletedCategoryIds.contains(cat.getCategoryId()))
                     .toList();
-            if (filtered.size() != product.getProductCategories().size()) {
-                product.setProductCategories(new ArrayList<>(filtered));
-                modified = true;
-            }
-            if (modified) {
-                productRepository.save(product);
-            }
+            product.setProductCategories(new ArrayList<>(filtered));
+            productRepository.save(product);
             redisCacheService.delete(SINGLE_PRODUCT_CACHE_KEY + product.getProductId());
         }
     }
@@ -175,6 +274,7 @@ public class CategoryService {
             category.setBanner(payload.getBanner());
         }
         redisCacheService.delete(SINGLE_CATEGORY_CACHE_KEY + categoryId);
+        redisCacheService.delete(ALL_CATEGORIES_CACHE_KEY);
         return categoryRepository.save(category);
     }
 

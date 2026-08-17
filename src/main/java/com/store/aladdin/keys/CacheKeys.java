@@ -7,6 +7,7 @@ public class CacheKeys {
 
     public static final String ALL_CATEGORIES_CACHE_KEY = "all_categories";
     public static final String SINGLE_CATEGORY_CACHE_KEY = "category_";
+    public static final String CATEGORY_DESCENDANTS_CACHE_KEY = "category_descendants_";
 
 //    attributes
 

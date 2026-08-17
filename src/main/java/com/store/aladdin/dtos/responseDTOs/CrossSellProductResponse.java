@@ -18,6 +18,9 @@ public class CrossSellProductResponse {
     private String sku;
     private boolean allowBackorder;
     private Enums.StockStatus stockStatus;
+    private Integer totalStock;
+    private boolean inStock;
+    private boolean purchasable;
     private String barcode;
     private List<String> attributes = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
@@ -36,6 +39,9 @@ public class CrossSellProductResponse {
         this.sku = product.getSku();
         this.allowBackorder = product.isAllowBackorder();
         this.stockStatus = product.getStockStatus();
+        this.totalStock = product.getTotalStock();
+        this.inStock = product.isInStock();
+        this.purchasable = product.isPurchasable();
         this.barcode = product.getBarcode();
         this.tags = product.getTags();
         this.attributes = product.getAttributes();

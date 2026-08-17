@@ -67,6 +67,24 @@ public class RedisCacheService {
         }
     }
 
+    /**
+     * Deletes every key starting with `prefix`. Used for cache families keyed
+     * per-entity (e.g. one "category_descendants_&lt;id&gt;" entry per category)
+     * where a single write can invalidate an unknown number of them - a
+     * category move/delete can change the subtree of any ancestor.
+     */
+    public void deleteByPrefix(String prefix) {
+        try {
+            java.util.Set<String> keys = redisTemplate.keys(prefix + "*");
+            if (keys != null && !keys.isEmpty()) {
+                redisTemplate.delete(keys);
+                log.info("🗑️ Deleted {} Redis keys with prefix '{}'", keys.size(), prefix);
+            }
+        } catch (Exception e) {
+            log.error("❌ Failed to delete Redis keys with prefix '{}': {}", prefix, e.getMessage());
+        }
+    }
+
     // ✅ Optional health check
     public boolean ping() {
         try {

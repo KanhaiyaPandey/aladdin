@@ -24,6 +24,9 @@ public class ProductResponse {
     private String sku;
     private boolean allowBackorder;
     private Enums.StockStatus stockStatus;
+    private Integer totalStock;
+    private boolean inStock;
+    private boolean purchasable;
     private String barcode;
     private String sizeGuide;
     private List<String> attributes = new ArrayList<>();
@@ -43,10 +46,14 @@ public class ProductResponse {
         this.title = product.getTitle();
         this.description = product.getDescription();
         this.sellPrice = product.getSellPrice();
+        this.compareAtPrice = product.getCompareAtPrice();
         this.mrp = product.getCompareAtPrice();
         this.sku = product.getSku();
         this.allowBackorder = product.isAllowBackorder();
         this.stockStatus = product.getStockStatus();
+        this.totalStock = product.getTotalStock();
+        this.inStock = product.isInStock();
+        this.purchasable = product.isPurchasable();
         this.barcode = product.getBarcode();
         this.attributes = product.getAttributes() != null ? product.getAttributes() : new ArrayList<>();
         this.tags = product.getTags() != null ? product.getTags() : new ArrayList<>();
