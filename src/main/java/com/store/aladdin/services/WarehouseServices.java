@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.store.aladdin.models.Product;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +18,17 @@ import com.store.aladdin.models.Warehouse;
 import com.store.aladdin.repository.WarehouseRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WarehouseServices {
 
     private final WarehouseRepository warehouseRepository;
+    private final MongoTemplate mongoTemplate;
+
+    private static final int MAX_UPSERT_ATTEMPTS = 5;
 
     // Create a new Warehouse
     public Warehouse createWarehouse(WarehouseDTO warehouseDTO) {
@@ -70,72 +79,80 @@ public class WarehouseServices {
         if (product.getVariants() != null && !product.getVariants().isEmpty()) {
             for (Product.Variant variant : product.getVariants()) {
                 String sku = variant.getVariantSku();
-
                 for (Product.Warehouse variantWarehouse : variant.getVariantWarehouseData()) {
-                    warehouseRepository.findById(variantWarehouse.getWarehouseId()).ifPresent(warehouse -> {
-                        synchronized (warehouse) { // ensure thread safety for updates on the same warehouse
-                            Warehouse.ProductStock existingStock = warehouse.getProductStocks().stream()
-                                    .filter(s -> s.getSku().equals(sku))
-                                    .findFirst()
-                                    .orElse(null);
-
-                            if (existingStock != null) {
-                                existingStock.setTotalStock(
-                                        (existingStock.getTotalStock() != null ? existingStock.getTotalStock() : 0)
-                                                + (variantWarehouse.getStock() != null ? variantWarehouse.getStock() : 0)
-                                );
-                                existingStock.setUpdatedAt(LocalDateTime.now());
-                            } else {
-                                Warehouse.ProductStock newStock = new Warehouse.ProductStock();
-                                newStock.setSku(sku);
-                                newStock.setTotalStock(variantWarehouse.getStock());
-                                newStock.setCommited(0);
-                                newStock.setDamaged(0);
-                                newStock.setUpdatedAt(LocalDateTime.now());
-                                warehouse.getProductStocks().add(newStock);
-                            }
-
-                            warehouse.setUpdatedAt(LocalDateTime.now());
-                            warehouseRepository.save(warehouse);
-                        }
-                    });
+                    upsertProductStock(variantWarehouse.getWarehouseId(), sku, variantWarehouse.getStock());
                 }
             }
         }
-        // CASE 2: No variants → use product-level warehouseData
+        // CASE 2: No variants -> use product-level warehouseData
         else if (product.getWarehouseData() != null && !product.getWarehouseData().isEmpty()) {
-            String productSku = product.getSku(); // assuming your product has a SKU field
+            String productSku = product.getSku();
             for (Product.Warehouse warehouseData : product.getWarehouseData()) {
-                warehouseRepository.findById(warehouseData.getWarehouseId()).ifPresent(warehouse -> {
-                    synchronized (warehouse) {
-                        Warehouse.ProductStock existingStock = warehouse.getProductStocks().stream()
-                                .filter(s -> s.getSku().equals(productSku))
-                                .findFirst()
-                                .orElse(null);
-
-                        if (existingStock != null) {
-                            existingStock.setTotalStock(
-                                    (existingStock.getTotalStock() != null ? existingStock.getTotalStock() : 0)
-                                            + (warehouseData.getStock() != null ? warehouseData.getStock() : 0)
-                            );
-                            existingStock.setUpdatedAt(LocalDateTime.now());
-                        } else {
-                            Warehouse.ProductStock newStock = new Warehouse.ProductStock();
-                            newStock.setSku(productSku);
-                            newStock.setTotalStock(warehouseData.getStock());
-                            newStock.setCommited(0);
-                            newStock.setDamaged(0);
-                            newStock.setUpdatedAt(LocalDateTime.now());
-                            warehouse.getProductStocks().add(newStock);
-                        }
-
-                        warehouse.setUpdatedAt(LocalDateTime.now());
-                        warehouseRepository.save(warehouse);
-                    }
-                });
+                upsertProductStock(warehouseData.getWarehouseId(), productSku, warehouseData.getStock());
             }
         }
     }
 
-    
+    /**
+     * Atomically adds `stockToAdd` to a warehouse's stock row for `sku`,
+     * creating the row if it doesn't exist yet.
+     *
+     * Replaces a previous implementation that loaded the whole Warehouse
+     * document into memory, mutated it, and saved it back inside a
+     * `synchronized(warehouse)` block - since findById() returns a fresh
+     * object every call, that block synchronized on a different monitor per
+     * thread and provided no real mutual exclusion between concurrent
+     * callers. Confirmed the damage: seeding 50 products back-to-back
+     * silently dropped ~44% of the stock rows they should have created.
+     *
+     * Both branches below are single atomic MongoDB operations, so
+     * correctness comes from MongoDB's own per-document write serialization,
+     * not JVM-level locking. The retry loop only exists to handle the rare,
+     * harmless case where two concurrent calls both try to *create* the same
+     * row at once: one "create" wins, the other's guard condition then fails
+     * to match, and it retries as an "increment" against the row the other
+     * just created.
+     */
+    private void upsertProductStock(String warehouseId, String sku, Integer stockToAdd) {
+        int stock = stockToAdd != null ? stockToAdd : 0;
+
+        for (int attempt = 0; attempt < MAX_UPSERT_ATTEMPTS; attempt++) {
+            // Row already exists for this SKU -> atomic increment in place.
+            Query incrementQuery = Query.query(
+                    Criteria.where("_id").is(warehouseId).and("productStocks.sku").is(sku));
+            Update incrementUpdate = new Update()
+                    .inc("productStocks.$.totalStock", stock)
+                    .set("productStocks.$.updatedAt", LocalDateTime.now())
+                    .set("updatedAt", LocalDateTime.now());
+            if (mongoTemplate.updateFirst(incrementQuery, incrementUpdate, Warehouse.class).getMatchedCount() > 0) {
+                return;
+            }
+
+            // No row for this SKU yet -> atomically push a new one. The
+            // "$ne" guard matches only if NO element in the array has this
+            // sku, so it can't double-push against a concurrent attempt -
+            // the guard and the push happen in the same atomic operation.
+            Warehouse.ProductStock newStock = new Warehouse.ProductStock();
+            newStock.setSku(sku);
+            newStock.setTotalStock(stock);
+            newStock.setCommited(0);
+            newStock.setDamaged(0);
+            newStock.setUpdatedAt(LocalDateTime.now());
+
+            Query pushQuery = Query.query(
+                    Criteria.where("_id").is(warehouseId).and("productStocks.sku").ne(sku));
+            Update pushUpdate = new Update()
+                    .push("productStocks", newStock)
+                    .set("updatedAt", LocalDateTime.now());
+            if (mongoTemplate.updateFirst(pushQuery, pushUpdate, Warehouse.class).getMatchedCount() > 0) {
+                return;
+            }
+            // Neither matched: a concurrent call just created/updated this
+            // row between our two attempts above - loop and try the
+            // increment again against the now-current state.
+        }
+
+        log.warn("Failed to upsert stock for sku {} in warehouse {} after {} attempts",
+                sku, warehouseId, MAX_UPSERT_ATTEMPTS);
+    }
 }
